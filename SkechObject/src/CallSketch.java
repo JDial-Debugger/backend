@@ -20,7 +20,7 @@ public class CallSketch {
 		Runtime rt = Runtime.getRuntime();
 		Map<Integer, Integer> result = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> oriValue = new HashMap<Integer, Integer>();   // map from coeff to their original value in the original program
-		Set<Integer> validList = new HashSet<Integer>();	 
+		Set<Integer> validList = new HashSet<Integer>();
 		List<Integer> unchangedIndex = new ArrayList<Integer>();
 
 		try {
@@ -37,7 +37,7 @@ public class CallSketch {
 
 			String line = null;
 			line = input.readLine();
-			System.out.println(line);
+	//		System.out.println(line);
 
 			int coeffIndex = -1;
 			int coeffReturn = -1;
@@ -58,7 +58,7 @@ public class CallSketch {
 					// value of a coeffX
 					// it will be the original val if coeffXchange == 0, and the guess val otherwise
 					if (line.length() > 12) {
-						if (line.substring(0, 10).equals("void Coeff")) { // determine X 
+						if (line.substring(0, 10).equals("void Coeff")) { // determine X
 							coeffIndex = extractInt(line).get(0); // coeffIndex = X
 							validList.add(coeffIndex); // assume X is valid
 							waitting = true; // waiting for oriVal and guessVal of coeffX
@@ -77,7 +77,7 @@ public class CallSketch {
 					if (extractInt(line).size() > 0)
 						tmp_return = extractInt(line).get(0); // note that the last _out is the actual guessVal so we store
 										      // each _out we have seen until we hit return (which happen at line 68)
-					
+
 					// Then we scan and find all X such that coeffXchange == 1
 					if (line.length() > 25)
 						if (line.substring(5, 19).equals("glblInit_coeff")) {
@@ -94,7 +94,7 @@ public class CallSketch {
 								continue;
 							}
 					}
-					
+
 					// extract the total weight
 					if (line.length() > 10) {
 						if (line.substring(0, 5).equals("Total"))
@@ -102,7 +102,7 @@ public class CallSketch {
 					}
 
 				}
-				
+
 				for(Integer index: unchangedIndex){
 					result.remove(index);
 					validList.remove(index);

@@ -24,14 +24,14 @@ import sketchobj.stmts.*;
 
 // Assume each line has at most one Statement
 public class CFG {
-	
+
     private Node enter;
     //private int counter;
     private Map<Integer, List<Integer>> edges;
     private Map<Integer, Node> nodes;
     private Map<Integer, List<String>> keepActual;
     private boolean forInit = false;
-	
+
     public CFG(Function function) {
     	this.edges = new HashMap<Integer, List<Integer>>();
     	this.nodes = new HashMap<Integer, Node>();
@@ -48,7 +48,7 @@ public class CFG {
     		this.keepActual.put(entry.getKey(), new ArrayList<String>());
     	}
     }
-    
+
     private void updateEdges(int key, int value) {
     	if (this.edges.containsKey(key)) {
     		this.edges.get(key).add(value);
@@ -58,24 +58,24 @@ public class CFG {
     		this.edges.put(key, list);
     	}
     }
-    
-    
+
+
     private Connection buildStmt (Statement stmt) {
     	Node in = null;
     	Node out = null;
-    	
+
     	if (stmt instanceof StmtAssert) {
     		in = new Node(stmt.getLineNumber(), ((StmtAssert) stmt).toString(), (StmtAssert) stmt, null);
     		this.nodes.put(stmt.getLineNumber(), in);
     		return new Connection(in, in);
     	}
-    	
+
     	if (stmt instanceof StmtAssign) {
     		in = new Node(stmt.getLineNumber(), ((StmtAssign) stmt).toString(), (StmtAssign) stmt, null);
     		this.nodes.put(stmt.getLineNumber(), in);
     		return new Connection(in, in);
     	}
-    	
+
         if (stmt instanceof StmtBlock) {
     		if (((StmtBlock) stmt).stmts.size() == 0) {
 				System.err.println("empty stmtBlock body!");
@@ -93,7 +93,7 @@ public class CFG {
 			}
     		return combineList(list);
     	}
-    	
+
         if (stmt instanceof StmtDoWhile) {
         	Connection con1 = buildStmt(((StmtDoWhile) stmt).getBody());
         	if (con1.getIn() != null) {
@@ -103,7 +103,7 @@ public class CFG {
         				null, ((StmtDoWhile) stmt).getCond());
         		this.nodes.put(stmt.getLineNumber(), out);
         		Connection con2 = new Connection(out, out);
-        		
+
         		ArrayList<Connection> list = new ArrayList<Connection>();
         		list.add(con1);
         		list.add(con2);
@@ -118,13 +118,13 @@ public class CFG {
         		return new Connection(in, in);
         	}
     	}
-    	
+
         if (stmt instanceof StmtExpr) {
     		in = new Node(stmt.getLineNumber(), ((StmtExpr) stmt).toString(), (StmtExpr) stmt, null);
     		this.nodes.put(stmt.getLineNumber(), in);
     		return new Connection(in, in);
     	}
-        
+
         // assume init, cond, incr are non-empty, although body might be empty
         if (stmt instanceof StmtFor) {
     		ArrayList<Connection> list = new ArrayList<Connection>();
@@ -132,28 +132,28 @@ public class CFG {
     		Connection InitCon = buildStmt(((StmtFor) stmt).getInit());
     		this.forInit = false;
     		in = InitCon.getIn();
-    		
+
     		Node condNode = new Node(stmt.getLineNumber(), ((StmtFor) stmt).getCond().toString(),
     				null, ((StmtFor) stmt).getCond());
     		this.nodes.put(stmt.getLineNumber(), condNode);
     		out = condNode;
     		Connection condCon = new Connection(condNode, condNode);
-    		
+
     		Connection bodyCon = buildStmt(((StmtFor) stmt).getBody());
     		//Connection incrCon = buildStmt(((StmtFor) stmt).getIncr());
-    		
+
     		list.add(InitCon);
     		list.add(condCon);
     		list.add(bodyCon);
     		//list.add(incrCon);
     		combineList(list);
-    		
+
     		ArrayList<Connection> loop = new ArrayList<Connection>();
     		loop.add(bodyCon);
     		//loop.add(incrCon);
     		loop.add(condCon);
     		combineList(loop);
-    		
+
     		return new Connection(in, out);
     	}
 
@@ -161,7 +161,7 @@ public class CFG {
         if (stmt instanceof StmtFunDecl) {
     		return buildStmt(((StmtFunDecl) stmt).getDecl().getBody());
     	}
-        
+
         if (stmt instanceof StmtIfThen) {
         	String condStr = "" + ((StmtIfThen) stmt).getCond() + "";
         	Node condNode = new Node(stmt.getLineNumber(), condStr, null, ((StmtIfThen) stmt).getCond());
@@ -170,35 +170,35 @@ public class CFG {
     		Connection con1 = new Connection(in, in);
     		Connection con2 = buildStmt(((StmtIfThen) stmt).getCons());
     		Connection con3 = buildStmt(((StmtIfThen) stmt).getAlt());
-    		
+
     		ArrayList<Connection> list1 = new ArrayList<Connection>();
     		list1.add(con1);
     		list1.add(con2);
     		List<Node> out1 = combineList(list1).getOut();
-    		
+
     		ArrayList<Connection> list2 = new ArrayList<Connection>();
     		list2.add(con1);
     		list2.add(con3);
     		List<Node> out2 = combineList(list2).getOut();
-    		
+
     		List<Node> outList = new ArrayList<>();
     		outList.addAll(out1);
     		outList.addAll(out2);
     		return new Connection(in, outList);
         }
-        
-        if (stmt instanceof StmtMinimize) {	
+
+        if (stmt instanceof StmtMinimize) {
         	in = new Node(stmt.getLineNumber(), ((StmtMinimize) stmt).toString(), (StmtMinimize) stmt, null);
     		this.nodes.put(stmt.getLineNumber(), in);
     		return new Connection(in, in);
         }
-        
-        if (stmt instanceof StmtReturn) {	
+
+        if (stmt instanceof StmtReturn) {
         	in = new Node(stmt.getLineNumber(), ((StmtReturn) stmt).toString(), (StmtReturn) stmt, null);
     		this.nodes.put(stmt.getLineNumber(), in);
     		return new Connection(in, in);
         }
-        
+
         if (stmt instanceof StmtVarDecl) {
         	List<Type> types = ((StmtVarDecl) stmt).getTypes();
         	List<String> names = ((StmtVarDecl) stmt).getNames();
@@ -211,12 +211,12 @@ public class CFG {
 	        		}
         		}
     		}
-        	
+
         	in = new Node(stmt.getLineNumber(), ((StmtVarDecl) stmt).toString(), (StmtVarDecl) stmt, null);
     		this.nodes.put(stmt.getLineNumber(), in);
     		return new Connection(in, in);
         }
-        
+
         if (stmt instanceof StmtWhile) {
         	in = new Node(stmt.getLineNumber(), ((StmtWhile) stmt).toString(),
         			null, ((StmtWhile) stmt).getCond());
@@ -236,9 +236,9 @@ public class CFG {
         		combineList(loop);
         		return new Connection(in, in);
         	}
-        	
+
         }
-        
+
     	return null;
     }
 
@@ -251,7 +251,7 @@ public class CFG {
     			removed++;
     		}
     	}*/
-    	
+
 		for (int i = list.size() - 1; i >= 0; i--) {
     		Connection tmp = list.get(i);
     		if (tmp == null) {
@@ -262,7 +262,7 @@ public class CFG {
 	    		}
     		}
     	}
-		
+
     	int actualSize = list.size();
     	if (actualSize == 0) {
 			System.err.println("empty CFG list!");
@@ -271,10 +271,10 @@ public class CFG {
     	if (actualSize == 1) {
     		return list.get(0);
     	}
-    	
+
     	Node in = list.get(0).getIn();
     	List<Node> out = list.get(actualSize - 1).getOut();
-    	
+
     	for (int i = 0; i < actualSize - 1; i++) {
     		int inId = list.get(i + 1).getIn().getId();
     		List<Node> tmpOut = list.get(i).getOut();
@@ -282,10 +282,10 @@ public class CFG {
     			this.updateEdges(tmpOut.get(j).getId(), inId);
     		}
     	}
-    	
+
     	return new Connection(in, out);
 	}
-	
+
 	public void printCFG() {
 		String res = "";
 		res += "CFG:\n";
@@ -299,11 +299,11 @@ public class CFG {
 		for (Map.Entry<Integer, List<Integer>> entry : this.edges.entrySet()) {
 		    res += (entry.getKey() + " : " + entry.getValue() + "\n");
 		}
-		
-		System.out.println(res);
-		System.out.println(Global.allvars);
+
+//		System.out.println(res);
+		//System.out.println(Global.allvars);
 	}
-    
+
 	/* backward may dataflow analysis framework
 	in(exit) = ∅
 	for all other statements s
@@ -319,7 +319,7 @@ public class CFG {
 		end
 	end
 	*/
-	
+
 	public Map<Integer, Set<String>> dataflow(){
 		Set<Integer> indexes = this.nodes.keySet();
 		Map<Integer, Set<String>> in = new HashMap<Integer, Set<String>>();
@@ -340,7 +340,7 @@ public class CFG {
 				}
 			}
 			out.put(s, outS);
-			
+
 			// if there is a StmtAssign, add more vars to gen
 			if (nodes.get(s).isStmt()) {
 				Statement st = nodes.get(s).getStmt();
@@ -376,12 +376,12 @@ public class CFG {
 					}
 				}
 			}
-			
+
 			Set<String> temp = new HashSet<>(outS);
 			if (gen.containsKey(s)) {
 				temp.addAll(gen.get(s));
 			}
-			
+
 			if (!temp.equals(in.get(s))) {
 				in.put(s, temp);
 				for (int i : this.getPred(s)) {
@@ -390,12 +390,12 @@ public class CFG {
 			}
 		}
 		for (Map.Entry<Integer, Set<String>> entry : in.entrySet()) {
-			System.out.println(entry.getKey());
-			System.out.println(entry.getValue());
+	//		System.out.println(entry.getKey());
+	//		System.out.println(entry.getValue());
 		}
 		return in;
 	}
-	
+
 	/*
 	public void dataflow(){
 		Map<Integer, List<String>> head = this.getHead();
@@ -409,10 +409,10 @@ public class CFG {
 			Queue<Map<Integer, List<String>>> front = new LinkedList<Map<Integer, List<String>>>();
 			int key = entry.getKey();
 			List<String> value = entry.getValue();
-			
+
 			Map<Integer, List<String>> thisMap = this.initMap();
 			thisMap.replace(key, value);
-			
+
 			// take one step backwards
 			List<Integer> stepBack = this.getInNeighbor(key);
 			for (Integer i : stepBack) {
@@ -433,7 +433,7 @@ public class CFG {
 					mark[i] = true;
 				}
 			}
-			
+
 			// BFS traverse CFG
 			while (!front.isEmpty()) {
 				List<Integer> back = this.getInNeighbor(front.poll());
@@ -449,7 +449,7 @@ public class CFG {
 					}
 				}
 			}
-			
+
 		}
 		for (Map.Entry<Integer, List<String>> entry : this.keepActual.entrySet()) {
 			System.out.println(entry.getKey());
@@ -457,7 +457,7 @@ public class CFG {
 		}
 	}
 	*/
-	
+
 	private Map<Integer, List<String>> initMap() {
 		Map<Integer, List<String>> res = new HashMap<Integer, List<String>>();
 		for (Map.Entry<Integer, Node> entry : this.nodes.entrySet()) {
@@ -465,7 +465,7 @@ public class CFG {
     	}
 		return res;
 	}
-	
+
 	private Set<Integer> getPred(int nodeNum) {
 		Set<Integer> res = new HashSet<Integer>();
 		for (Map.Entry<Integer, List<Integer>> entry : this.edges.entrySet()) {
@@ -475,7 +475,7 @@ public class CFG {
 		}
 		return res;
 	}
-	
+
 	// get the starting points of backwards data-flow analysis
 	private Map<Integer, Set<String>> getHead() {
 		Map<Integer, Set<String>> map = new HashMap<Integer, Set<String>>();
@@ -492,10 +492,10 @@ public class CFG {
 					map.put(key, set);
 			}
 		}
-		
+
 		return map;
 	}
-	
+
 	// ignore StmtFunDecl for now
 	private Set<String> extractVarFromStmt(Statement stmt) {
 		Set<String> res = new HashSet<String>();
@@ -504,7 +504,7 @@ public class CFG {
 		}
 		if (stmt instanceof StmtAssign) {
 			return (extractVarFromExpr(((StmtAssign) stmt).getRHS(), 0));
-		} 
+		}
 		if (stmt instanceof StmtExpr) {
 			return (extractVarFromExpr(((StmtExpr) stmt).getExpr(), 0));
 		}
@@ -523,11 +523,11 @@ public class CFG {
 		}
 		return res;
 	}
-	
+
 	// extract vars on both sides of a < b
 	private Set<String> extractVarFromExpr(Expression expr, int flag) {
 		if (expr instanceof ExprArrayRange) {
-			return extractAllVarExpr(((ExprArrayRange) expr).getOffset()); 
+			return extractAllVarExpr(((ExprArrayRange) expr).getOffset());
 		}
 		Set<String> res = new HashSet<String>();
 		if (!(expr instanceof ExprUnary || expr instanceof ExprBinary || expr instanceof ExprVar)) {
@@ -557,7 +557,7 @@ public class CFG {
 		}
 		return res;
 	}
-	
+
 	// extract all vars, ignore StmtFunDecl for now
 	public static Set<String> extractRVarStmt(Statement stmt) {
 		Set<String> res = new HashSet<String>();
@@ -566,7 +566,7 @@ public class CFG {
 		}
 		if (stmt instanceof StmtAssign) {
 			return extractAllVarExpr(((StmtAssign) stmt).getRHS());
-		} 
+		}
 		if (stmt instanceof StmtExpr) {
 			return extractAllVarExpr(((StmtExpr) stmt).getExpr());
 		}
@@ -585,7 +585,7 @@ public class CFG {
 		}
 		return res;
 	}
-	
+
 	public static Set<String> extractLVarStmt(Statement stmt) {
 		Set<String> res = new HashSet<String>();
 		if (stmt instanceof StmtAssert) {
@@ -593,7 +593,7 @@ public class CFG {
 		}
 		if (stmt instanceof StmtAssign) {
 			return extractAllVarExpr(((StmtAssign) stmt).getLHS());
-		} 
+		}
 		if (stmt instanceof StmtExpr) {
 			return extractAllVarExpr(((StmtExpr) stmt).getExpr());
 		}
@@ -608,7 +608,7 @@ public class CFG {
 		}
 		return res;
 	}
-		
+
 	// extract all vars
 	public static Set<String> extractAllVarExpr(Expression expr) {
 		Set<String> res = new HashSet<String>();
@@ -625,13 +625,13 @@ public class CFG {
 			return res;
 		}
 		if (expr instanceof ExprArrayRange) {
-			res.addAll(extractAllVarExpr(((ExprArrayRange) expr).getBase())); 
-			res.addAll(extractAllVarExpr(((ExprArrayRange) expr).getOffset())); 
+			res.addAll(extractAllVarExpr(((ExprArrayRange) expr).getBase()));
+			res.addAll(extractAllVarExpr(((ExprArrayRange) expr).getOffset()));
 			return res;
 		}
 		return res;
 	}
-	
+
 	public static void GenfeasibleVars() {
 		for (Map.Entry<String, Boolean> entry : Global.allvars.entrySet()) {
 			boolean feasible = false;
@@ -647,7 +647,7 @@ public class CFG {
 		}
 		//System.err.println(Global.feasibleVars);
 	}
-	
+
 	public static void GenAlwaysVars() {
 		for (Map.Entry<String, Boolean> entry : Global.feasibleVars.entrySet()) {
 			boolean always = true;
@@ -663,7 +663,7 @@ public class CFG {
 		}
 		//System.err.println(Global.feasibleVars);
 	}
-	
+
 	public void inilocs() {
 		System.err.println("always: " + Global.alwaysVars);
 		for (Map.Entry<String, Boolean> entry : Global.feasibleVars.entrySet()) {
@@ -690,7 +690,7 @@ public class CFG {
 			}
 		System.err.println("inilocs: " + Global.inilocs);
 	}
-	
+
 	public void getAltFacts() {
 		Set<String> nonvars = new HashSet<>();
 		for (String var : Global.allvars.keySet()) {
@@ -714,7 +714,7 @@ public class CFG {
 			if (!Collections.disjoint(nonvars, curvars))
 				Global.altfacts.add(entry.getKey());
 		}
-		
+
 	}
-	
-}	
+
+}

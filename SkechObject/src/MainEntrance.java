@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.PrintWriter;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -52,7 +53,7 @@ public class MainEntrance {
 	private int mod;
 
 	private List<Integer> repair_range;
-	
+
 	private List<String> ori_trace;
 	private List<String> target_trace;
 	public static boolean iomod = false;
@@ -60,7 +61,7 @@ public class MainEntrance {
 
 	//added 11/18
 	private HashMap<String, String> funtions = new HashMap<>();
-	
+
 	public MainEntrance(String json, String correctTrace, int indexOfCorrectTrace) {
 		this(json, correctTrace, indexOfCorrectTrace, 0);
 	}
@@ -76,7 +77,7 @@ public class MainEntrance {
 		this.ori_trace = new ArrayList<>();
 		this.target_trace = new ArrayList<>();
 	}
-	
+
 	public void addindex (int index){ this.indexes.add(index);}
 	public void addOriTrace (String ori){ this.ori_trace.add(ori);}
 	public void addTargetTrace (String target){ this.target_trace.add(target);}
@@ -94,7 +95,7 @@ public class MainEntrance {
 		this.root = jsonRootCompile(this.originalTrace);
 		// 11/28
 		this.code = root.getCode().getCode();
-	
+
 		if (oneLine)
 			mod = 1;
 
@@ -107,12 +108,13 @@ public class MainEntrance {
 		//System.err.println("trace is " + root.getTraces().toString());
 		code = code.replace("\\n", "\n");
 		code = code.replace("\\t", "\t");
-		System.out.println("code");
-		System.out.println("--------------------");
+	//	System.out.println("code");
+	//	System.out.println("--------------------");
 		System.out.println(code);
 
 		ANTLRInputStream input = new ANTLRInputStream(code);
 		Function function = (Function) javaCompile(input, targetFunc);
+		System.out.println(function);
 		// rp added
 		CFG cfg = new CFG(function);
 		cfg.printCFG();
@@ -132,11 +134,11 @@ public class MainEntrance {
 				otherFunctions.add(this.func_name_to_code.get(curName));
 			}
 		}
-		System.out.println("function");
-		System.out.println("--------------------");
-		System.out.println(function);
+	//	System.out.println("function");
+	//	System.out.println("--------------------");
+//		System.out.println(function);
 
-		//added 11/18 
+		//added 11/18
 		/*funtions.put(targetFunc, "");
 		while (JavaVisitor.methodNames.size() != 0)
 		{
@@ -150,9 +152,9 @@ public class MainEntrance {
 			funtions.put(name, function1.toString());
 		}*/
 		//added 11/18
-		
+
 		// added
-		System.out.println("--------------------");
+		// System.out.println("--------------------");
 		boolean prime_mod = global.Global.prime_mod;
 		boolean rec_mod = global.Global.rec_mod;
 		System.err.println("original length3 is: " + root.getTraces().getLength());
@@ -165,7 +167,7 @@ public class MainEntrance {
 		String script;
 		// if (useLC)
 		//script = cf.getScript_linearCombination(function.getBody(), function.getParames());
-		
+
 		// IOmod
 		if(iomod){
 			for(int i = 0; i < this.ori_trace.size(); i++){
@@ -185,11 +187,11 @@ public class MainEntrance {
 
 			cf.iomod = true;
 		}
-		
+
 		// added
 		if (rec_mod){
 			script = cf.getScript_linearCombination(function.getBody());
-			//script = cf.getScript_linearCombination(function.getBody(), funtions);	
+			//script = cf.getScript_linearCombination(function.getBody(), funtions);
 		}
 		else{
 			script = cf.getScript_linearCombination(function.getBody());}
@@ -202,11 +204,11 @@ public class MainEntrance {
 		//if (prime_mod)
 		//	script = tranScript(script);
 		System.err.println("3--------------------------------------------");
-		
+
 		//System.err.println("4--------------------------------------------"); // added
 		//System.err.println(script); // added
 		//System.err.println("4--------------------------------------------"); // added
-		
+
 		//----added
 		SketchResult resultS = CallSketch.CallByString(script);
 
@@ -229,7 +231,7 @@ public class MainEntrance {
 		//String curCode = curRoot.getCode().getCode();
 		//curCode = curCode.replace("\\n", "\n");
 		//curCode = curCode.replace("\\t", "\t");
-		
+
 		List<Trace> traces = curRoot.getTraces().getTraces();
 		for(Trace trace: traces){
 			String name = trace.getFuncname();
@@ -314,7 +316,7 @@ public class MainEntrance {
 		return result.toString();
 	}
 	//added 11/19
-	
+
 	//@1int bfinal = 0; need to know nameOfVar, primes
 	//@2int a = 1 + ((Coeff0()) * (Coeff1())); need to know nameOfVar, primes ("Coeff")
 	//@3int[3] oringianlaArray = {0,1,1};
@@ -330,7 +332,7 @@ public class MainEntrance {
 		result.append(script.substring(index0, index1+1));
 		index0 = index1 + 1;
 
-		// store the value of the result variable in each iteration 
+		// store the value of the result variable in each iteration
 		result.append("int[10] resArray = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};\n");
 		// level of recursion
 		result.append("int funcCount = -1;\n");
@@ -588,7 +590,14 @@ public class MainEntrance {
 				String stmtString = ConstraintFactory.line_to_string.get(tmpLine);
 				repair.put(tmpLine, replaceCoeff(stmtString, result, ConstraintFactory.coeffIndex_to_Line, tmpLine));
 			}
-			System.out.println(repair);
+			 System.out.println(repair);
+      try{
+        PrintWriter writer = new PrintWriter("log.txt", "UTF-8");
+	      writer.println(repair);
+	      writer.close();
+      }catch(Exception e){
+        System.out.println(e);
+      }
 			return repair;
 		} else {
 			boolean consistancy = false;
