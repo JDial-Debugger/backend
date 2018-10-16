@@ -279,7 +279,7 @@ public class ConstraintFactory {
 		//System.err.println("------------------------ ");
 		if (coeffFunDecls1 != null)
 			stmts.add(coeffFunDecls1);
-
+//System.out.println("VAR TYPES:" + varsTypes);
 		stmts.add(
 				new StmtBlock(varArrayDecl("line", length, new TypePrimitive(4)), varArrayDecls(varsNames, varsTypes,
 						f.getName())));

@@ -110,7 +110,7 @@ public class MainEntrance {
 		code = code.replace("\\t", "\t");
 	//	System.out.println("code");
 	//	System.out.println("--------------------");
-		System.out.println(code);
+		//System.out.println(code);
 
 		ANTLRInputStream input = new ANTLRInputStream(code);
 		Function function = (Function) javaCompile(input, targetFunc);
@@ -566,8 +566,7 @@ public class MainEntrance {
 			Statement targetStmt) throws InterruptedException {
 
 		List<ExternalFunction> externalFuncs = ConstraintFactory.externalFuncs;
-
-		// System.out.println(script);
+	//	 System.out.println(script);
 		// System.out.println(cf.line_to_string);
 
 		// no external Functions
@@ -591,13 +590,6 @@ public class MainEntrance {
 				repair.put(tmpLine, replaceCoeff(stmtString, result, ConstraintFactory.coeffIndex_to_Line, tmpLine));
 			}
 			 System.out.println(repair);
-      try{
-        PrintWriter writer = new PrintWriter("log.txt", "UTF-8");
-	      writer.println(repair);
-	      writer.close();
-      }catch(Exception e){
-        System.out.println(e);
-      }
 			return repair;
 		} else {
 			boolean consistancy = false;

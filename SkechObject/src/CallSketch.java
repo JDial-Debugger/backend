@@ -37,7 +37,7 @@ public class CallSketch {
 
 			String line = null;
 			line = input.readLine();
-	//		System.out.println(line);
+			System.out.println("LINE: " + line);
 
 			int coeffIndex = -1;
 			int coeffReturn = -1;
@@ -53,7 +53,7 @@ public class CallSketch {
 			} else {
 				while ((line = input.readLine()) != null) {
 					//System.out.println(new LineNumberReader(new InputStreamReader(proc.getErrorStream())).readLine());
-					System.out.println(line);
+					System.out.println("line " + line);
 					// the following 4 if statment is use to extract the original value and the guess
 					// value of a coeffX
 					// it will be the original val if coeffXchange == 0, and the guess val otherwise
@@ -110,6 +110,7 @@ public class CallSketch {
 						result.put(index, oriValue.get(index));}
 			}
 		} catch (IOException e) {
+			System.out.println(e);
 			e.printStackTrace();
 		}
 		return new SketchResult(result,validList);
