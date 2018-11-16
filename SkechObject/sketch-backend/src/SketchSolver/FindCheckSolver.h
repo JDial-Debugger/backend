@@ -5,9 +5,9 @@
 
 class SolverException{
 	public:
-	SATSolver::SATSolverResult code;
+	int code;
 	string msg;
-	SolverException(SATSolver::SATSolverResult code_p, const string& msg_p){ msg = msg_p; code = code_p; };
+	SolverException(int code_p, const string& msg_p){ msg = msg_p; code = code_p; };
 };
 
 

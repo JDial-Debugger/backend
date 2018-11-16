@@ -9,11 +9,6 @@
 #include <pthread.h>
 #endif
 
-#include <cassert>
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
-
 namespace statistics {
 
 

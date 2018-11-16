@@ -1,19 +1,19 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 2.5.  */
 
 /* Bison interface for Yacc-like parsers in C
-
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
-
+   
+      Copyright (C) 1984, 1989-1990, 2000-2011 Free Software Foundation, Inc.
+   
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -26,68 +26,54 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-
+   
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_INPUTPARSER_HPP_INCLUDED
-# define YY_YY_INPUTPARSER_HPP_INCLUDED
-/* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 1
-#endif
-#if YYDEBUG
-extern int yydebug;
-#endif
 
-/* Token type.  */
+/* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-  enum yytokentype
-  {
-    T_dbl = 258,
-    T_int = 259,
-    T_bool = 260,
-    T_ident = 261,
-    T_OutIdent = 262,
-    T_NativeCode = 263,
-    T_string = 264,
-    T_true = 265,
-    T_false = 266,
-    T_vartype = 267,
-    T_rightAC = 268,
-    T_leftAC = 269,
-    T_rightTC = 270,
-    T_leftTC = 271,
-    T_leftAR = 272,
-    T_rightAR = 273,
-    T_arrow = 274,
-    T_twoS = 275,
-    T_ppls = 276,
-    T_mmns = 277,
-    T_eq = 278,
-    T_neq = 279,
-    T_and = 280,
-    T_or = 281,
-    T_For = 282,
-    T_ge = 283,
-    T_le = 284,
-    T_Native = 285,
-    T_NativeMethod = 286,
-    T_Sketches = 287,
-    T_new = 288,
-    T_Typedef = 289,
-    T_def = 290,
-    T_mdldef = 291,
-    T_Min = 292,
-    T_sp = 293,
-    T_assert = 294,
-    T_assume = 295,
-    T_hassert = 296,
-    T_equals = 297,
-    T_replace = 298,
-    T_eof = 299
-  };
+   /* Put the tokens into the symbol table, so that GDB and other debuggers
+      know about them.  */
+   enum yytokentype {
+     T_dbl = 258,
+     T_int = 259,
+     T_bool = 260,
+     T_ident = 261,
+     T_OutIdent = 262,
+     T_NativeCode = 263,
+     T_string = 264,
+     T_true = 265,
+     T_false = 266,
+     T_vartype = 267,
+     T_rightAC = 268,
+     T_leftAC = 269,
+     T_rightTC = 270,
+     T_leftTC = 271,
+     T_arrow = 272,
+     T_twoS = 273,
+     T_ppls = 274,
+     T_mmns = 275,
+     T_eq = 276,
+     T_neq = 277,
+     T_and = 278,
+     T_or = 279,
+     T_For = 280,
+     T_ge = 281,
+     T_le = 282,
+     T_Native = 283,
+     T_NativeMethod = 284,
+     T_Sketches = 285,
+     T_new = 286,
+     T_Typedef = 287,
+     T_def = 288,
+     T_mdldef = 289,
+     T_Min = 290,
+     T_assert = 291,
+     T_assume = 292,
+     T_eof = 293
+   };
 #endif
 /* Tokens.  */
 #define T_dbl 258
@@ -104,41 +90,38 @@ extern int yydebug;
 #define T_leftAC 269
 #define T_rightTC 270
 #define T_leftTC 271
-#define T_leftAR 272
-#define T_rightAR 273
-#define T_arrow 274
-#define T_twoS 275
-#define T_ppls 276
-#define T_mmns 277
-#define T_eq 278
-#define T_neq 279
-#define T_and 280
-#define T_or 281
-#define T_For 282
-#define T_ge 283
-#define T_le 284
-#define T_Native 285
-#define T_NativeMethod 286
-#define T_Sketches 287
-#define T_new 288
-#define T_Typedef 289
-#define T_def 290
-#define T_mdldef 291
-#define T_Min 292
-#define T_sp 293
-#define T_assert 294
-#define T_assume 295
-#define T_hassert 296
-#define T_equals 297
-#define T_replace 298
-#define T_eof 299
+#define T_arrow 272
+#define T_twoS 273
+#define T_ppls 274
+#define T_mmns 275
+#define T_eq 276
+#define T_neq 277
+#define T_and 278
+#define T_or 279
+#define T_For 280
+#define T_ge 281
+#define T_le 282
+#define T_Native 283
+#define T_NativeMethod 284
+#define T_Sketches 285
+#define T_new 286
+#define T_Typedef 287
+#define T_def 288
+#define T_mdldef 289
+#define T_Min 290
+#define T_assert 291
+#define T_assume 292
+#define T_eof 293
 
-/* Value type.  */
+
+
+
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
-union YYSTYPE
+typedef union YYSTYPE
 {
-#line 30 "InputParser/InputParser.yy" /* yacc.c:1909  */
+
+/* Line 2068 of yacc.c  */
+#line 29 "InputParser/InputParser.yy"
 
 	int intConst;
 	bool boolConst;
@@ -150,20 +133,19 @@ union YYSTYPE
 	vartype variableType;
 	BooleanDAG* bdag;
 	bool_node* bnode;
-  OutType* otype;
-  vector<OutType*>* tVector;
-  vector<string>* sVector;
+    OutType* otype;
+    vector<OutType*>* tVector;
 
-#line 158 "InputParser.hpp" /* yacc.c:1909  */
-};
 
-typedef union YYSTYPE YYSTYPE;
+
+/* Line 2068 of yacc.c  */
+#line 143 "InputParser.hpp"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
+# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
 
 
-int yyparse (yyscan_t yyscanner);
 
-#endif /* !YY_YY_INPUTPARSER_HPP_INCLUDED  */

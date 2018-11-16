@@ -114,7 +114,6 @@ public class MainEntrance {
 
 		ANTLRInputStream input = new ANTLRInputStream(code);
 		Function function = (Function) javaCompile(input, targetFunc);
-		System.out.println(function);
 		// rp added
 		CFG cfg = new CFG(function);
 		cfg.printCFG();
@@ -210,7 +209,7 @@ public class MainEntrance {
 		//System.err.println("4--------------------------------------------"); // added
 
 		//----added
-		SketchResult resultS = CallSketch.CallByString(script);
+		//SketchResult resultS = CallSketch.CallByString(script);
 
 		//-----added
 
@@ -219,7 +218,6 @@ public class MainEntrance {
 		System.err.println("mod is " + mod);
 		if (mod != 2)
 			return this.actualSynthesize(useLC, script, cf, null);
-
 		return null;
 	}
 
@@ -561,7 +559,12 @@ public class MainEntrance {
 		return strResult;
 		//delete External_
 	}
-
+	private void printRepair(Map<Integer, String> repair) {
+		for(int k : repair.keySet() ) {
+			System.out.println(k + "||||" + repair.get(k));
+			
+		}
+	}
 	public Map<Integer, String> actualSynthesize(boolean useLC, String script, ConstraintFactory cf,
 			Statement targetStmt) throws InterruptedException {
 
@@ -572,24 +575,21 @@ public class MainEntrance {
 		// no external Functions
 		if (externalFuncs.size() == 0) {
 
-			SketchResult resultS = CallSketch.CallByString(script);
-			Map<Integer, Integer> result = resultS.Result;
-			Set<Integer> validIndexSet = resultS.valid_Set;
+			Map<Integer, Integer> result = CallSketch.CallByString(script);
 			List<Integer> indexset = new ArrayList<Integer>();
 			indexset.addAll(result.keySet());
 			Map<Integer, String> repair = new HashMap<Integer, String>();
 			int tmpLine = -1;
-			for (int k : result.keySet()) {
-				if (ConstraintFactory.coeffIndex_to_Line.get(k) == tmpLine)
+			//k is the number of a coeffecient
+			for (int coefIdx : result.keySet()) {
+				if (ConstraintFactory.coeffIndex_to_Line.get(coefIdx) != null && ConstraintFactory.coeffIndex_to_Line.get(coefIdx) == tmpLine) 
 					continue;
-				if (!validIndexSet.contains(k))
-					continue;
-
-				tmpLine = ConstraintFactory.coeffIndex_to_Line.get(k);
+				if(ConstraintFactory.coeffIndex_to_Line.get(coefIdx) != null)
+					tmpLine = ConstraintFactory.coeffIndex_to_Line.get(coefIdx);
 				String stmtString = ConstraintFactory.line_to_string.get(tmpLine);
 				repair.put(tmpLine, replaceCoeff(stmtString, result, ConstraintFactory.coeffIndex_to_Line, tmpLine));
 			}
-			 System.out.println(repair);
+			printRepair(repair);
 			return repair;
 		} else {
 			boolean consistancy = false;
@@ -626,7 +626,6 @@ public class MainEntrance {
 				stmtString = stmtString.replace("(Coeff" + c + "())", "0");
 
 		}
-
 		stmtString = simplifyByCAS(stmtString);
 
 		return stmtString;

@@ -201,6 +201,7 @@ public class ConstraintFactory {
 			//System.err.println(s);
 			// constFunDecls = ConstraintFactory.replaceConst(s);
 		} else {
+			System.out.println("Bad else statement");
 		}
 
 		// add record stmts to source code and collect vars info
@@ -367,7 +368,10 @@ public class ConstraintFactory {
 		return null;
 	}
 
-
+	/*
+	 * Replaces a given normal code statement with a series of coefficients for sketch input
+	 * Example: int x = 5 -> int x = coeff1 * 5 + coeff2 * coeff3
+	 */
 	private static Statement replaceLinearCombination(Statement s) {
 		List<Statement> list = new ArrayList<Statement>();
 		Stack<SketchObject> stmtStack = new Stack<SketchObject>();
@@ -396,7 +400,7 @@ public class ConstraintFactory {
 					// System.err.println(coeffChangeDecl(coeffIndex, new TypePrimitive(1)));
 					// System.err.println(new StmtFunDecl(addCoeffFun(coeffIndex, 1, data.getType())));
 					/*if (coeffIndex == 0) {
-						coeffIndex++;
+						coeffIndex++?;
 						continue;
 					}*/
 					list.add(coeffChangeDecl(coeffIndex, new TypePrimitive(1)));
@@ -834,8 +838,8 @@ public class ConstraintFactory {
 
 	private static Function addCoeffFun(int index, int value, Type type) {
 		Expression condition = new ExprBinary(new ExprVar("coeff" + index + "change"), "==", new ExprConstInt(0), 0);
-		StmtReturn return_1 = new StmtReturn(new ExprConstInt(value), 0);
-		Expression condition_2 = new ExprStar();
+		StmtReturn return_1 = new StmtReturn(new ExprConstInt(value), 0); 
+		Expression condition_2 = new ExprStar();// ??
 		StmtReturn return_2 = new StmtReturn(new ExprConstInt(1 - value), 0);
 		Statement ifst = new StmtIfThen(condition, return_1, null, 0);
 		Statement ifst_2 = new StmtIfThen(condition_2, return_2, null, 0);
@@ -1339,7 +1343,7 @@ public class ConstraintFactory {
 		// constrain on # of change
 		Expression sumOfConstxchange = new ExprVar("const" + 0 + "change");
 		// minimize cost statement
-		stmts.add(new StmtMinimize(new ExprVar("SemanticDistance+5*SyntacticDistance"), true));
+		stmts.add(new StmtMinimize(new ExprVar("SemanticDistance+2*SyntacticDistance"), true));
 
 		// stmts.add(new StmtMinimize(new ExprVar("HammingDistance"), true));
 

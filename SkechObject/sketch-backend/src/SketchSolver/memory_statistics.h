@@ -2,10 +2,10 @@
 #define __MEMORY_STATISTICS_H_
 
 
-#include <cassert>
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #if defined (__linux)
 #include <sys/user.h>
