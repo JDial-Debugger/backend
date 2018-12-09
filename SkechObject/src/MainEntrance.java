@@ -108,12 +108,14 @@ public class MainEntrance {
 		//System.err.println("trace is " + root.getTraces().toString());
 		code = code.replace("\\n", "\n");
 		code = code.replace("\\t", "\t");
-	//	System.out.println("code");
-	//	System.out.println("--------------------");
+		
+		//System.out.println("code");
+		//System.out.println("--------------------");
 		//System.out.println(code);
 
 		ANTLRInputStream input = new ANTLRInputStream(code);
 		Function function = (Function) javaCompile(input, targetFunc);
+		System.out.println("Function: " + function);
 		// rp added
 		CFG cfg = new CFG(function);
 		cfg.printCFG();

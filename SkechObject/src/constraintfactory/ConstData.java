@@ -5,7 +5,10 @@ import java.util.List;
 
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
-
+/**
+ * TODO Document this
+ *
+ */
 public class ConstData {
 	private Type type;
 	private List<SketchObject> children;
