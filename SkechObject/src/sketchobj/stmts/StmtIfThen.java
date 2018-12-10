@@ -18,7 +18,9 @@ import sketchobj.expr.ExprFunCall;
 import sketchobj.expr.Expression;
 
 public class StmtIfThen extends Statement {
+	//condition of the if statement
 	private Expression cond;
+	//cons: then block | alt: else block
 	private Statement cons, alt;
 	private boolean isSingleFunCall = false;
 	private boolean isSingleVarAssign = false;
@@ -220,6 +222,9 @@ public class StmtIfThen extends Statement {
 			externalFuncNames = alt.extractExternalFuncs(externalFuncNames);
 		return externalFuncNames ;
 	}
+	/**
+	 * @param index the coeff # to start on
+	 */
 	@Override
 	public ConstData replaceLinearCombination(int index) {
 		List<SketchObject> toAdd = new ArrayList<SketchObject>();

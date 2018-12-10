@@ -375,18 +375,13 @@ public class ConstraintFactory {
 	private static Statement replaceLinearCombination(Statement s) {
 		List<Statement> list = new ArrayList<Statement>();
 		Stack<SketchObject> stmtStack = new Stack<SketchObject>();
-		//int coeffIndex = 0;
 		stmtStack.push(s);
-		//int level = 0;
+		//iterates through each statement contained in @param s
 		while (!stmtStack.empty()) {
+			//current expression to try and coeffs to
 			SketchObject target = stmtStack.pop();
-			//if (frozenStmt.contains(target))
-				//continue;
 			ConstData data = null;
-			/*System.err.println("coeffIndex is: " + coeffIndex);
-			System.err.println("target is: ");
-			System.err.println(target);
-			System.err.println("----------------------------------");*/
+			//for our current expression/stmt held in target, get each variable/const in target
 			if (ConstraintFactory.sign_limited_range) {
 				data = target.replaceLinearCombination(coeffIndex, ConstraintFactory.repair_range);
 			} else {
@@ -394,15 +389,8 @@ public class ConstraintFactory {
 			}
 
 			if (data.getType() != null) {
-				//System.err.println("primaryIndex is: " + data.getPrimaryCoeffIndex());
+				
 				while (coeffIndex <= data.getPrimaryCoeffIndex()) {
-					// System.err.println("case1");
-					// System.err.println(coeffChangeDecl(coeffIndex, new TypePrimitive(1)));
-					// System.err.println(new StmtFunDecl(addCoeffFun(coeffIndex, 1, data.getType())));
-					/*if (coeffIndex == 0) {
-						coeffIndex++?;
-						continue;
-					}*/
 					list.add(coeffChangeDecl(coeffIndex, new TypePrimitive(1)));
 					list.add(new StmtFunDecl(addCoeffFun(coeffIndex, 1, data.getType())));
 					coeffIndex_to_Line.put(coeffIndex, data.getOriline());

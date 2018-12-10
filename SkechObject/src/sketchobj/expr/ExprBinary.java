@@ -447,24 +447,24 @@ public class ExprBinary extends Expression {
 			this.setAtom(false);
 
 	}
-
+	/**
+	 * @param index the current coeff #
+	 **/
 	@Override
 	public ConstData replaceLinearCombination(int index) {
-		// System.out.println(this);
-		// System.out.println(this.getCtx());
 		if (this.isBoolean()) {
 			System.err.println("is boolean");
 			Integer primaryIndex = -1;
 			if (this.op == 8 || this.op == 9 || this.op == 10 || this.op == 11 || this.op == 12 || this.op == 13) {
-				this.left = new ExprBinary(this.left, "-", this.right,this.lineNumber);
-				this.right = new ExprConstInt(0);
-				this.left.setCtx(this.getCtx());
-				this.left.setT(new TypePrimitive(4));
+		//		this.left = new ExprBinary(this.left, "-", this.right,this.lineNumber);
+		//		this.right = new ExprConstInt(0);
+		//		this.left.setCtx(this.getCtx());
+		//		this.left.setT(new TypePrimitive(4));
 				this.left = new ExprBinary(this.left, "+", new ExprBinary(new ExprFunCall("Coeff" + index), "*",
 					new ExprFunCall("Coeff" + (index + 1), new ArrayList<Expression>()), this.lineNumber), this.lineNumber);
 				//primaryIndex = index;
 				index += 2;
-				left.setCtx(this.getCtx());
+				this.left.setCtx(this.getCtx());
 				this.left.setT(new TypePrimitive(4));
 				List<SketchObject> toAdd = new ArrayList<SketchObject>();
 				System.err.println("case 1 return");

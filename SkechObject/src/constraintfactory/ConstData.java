@@ -7,7 +7,7 @@ import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
 /**
  * TODO Document this
- *
+ * For a given statement/expression, represents each individual variable/constant
  */
 public class ConstData {
 	private Type type;
@@ -21,7 +21,16 @@ public class ConstData {
 	private List<String> liveVarsNameSet;
 	private Integer primaryCoeffIndex;
 	private boolean ifLC;
-	
+	/** 
+	 * 
+	 * @param type TODO
+	 * @param children 
+	 * @param index current coeff #
+	 * @param value
+	 * @param name
+	 * @param line the line number the parent of children is on
+	 * @param isc
+	 */
 	@SuppressWarnings("unchecked")
 	public ConstData(Type type, @SuppressWarnings("rawtypes") List children, int index, int value, String name, int line, boolean isc){
 		this.setType(type);
@@ -41,7 +50,19 @@ public class ConstData {
 	public ConstData(int index2, String string, int line) {
 		this(null,new ArrayList<SketchObject>(),index2,0,string,line,false);
 	}
-
+	/** 
+	 * 
+	 * @param t TODO: not sure
+	 * @param toAdd 
+	 * @param index2
+	 * @param i
+	 * @param name
+	 * @param lineNumber
+	 * @param liveVarsIndexSet2
+	 * @param liveVarsNameSet2
+	 * @param primaryCoeffIndex
+	 * @param ifLC
+	 */
 	public ConstData(Type t, List<SketchObject> toAdd, int index2, int i, String name, int lineNumber,
 			List<Integer> liveVarsIndexSet2, List<String> liveVarsNameSet2, Integer primaryCoeffIndex, boolean ifLC) {
 		this.setType(t);

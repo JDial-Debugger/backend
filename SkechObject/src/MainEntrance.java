@@ -115,7 +115,7 @@ public class MainEntrance {
 
 		ANTLRInputStream input = new ANTLRInputStream(code);
 		Function function = (Function) javaCompile(input, targetFunc);
-		System.out.println("Function: " + function);
+		//System.out.println("Function: " + function);
 		// rp added
 		CFG cfg = new CFG(function);
 		cfg.printCFG();
@@ -563,7 +563,7 @@ public class MainEntrance {
 	}
 	private void printRepair(Map<Integer, String> repair) {
 		for(int k : repair.keySet() ) {
-			System.out.println(k + "||||" + repair.get(k));
+			System.out.println(k + "||||" + repair.get(k).replaceAll("\n", ""));
 			
 		}
 	}
