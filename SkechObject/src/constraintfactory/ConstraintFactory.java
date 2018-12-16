@@ -174,19 +174,16 @@ public class ConstraintFactory {
 		// least cost rewrite
 
 		Statement s = source;
+		System.out.println("SOURCE: " + source);
 		Statement coeffFunDecls = null;
 
 		String resv_funcs = ReservedFuncs();
 
-//		System.out.println(source);
 
 		buildContext((StmtBlock) source);
-//		System.out.println(source.toString_Context());
 
 		// replace all constants in source code and add coeffchange declaration
 		if (!ConstraintFactory.sign_limited_range) {
-			//System.err.println("s1 is: ");
-			//System.err.println(s);
 			coeffFunDecls = ConstraintFactory.replaceLinearCombination(s);
 			if (Global.prime_mod) {
 				dupPrimes(s);
@@ -197,9 +194,6 @@ public class ConstraintFactory {
 				}
 				buildContext((StmtBlock) s);
 			}
-			//System.err.println("s2 is: ");
-			//System.err.println(s);
-			// constFunDecls = ConstraintFactory.replaceConst(s);
 		} else {
 			System.out.println("Bad else statement");
 		}
@@ -208,8 +202,6 @@ public class ConstraintFactory {
 		Global.curFunc = ConstraintFactory.fh.getName();
 
 		Map<String, Type> vars = ConstraintFactory.addRecordStmt((StmtBlock) s);
-		//System.err.println("s3 is: ");
-		//System.err.println(s);
 		ConstraintFactory.namesToType = vars;
 		List<String> varsNames = new ArrayList<String>(vars.keySet());
 		for (String str : varsNames) {
@@ -275,12 +267,9 @@ public class ConstraintFactory {
 		//stmts.add(globalVarDecls);
 
 		// add declare of const functions
-		//System.err.println("coeffFunDecls is " + coeffFunDecls.toString());
 		stmts.add(coeffFunDecls);
-		//System.err.println("------------------------ ");
 		if (coeffFunDecls1 != null)
 			stmts.add(coeffFunDecls1);
-//System.out.println("VAR TYPES:" + varsTypes);
 		stmts.add(
 				new StmtBlock(varArrayDecl("line", length, new TypePrimitive(4)), varArrayDecls(varsNames, varsTypes,
 						f.getName())));
@@ -289,7 +278,6 @@ public class ConstraintFactory {
 			//stmts.add(varArrayDecl("stack", length, new TypePrimitive(4)));
 
 		// add final state
-		// System.out.println(finalState.getOrdered_locals().size());
 		if (!Global.test_mod)
 			for (String v : finalState.getOrdered_locals()) {
 				// added
@@ -324,6 +312,7 @@ public class ConstraintFactory {
 
 		String tmp1 = block.toString();
 		String tmp2 = f.toString();
+		System.out.println(tmp2);
 		// args of getAugFunctions() need change
 		String tmp3 = "";
 		if (Global.inc_mod) {
@@ -339,12 +328,6 @@ public class ConstraintFactory {
 		} else {
 			tmp3 = constraintFunction().toString();
 		}
-//		System.out.println("tmp1: ");
-//		System.err.println(tmp1);
-		// System.out.println("tmp2: ");
-		// System.err.println(tmp2);
-		// System.out.println("tmp3: ");
-		// System.err.println(tmp3);
 		return tmp1 + tmp2 + st + tmp3;
 	}
 
