@@ -96,7 +96,10 @@ public class StmtReturn extends Statement
 
 	@Override
 	public ConstData replaceConst_Exclude_This(int index, List<Integer> repair_range) {
-		return new ConstData(null, new ArrayList<SketchObject>(), index, 0, null,this.getLineNumber());
+		List<SketchObject> toAdd = new ArrayList<SketchObject>();
+		toAdd.add(value);
+		
+		return new ConstData(null, toAdd, index, 0, null,this.getLineNumber());
 	}
 
 	@Override

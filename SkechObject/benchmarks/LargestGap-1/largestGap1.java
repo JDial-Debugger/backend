@@ -11,8 +11,8 @@ public class Main
          if(max < a[i]) max = a[i];
          if(min > a[i]) min = a[i];
       }
-  return max-min;
-}
+	  return max-min;
+	}
 
 	public static void main(String[] args)
 	{
