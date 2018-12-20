@@ -246,23 +246,39 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 					.variableDeclarator().get(0).children.size()==1){
 				types.add(t);
 				inits.add(null);
-				return new StmtVarDecl(types, names, inits, ctx.start.getLine());
+				StmtVarDecl ret = new StmtVarDecl(types, names, inits, ctx.start.getLine());
+				return ret;
 			}
 			ExprArrayInit ei = (ExprArrayInit)visit(ctx.localVariableDeclarationStatement().localVariableDeclaration().variableDeclaratorList()
 					.variableDeclarator().get(0).variableInitializer());
 			if(ei.length == null){
 				types.add(t);
 				inits.add(ei);
-				return new StmtVarDecl(types, names, inits, ctx.start.getLine());
+				//In java array inits are: int[] arr = {4, 32, 1};
+				//while in sketch they are: int[3] arr = {4, 32, 1};
+				//following lines change that TODO: make this work for multi dimensional arrays, or just fix the root of the problem when a type object gets created
+				for(int i = 0; i < types.size(); ++i) {
+					if(types.get(i) instanceof TypeArray && i < inits.size() && inits.get(i) instanceof ExprArrayInit) {
+						int arrSize = ((ExprArrayInit) inits.get(i)).getElements().size();
+						ExprConstInt arrSizeExpr = ExprConstInt.createConstant(arrSize);
+						((TypeArray) types.get(i)).setLenghth( arrSizeExpr);
+					}
+				}
+				StmtVarDecl ret = new StmtVarDecl(types, names, inits, ctx.start.getLine());
+				return ret;
 			}else{
 				((TypeArray)t).setLenghth(ei.length);
 				inits.add(null);
 				types.add(t);
-				return new StmtVarDecl(types, names, inits, ctx.start.getLine());
+				StmtVarDecl ret = new StmtVarDecl(types, names, inits, ctx.start.getLine());
+				System.out.println("VAR DECL3: " + ret.toString());
+				return ret;
 			}
 		}
 
-		return new StmtVarDecl(types, names, inits, ctx.start.getLine());
+		StmtVarDecl ret = new StmtVarDecl(types, names, inits, ctx.start.getLine());
+		return ret;
+		
 	}
 
 	@Override

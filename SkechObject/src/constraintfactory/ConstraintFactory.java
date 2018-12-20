@@ -169,7 +169,6 @@ public class ConstraintFactory {
 		// least cost rewrite
 
 		Statement s = source;
-		System.out.println("SOURCE: " + source);
 		Statement coeffFunDecls = null;
 
 		String resv_funcs = ReservedFuncs();
@@ -313,7 +312,6 @@ public class ConstraintFactory {
 
 		String tmp1 = block.toString();
 		String tmp2 = f.toString();
-		System.out.println(tmp2);
 		// args of getAugFunctions() need change
 		String tmp3 = "";
 		if (Global.inc_mod) {
