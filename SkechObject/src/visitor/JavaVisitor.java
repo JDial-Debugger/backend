@@ -22,6 +22,7 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	public JavaVisitor(String targetFunc) {
 		this.targetFunc = targetFunc;
 	}
+	
 
 	/**
 	 * compilationUnit : packageDeclaration? importDeclaration* typeDeclaration*
@@ -220,6 +221,20 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 		}
 		return new StmtBlock(list);
 	}
+	
+	/**
+	 * Completely ignores rhs of assert statement, and puts the lhs expression in sketch format:
+	 * assert( <expr> ); by using the sketchobj ExporFuncCall
+	 */
+	@Override
+	public SketchObject visitAssertStatement(simpleJavaParser.AssertStatementContext ctx) {
+		List<Expression> params = new ArrayList<Expression>();
+		//get lhs
+		params.add((Expression) visit(ctx.expression().get(0)));
+		ExprFunCall assertCall = new ExprFunCall("assert", params);
+		return new StmtExpr(assertCall, ctx.start.getLine());
+		
+	}
 
 	/** localVariableDeclarationStatement **/
 	@Override
@@ -272,7 +287,6 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 				inits.add(null);
 				types.add(t);
 				StmtVarDecl ret = new StmtVarDecl(types, names, inits, ctx.start.getLine());
-				System.out.println("VAR DECL3: " + ret.toString());
 				return ret;
 			}
 		}
@@ -659,9 +673,9 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	}
 
 	@Override
-	public Expression visitExpandMulExpr(simpleJavaParser.ExpandMulExprContext ctx) {
-		return new ExprBinary((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
-				(Expression) visit(ctx.getChild(2)), ctx.getStart().getLine());
+public Expression visitExpandMulExpr(simpleJavaParser.ExpandMulExprContext ctx) {
+	return new ExprBinary((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
+			(Expression) visit(ctx.getChild(2)), ctx.getStart().getLine());
 	}
 
 	@Override

@@ -29,17 +29,25 @@ public class JsonVisitor extends jsonBaseVisitor<JsonNode> {
 	public Traces visitTraces(jsonParser.TracesContext ctx) {
 		List<Trace> t = new ArrayList<Trace>();
 		for(int i = 0; i < ctx.trace().size(); i ++){
-			t.add((Trace) visit(ctx.trace(i)));
+			Trace newTrace = (Trace) visit(ctx.trace(i));
+			if(newTrace != null) {
+				t.add((Trace) visit(ctx.trace(i)));
+			}
 		}
 		return new Traces(t);
 	}
 
 	@Override
 	public Trace visitTrace(jsonParser.TraceContext ctx) {
-		return new Trace((String) ctx.stdout().STRING().getText().replace("\"", ""), (String) ctx.event().STRING().getText().replace("\"", ""),
+		Trace ret = new Trace((String) ctx.stdout().STRING().getText().replace("\"", ""), (String) ctx.event().STRING().getText().replace("\"", ""),
 				(Integer) Integer.parseInt(ctx.line().NUMBER().getText()), (RenderStack) visit(ctx.stack_to_render().stack()),
 				(VarList) visit(ctx.globals()), (VarList) visit(ctx.ordered_globals()),
 				(String) ctx.func_name().STRING().getText().replace("\"", ""), (VarList) visit(ctx.heap()));
+		//hacky fix, for some reason when assertions in code, we get a starting function of clinit which skrews things up
+		if(ret.getFuncname().contains("<clinit>")) {
+			return null;
+		}
+		return ret;
 	}
 
 	@Override

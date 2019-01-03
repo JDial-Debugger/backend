@@ -15,6 +15,7 @@ public class AuxMethods {
 		List<Expression> result = new ArrayList<>();
 		
 		List<Trace> tracelist = traces.getTraces();
+		//the function call of the function containing the correction
 		Trace callTrace = null;
 		
 		//added to handle recursion, keep searching from back until Funcname changes
@@ -33,7 +34,8 @@ public class AuxMethods {
 				break;
 			}
 		}*/
-		
+		//goes back thru each trace from point of correction to beginning
+		//and finds the trace with that calls the function that the correction is in
 		for(int i = targetindex; i >=0; i--){
 			if(tracelist.get(i).getEvent().equals("call") && 
 					tracelist.get(i).getFuncname().equals(targetName)){

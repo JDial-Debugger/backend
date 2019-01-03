@@ -67,6 +67,12 @@ public class MainEntrance {
 	}
 
 	public MainEntrance(String json, String correctTrace, int indexOfCorrectTrace, int mod) {
+		//if the code contains assert calls, traceprinter will add these 
+		//assertionsDisabled variables that don't follow json syntax
+		//TODO figure out fix for traceprinter so we don't have to use this hacky workaround
+		json = json.replace("\"Main.$assertionsDisabled\":false", "");
+		correctTrace = correctTrace.replace("\"Main.$assertionsDisabled\":false", "");
+		
 		this.originalTrace = json;
 		this.manipulation = correctTrace;
 		this.indexOfCorrectTrace = indexOfCorrectTrace;
