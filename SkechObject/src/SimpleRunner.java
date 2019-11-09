@@ -7,7 +7,12 @@ public class SimpleRunner {
 		String oriTraces = new Scanner(new File("trace063290802")).useDelimiter("\\Z").next();
 		String correctTrace = new Scanner(new File("point552300905")).useDelimiter("\\Z").next();
 		MainEntrance me = new MainEntrance(oriTraces,correctTrace,8);
-		String res = me.Synthesize(true).toString();
-		System.out.println(res);
+		try {
+			String res = me.Synthesize(true).toString();
+			System.out.println(res);
+			
+		} catch (SketchExecException ex) {
+			System.out.println(ex);
+		}
 	}
 }

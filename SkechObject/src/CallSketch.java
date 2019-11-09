@@ -19,11 +19,13 @@ public class CallSketch {
 	/**
 	 * Calls Sketch executable on given input s and parses the output from sketch
 	 * Create hashmap of coefIdx -> boolean
-	 * @param s the text input into sketch
+	 * @param sketchInput the text input into sketch
 	 * @return Maps from a coefficient number to a value, should only contain non-zero coefficients
 	 * @throws InterruptedException
+	 * @throws SketchExecException - If the sketch executable has an error processing the input
 	 */
-	static public Map<Integer, Integer> CallByString(String s) throws InterruptedException {
+	static public Map<Integer, Integer> CallByString(String sketchInput) 
+			throws InterruptedException, SketchExecException {
 
 		File dir = new File("/vagrant/backend/suggest/tmp");
 		dir.mkdirs();
@@ -34,7 +36,7 @@ public class CallSketch {
 		List<Integer> unchangedIndex = new ArrayList<Integer>();
 		try {
 			tmp.createNewFile();
-			WriteStringToFile(tmp, s);
+			WriteStringToFile(tmp, sketchInput);
 			String[] envp = new String[] {"PATH=$PATH:/lib"};
 			String backendDIR = "/vagrant/backend/suggest/JDial-debugger/SkechObject/";
 			String suggestDIR = "/vagrant/backend/suggest/";
@@ -61,7 +63,12 @@ public class CallSketch {
 			int checkIndex = -1;
 			boolean checking = false;
 			while(scnr.hasNextLine()) {
+				//Check if sketch errored out for some reason
 				line = scnr.nextLine();
+				//Check if sketch encountered an error
+				if (line.contains("ERROR] [SKETCH]")) {
+					throw new SketchExecException(line);
+				}
 				if (line.length() > 25 && line.substring(5, 19).equals("glblInit_coeff")) {
 					checkIndex = extractInt(line).get(0); // get X
 					checking = true;
@@ -76,7 +83,6 @@ public class CallSketch {
 							//if its 0, don't bother putting in entry, if we check a coef later
 							//and its not in the hashmap, then we know its 0
 							if(initVal == 0) {
-								//System.out.println("Coeff " + checkIndex + " is unchanged");
 								continue;
 							} else {
 								coefToInitVal.put(checkIndex, initVal);

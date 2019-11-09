@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.ArrayList;;
 public class MedianPrintSimExtra1 {
-	public static void main(String[] args) throws FileNotFoundException, InterruptedException{
+	public static void main(String[] args) throws FileNotFoundException, InterruptedException, SketchExecException{
 		String oriTraces = new Scanner(new File("benchmarks/median-print-sim-extra1/median-test1")).useDelimiter("\\Z").next();
 		String correctTrace = new Scanner(new File("benchmarks/median-print-sim-extra1/median-target1")).useDelimiter("\\Z").next();
 		MainEntrance me = new MainEntrance(oriTraces,correctTrace,13);

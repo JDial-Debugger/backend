@@ -88,15 +88,15 @@ public class MainEntrance {
 	public void addOriTrace (String ori){ this.ori_trace.add(ori);}
 	public void addTargetTrace (String target){ this.target_trace.add(target);}
 
-	public Map<Integer, String> Synthesize() throws InterruptedException {
+	public Map<Integer, String> Synthesize() throws InterruptedException, SketchExecException {
 		return this.Synthesize(false, false);
 	}
 
-	public Map<Integer, String> Synthesize(boolean useLC) throws InterruptedException {
+	public Map<Integer, String> Synthesize(boolean useLC) throws InterruptedException, SketchExecException {
 		return this.Synthesize(useLC, false);
 	}
 
-	public Map<Integer, String> Synthesize(boolean useLC, boolean oneLine) throws InterruptedException {
+	public Map<Integer, String> Synthesize(boolean useLC, boolean oneLine) throws InterruptedException, SketchExecException {
 		this.targetFunc = extractFuncName(manipulation);
 		this.root = jsonRootCompile(this.originalTrace);
 		// 11/28
@@ -578,7 +578,8 @@ public class MainEntrance {
 		}
 	}
 	public Map<Integer, String> actualSynthesize(boolean useLC, String script, ConstraintFactory cf,
-			Statement targetStmt) throws InterruptedException {
+			Statement targetStmt) 
+			throws InterruptedException, SketchExecException {
 
 		List<ExternalFunction> externalFuncs = ConstraintFactory.externalFuncs;
 	//	 System.out.println(script);

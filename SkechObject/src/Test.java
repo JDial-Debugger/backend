@@ -37,7 +37,7 @@ import java.math.*;
 public class Test {
 
 	@org.junit.Test
-	public void testSimpleCal() throws FileNotFoundException, InterruptedException {
+	public void testSimpleCal() throws FileNotFoundException, InterruptedException, SketchExecException {
 		String oriTraces = new Scanner(new File("benchmarks/simpleCal/errortrace")).useDelimiter("\\Z").next();
 		Root root = MainEntrance.jsonRootCompile(oriTraces);
 		String code = root.getCode().getCode();
@@ -51,7 +51,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testSumupExternal_2() throws FileNotFoundException, InterruptedException {
+	public void testSumupExternal_2() throws FileNotFoundException, InterruptedException, SketchExecException {
 		String oriTraces = new Scanner(new File("benchmarks/sumup_external_2/errortrace")).useDelimiter("\\Z").next();
 		String correctTrace = new Scanner(new File("benchmarks/sumup_external_2/correction")).useDelimiter("\\Z")
 				.next();
@@ -62,7 +62,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testSumupExternal() throws FileNotFoundException, InterruptedException {
+	public void testSumupExternal() throws FileNotFoundException, InterruptedException, SketchExecException {
 		String oriTraces = new Scanner(new File("benchmarks/sumup_external/errortrace")).useDelimiter("\\Z").next();
 		String correctTrace = new Scanner(new File("benchmarks/sumup_external/correction")).useDelimiter("\\Z").next();
 
@@ -72,7 +72,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testRange() throws FileNotFoundException, InterruptedException {
+	public void testRange() throws FileNotFoundException, InterruptedException, SketchExecException {
 		String oriTraces = new Scanner(new File("benchmarks/sumup/oritrace")).useDelimiter("\\Z").next();
 		String correctTrace = new Scanner(new File("benchmarks/sumup/correction")).useDelimiter("\\Z").next();
 		List<Integer> range = new ArrayList<Integer>();
@@ -84,7 +84,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testSumUp() throws FileNotFoundException, InterruptedException {
+	public void testSumUp() throws FileNotFoundException, InterruptedException, SketchExecException {
 		int index = 22; // 10 | 22
 		String oriTraces = new Scanner(new File("benchmarks/sumup/oritrace")).useDelimiter("\\Z").next();
 		String correctTrace = new Scanner(new File("benchmarks/sumup/correction_index_" + index)).useDelimiter("\\Z")
@@ -126,7 +126,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testMainEntrance() throws FileNotFoundException, InterruptedException {
+	public void testMainEntrance() throws FileNotFoundException, InterruptedException, SketchExecException {
 		String oriTraces = new Scanner(new File("src/jsonexample")).useDelimiter("\\Z").next();
 		String correctTrace = new Scanner(new File("src/traceexample")).useDelimiter("\\Z").next();
 
@@ -185,7 +185,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testMedian1() throws FileNotFoundException, InterruptedException {
+	public void testMedian1() throws FileNotFoundException, InterruptedException, SketchExecException {
 		String oriTraces = new Scanner(new File("benchmarks/median1/median-test1")).useDelimiter("\\Z").next();
 		String correctTrace = new Scanner(new File("benchmarks/median1/median-target1")).useDelimiter("\\Z").next();
 		MainEntrance me = new MainEntrance(oriTraces, correctTrace, 8);
@@ -194,7 +194,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testMax3() throws FileNotFoundException, InterruptedException {
+	public void testMax3() throws FileNotFoundException, InterruptedException, SketchExecException {
 		String oriTraces = new Scanner(new File("benchmarks/max3/max3-test")).useDelimiter("\\Z").next();
 		String correctTrace = new Scanner(new File("benchmarks/max3/max3-target")).useDelimiter("\\Z").next();
 		MainEntrance me = new MainEntrance(oriTraces, correctTrace, 8);
@@ -203,7 +203,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testFindC() throws FileNotFoundException, InterruptedException {
+	public void testFindC() throws FileNotFoundException, InterruptedException, SketchExecException {
 		int index = 8;
 		String oriTraces = new Scanner(new File("benchmarks/FindC/FindC-test")).useDelimiter("\\Z").next();
 		String correctTrace = new Scanner(new File("benchmarks/FindC/FindC-target")).useDelimiter("\\Z").next();
@@ -212,7 +212,7 @@ public class Test {
 		System.out.println(res);
 	}
 	@org.junit.Test
-	public void testlargestGap1() throws FileNotFoundException, InterruptedException {
+	public void testlargestGap1() throws FileNotFoundException, InterruptedException, SketchExecException {
 		int index = 12;
 		String oriTraces = new Scanner(new File("benchmarks/LargestGap-1/largestGap1-test")).useDelimiter("\\Z").next();
 		String correctTrace = new Scanner(new File("benchmarks/LargestGap-1/largestGap1-target")).useDelimiter("\\Z").next();
@@ -221,7 +221,7 @@ public class Test {
 		System.out.println(res);
 	}
 	@org.junit.Test
-	public void testsubsum() throws FileNotFoundException, InterruptedException {
+	public void testsubsum() throws FileNotFoundException, InterruptedException, SketchExecException {
 		int index = 40;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/subsum/test")).useDelimiter("\\Z").next();
@@ -232,7 +232,7 @@ public class Test {
 	}
 	
 	@org.junit.Test
-	public void testtmp() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmp() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 11;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmptest/test")).useDelimiter("\\Z").next();
@@ -243,7 +243,7 @@ public class Test {
 	}
 	
 	@org.junit.Test
-	public void testtmpIO() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmpIO() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 11;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmptest/test")).useDelimiter("\\Z").next();
@@ -257,7 +257,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testtmp1() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmp1() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 5;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmptest1/test")).useDelimiter("\\Z").next();
@@ -268,7 +268,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testtmp3() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmp3() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 4;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmptest2/test")).useDelimiter("\\Z").next();
@@ -279,7 +279,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testtmpRe() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmpRe() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 7;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmptestRe/test")).useDelimiter("\\Z").next();
@@ -290,7 +290,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testtmpRe1() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmpRe1() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 17;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmptestRe/test_re")).useDelimiter("\\Z").next();
@@ -301,7 +301,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testtmpEZ() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmpEZ() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 4;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmptestEZ/test")).useDelimiter("\\Z").next();
@@ -313,7 +313,7 @@ public class Test {
 
 
 	@org.junit.Test
-	public void testtmpBig() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmpBig() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 5;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmptestBig/test")).useDelimiter("\\Z").next();
@@ -324,7 +324,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testtmpBig1() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmpBig1() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 6;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmptestBig1/test")).useDelimiter("\\Z").next();
@@ -335,7 +335,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testtmpIfAndFor() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmpIfAndFor() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 18;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmpifandfor/test")).useDelimiter("\\Z").next();
@@ -346,7 +346,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testtmpSimpleRe() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmpSimpleRe() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 22;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmpSimpleRe/test")).useDelimiter("\\Z").next();
@@ -357,7 +357,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testtmpLargestGap() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmpLargestGap() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 15;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmpLargestGap/test")).useDelimiter("\\Z").next();
@@ -368,7 +368,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testtmpMax() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmpMax() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 9;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmpMax/test")).useDelimiter("\\Z").next();
@@ -379,7 +379,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testtmpReWithoutPrint() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmpReWithoutPrint() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 10;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmpReWithoutPrint/test")).useDelimiter("\\Z").next();
@@ -390,7 +390,7 @@ public class Test {
 	}
 
 	@org.junit.Test
-	public void testtmpReStack() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testtmpReStack() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 16;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/tmptestReStack/test")).useDelimiter("\\Z").next();
@@ -402,7 +402,7 @@ public class Test {
 	
 	// new1
 	@org.junit.Test
-	public void testnew1() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testnew1() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 6;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/new1/test")).useDelimiter("\\Z").next();
@@ -414,7 +414,7 @@ public class Test {
 
 	// new2
 	@org.junit.Test
-	public void testnew2() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testnew2() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 11;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/new2/test")).useDelimiter("\\Z").next();
@@ -426,7 +426,7 @@ public class Test {
 	
 	// new3
 	@org.junit.Test
-	public void testnew3() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testnew3() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 7;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/LargestGap-1/largestGap1-test")).useDelimiter("\\Z").next();
@@ -439,7 +439,7 @@ public class Test {
 	}
 	
 	@org.junit.Test
-	public void testmulia() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testmulia() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 19;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/multIA/test1")).useDelimiter("\\Z").next();
@@ -452,7 +452,7 @@ public class Test {
 	}
 	
 	@org.junit.Test
-	public void testiterPower1() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testiterPower1() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 26;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/iterPower-1/test1")).useDelimiter("\\Z").next();
@@ -465,7 +465,7 @@ public class Test {
 	}
 	
 	@org.junit.Test
-	public void testiterPower2() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testiterPower2() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 26;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/iterPower-2/test1")).useDelimiter("\\Z").next();
@@ -478,7 +478,7 @@ public class Test {
 	}
 	
 	@org.junit.Test
-	public void testlargestgap1() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testlargestgap1() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 26;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/LargestGap-1/test2")).useDelimiter("\\Z").next();
@@ -491,7 +491,7 @@ public class Test {
 	}
 	
 	@org.junit.Test
-	public void testlargestgap2() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testlargestgap2() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 26;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/LargestGap-2/test1")).useDelimiter("\\Z").next();
@@ -504,7 +504,7 @@ public class Test {
 	}
 	
 	@org.junit.Test
-	public void testlargestgap3() throws FileNotFoundException, InterruptedException, ScriptException {
+	public void testlargestgap3() throws FileNotFoundException, InterruptedException, SketchExecException, ScriptException {
 		int index = 26;
 		String folder = "";
 		String oriTraces = new Scanner(new File("benchmarks/LargestGap-3/test1")).useDelimiter("\\Z").next();
