@@ -69,7 +69,6 @@ public class MainEntrance {
 	public MainEntrance(String json, String correctTrace, int indexOfCorrectTrace, int mod) {
 		//if the code contains assert calls, traceprinter will add these 
 		//assertionsDisabled variables that don't follow json syntax
-		//TODO figure out fix for traceprinter so we don't have to use this hacky workaround
 		json = json.replace("\"Main.$assertionsDisabled\":false", "");
 		correctTrace = correctTrace.replace("\"Main.$assertionsDisabled\":false", "");
 		
@@ -105,29 +104,15 @@ public class MainEntrance {
 		if (oneLine)
 			mod = 1;
 
-		// added, this is for largestGap benchmarks since we don't have the index
-		// for largestGap1 
-		//this.indexOfCorrectTrace = root.getTraces().getLength() - 2;
-		// for largestGap2 and largestGap3
-		//this.indexOfCorrectTrace = root.getTraces().getLength() - 5;
 		List<Expression> args = AuxMethods.extractArguments(root.getTraces(), indexOfCorrectTrace,
 				this.targetFunc);
-		//System.err.println("trace length " + root.getTraces().getLength());
 
-		//System.err.println("args " + args);
 		this.traces = root.getTraces().findSubTraces(this.targetFunc, indexOfCorrectTrace);
-		//System.err.println("trace is " + root.getTraces().toString());
 		code = code.replace("\\n", "\n");
 		code = code.replace("\\t", "\t");
 		
-		//System.out.println("code");
-		//System.out.println("--------------------");
-		//System.out.println(code);
-
 		ANTLRInputStream input = new ANTLRInputStream(code);
 		Function function = (Function) javaCompile(input, targetFunc);
-		//System.out.println("Function: " + function);
-		// rp added
 		CFG cfg = new CFG(function);
 		cfg.printCFG();
 		Map<Integer, Set<String>> facts = cfg.dataflow();
@@ -146,27 +131,7 @@ public class MainEntrance {
 				otherFunctions.add(this.func_name_to_code.get(curName));
 			}
 		}
-	//	System.out.println("function");
-	//	System.out.println("--------------------");
-//		System.out.println(function);
 
-		//added 11/18
-		/*funtions.put(targetFunc, "");
-		while (JavaVisitor.methodNames.size() != 0)
-		{
-			ANTLRInputStream input1 = new ANTLRInputStream(code);
-			String name = JavaVisitor.methodNames.poll();
-			if(funtions.containsKey(name))
-				continue;
-
-			Function function1 = (Function)javaCompile(input1, name);
-			System.out.println(function1);
-			funtions.put(name, function1.toString());
-		}*/
-		//added 11/18
-
-		// added
-		// System.out.println("--------------------");
 		boolean prime_mod = global.Global.prime_mod;
 		boolean rec_mod = global.Global.rec_mod;
 		ConstraintFactory cf = new ConstraintFactory(traces, jsonTraceCompile(manipulation),
@@ -176,20 +141,16 @@ public class MainEntrance {
 		if (this.repair_range != null)
 			cf.setRange(this.repair_range);
 		String script;
-		// if (useLC)
-		//script = cf.getScript_linearCombination(function.getBody(), function.getParames());
-
-		// IOmod
+		
 		if(iomod){
 			for(int i = 0; i < this.ori_trace.size(); i++){
-				//if (i > 0)
-					//indexOfCorrectTrace = this.indexes.get(i - 1);
 				Root addRoot =  jsonRootCompile(ori_trace.get(i));
 				indexOfCorrectTrace = addRoot.getTraces().getLength() - 1;
-				//System.err.println("index: " + indexOfCorrectTrace);
+				
 				Traces addtraces = addRoot.getTraces().findSubTraces(this.targetFunc, indexOfCorrectTrace);
 				cf.addOriTraces(addtraces);
 				cf.addTargetTrace(jsonTraceCompile(this.target_trace.get(i)));
+				
 				Root cur_root = jsonRootCompile(ori_trace.get(i));
 				List<Expression> cur_args = AuxMethods.extractArguments(cur_root.getTraces(), cur_root.getTraces().getLength() - 1,
 						this.targetFunc);
@@ -199,42 +160,19 @@ public class MainEntrance {
 			cf.iomod = true;
 		}
 
-		// added
 		if (rec_mod){
 			script = cf.getScript_linearCombination(function.getBody());
-			//script = cf.getScript_linearCombination(function.getBody(), funtions);
+		} else {
+			script = cf.getScript_linearCombination(function.getBody());
 		}
-		else{
-			script = cf.getScript_linearCombination(function.getBody());}
-		//System.err.println("2--------------------------------------------"); // added
-		//System.err.println(script); // added
-		//System.err.println("2--------------------------------------------"); // added
-
-		// added
 		script = script.replaceAll("External_", "");
-		//if (prime_mod)
-		//	script = tranScript(script);
-		System.err.println("3--------------------------------------------");
-
-		//System.err.println("4--------------------------------------------"); // added
-		//System.err.println(script); // added
-		//System.err.println("4--------------------------------------------"); // added
-
-		//----added
-		//SketchResult resultS = CallSketch.CallByString(script);
-
-		//-----added
-
-		// else
-		// script = cf.getScript(function.getBody());
-		System.err.println("mod is " + mod);
-		if (mod != 2)
+		if (mod != 2) {
 			return this.actualSynthesize(useLC, script, cf, null);
+		}
+		
 		return null;
+		
 	}
-
-	//added 11/19
-
 
 	private void buildFuncNameList() {
 		Root curRoot = jsonRootCompile(this.originalTrace);
