@@ -31,19 +31,19 @@ public class Traces extends JsonNode {
 		this.length = length;
 	}
 
-	public Traces findSubTraces(String targetFunc, int bound) {
+	/**
+	 * Removes all points in the execution trace that are not in the same
+	 * call stack as the point with the given index in the trace list.
+	 * @param targetFunc - the containing function name
+	 * @param bound - the index in the execution trace at which to search
+	 */
+	public void findSubTraces(String targetFunc, int bound) {
 		List<Integer> toRemove = new ArrayList<Integer>();
 		int firstIndex = bound;
 		for (int i = bound; i >= 0; i--) {
-			// adapt for interprocedure
 			if (tracelist.get(i).getFuncname().equals(targetFunc)) {
 				firstIndex = i;
 			}
-			/*if (!tracelist.get(i).getFuncname().equals(targetFunc)) {
-				toRemove.add(i);
-				continue;
-			}*/
-			//chenged
 			if (!tracelist.get(i).getEvent().equals("step_line") || 
 					(i > 0 && tracelist.get(i-1).getEvent().equals("return"))) {
 				toRemove.add(i);
@@ -52,12 +52,11 @@ public class Traces extends JsonNode {
 
 		}
 		for (int i = this.tracelist.size() - 1; i >= 0; i--) {
-			if (toRemove.contains(i)|| i > bound || i < firstIndex){
+			if (toRemove.contains(i) || i > bound || i < firstIndex){
 				tracelist.remove(i);
 			}
 		}
 		this.length = this.tracelist.size();
-		return this;
 	}
 
 	public String toString() {

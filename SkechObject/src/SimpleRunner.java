@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class SimpleRunner {
 	public static void main(String[] args) throws FileNotFoundException, InterruptedException{
-		String oriTraces = new Scanner(new File("trace063290802")).useDelimiter("\\Z").next();
-		String correctTrace = new Scanner(new File("point552300905")).useDelimiter("\\Z").next();
+		String oriTraces = new Scanner(new File("benchmarks/traceBasic")).useDelimiter("\\Z").next();
+		String correctTrace = new Scanner(new File("benchmarks/pointBasic")).useDelimiter("\\Z").next();
 		MainEntrance me = new MainEntrance(oriTraces,correctTrace,8);
 		try {
 			String res = me.Synthesize(true).toString();

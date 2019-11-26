@@ -38,13 +38,32 @@ import org.matheclipse.core.interfaces.IExpr;
 import org.matheclipse.parser.client.SyntaxError;
 import org.matheclipse.parser.client.math.MathException;
 
+/**
+ * An execution trace is a sequence of states that captures the 
+ * state of a program at any point during its execution.
+ * 
+ * MainEntrance represents an entry-point into the backend application.
+ * Given an execution trace, and a manipulation to that execution trace,
+ * will utilize the Sketch Synthesizer by placing constraints on the 
+ * execution trace, to generate modifications for the original source code
+ * that generates the execution trace.
+ *
+ */
 public class MainEntrance {
+	//The original code's execution trace, in JSON form, in opt trace format specified in
+	//https://github.com/pgbovine/OnlinePythonTutor/blob/master/v3/docs/opt-trace-format.md
 	private String originalTrace;
+	//The single execution trace with a revised set of local variables in JSON form, in opt trace format
 	private String manipulation;
+	//The index in the original execution trace that the suggestion corrects
 	private int indexOfCorrectTrace;
 
+	//The root of AST JSON from originalTrace converted to Java objects
 	private Root root;
+	//the original source code
 	private String code;
+	//The function name at the top of the stack frame at the point in the trace at 
+	//which the manipulation occurs (e.g. the enclosing function)
 	private String targetFunc;
 	private List<String> function_names;
 	private Map<String, Function> func_name_to_code;
@@ -59,13 +78,29 @@ public class MainEntrance {
 	public static boolean iomod = false;
 	public List<Integer> indexes = new ArrayList<>();
 
-	//added 11/18
-	private HashMap<String, String> funtions = new HashMap<>();
-
+	/**
+	 * The main entrance to the backend application. Initializes by saving the 
+	 * execution trace, manipulation, and where in the execution trace that manipulation occurs
+	 * @param json - The original execution trace, in raw JSON and in opt trace format specified in
+	 * https://github.com/pgbovine/OnlinePythonTutor/blob/master/v3/docs/opt-trace-format.md
+	 * @param correctTrace - The single execution trace with a revised set of local variables in 
+	 * 						JSON form and in opt trace format
+	 * @param indexOfCorrectTrace - The index in the original execution trace that 
+	 * 								the suggestion corrects
+	 */
 	public MainEntrance(String json, String correctTrace, int indexOfCorrectTrace) {
 		this(json, correctTrace, indexOfCorrectTrace, 0);
 	}
-
+	/**
+	 * 
+	 * @param json - The original execution trace, in raw JSON and in opt trace format specified in
+	 * https://github.com/pgbovine/OnlinePythonTutor/blob/master/v3/docs/opt-trace-format.md
+	 * @param correctTrace - The single execution trace with a revised set of local variables in 
+	 * 						JSON form and in opt trace format
+	 * @param indexOfCorrectTrace - The index in the original execution trace that 
+	 * 								the suggestion corrects
+	 * @param mod - unknown
+	 */
 	public MainEntrance(String json, String correctTrace, int indexOfCorrectTrace, int mod) {
 		//if the code contains assert calls, traceprinter will add these 
 		//assertionsDisabled variables that don't follow json syntax
@@ -87,27 +122,67 @@ public class MainEntrance {
 	public void addOriTrace (String ori){ this.ori_trace.add(ori);}
 	public void addTargetTrace (String target){ this.target_trace.add(target);}
 
+	/**
+	 * Synthesizes a set of changes to the original source code that match the specifications of
+	 * the manipulation to the execution trace
+	 * @return - Each mapping maps a line number in the source code to the newly synthesized 
+	 * 			code for that line number. For example: if JDial synthesizes a new program given
+	 * 			a source code, execution trace, and manipulation on the execution trace, and it then
+	 * 			synthesizes a new source code and the only change from the original source code is that
+	 * 			the code on line 7 was changed from int x = 5 to int x = 8, then this would return a map
+	 * 			in the form {7 => int x = 8;
+	 */
 	public Map<Integer, String> Synthesize() throws InterruptedException, SketchExecException {
 		return this.Synthesize(false, false);
 	}
 
+	/**
+	 * Synthesizes a set of changes to the original source code that match the specifications of
+	 * the manipulation to the execution trace
+	 * @param useLC - Whether to use linear combinations to solve the manipulation
+	 * @return - Each mapping maps a line number in the source code to the newly synthesized 
+	 * 			code for that line number. For example: if JDial synthesizes a new program given
+	 * 			a source code, execution trace, and manipulation on the execution trace, and it then
+	 * 			synthesizes a new source code and the only change from the original source code is that
+	 * 			the code on line 7 was changed from int x = 5 to int x = 8, then this would return a map
+	 * 			in the form {7 => int x = 8;
+	 */
 	public Map<Integer, String> Synthesize(boolean useLC) throws InterruptedException, SketchExecException {
 		return this.Synthesize(useLC, false);
 	}
 
-	public Map<Integer, String> Synthesize(boolean useLC, boolean oneLine) throws InterruptedException, SketchExecException {
+	/**
+	 * Synthesizes a set of changes to the original source code that match the specifications of
+	 * the manipulation to the execution trace
+	 * @param useLC - Whether to use linear combinations to solve the manipulation
+	 * @param oneLine
+	 * @return - Each mapping maps a line number in the source code to the newly synthesized 
+	 * 			code for that line number. For example: if JDial synthesizes a new program given
+	 * 			a source code, execution trace, and manipulation on the execution trace, and it then
+	 * 			synthesizes a new source code and the only change from the original source code is that
+	 * 			the code on line 7 was changed from int x = 5 to int x = 8, then this would return a map
+	 * 			in the form {7 => int x = 8;
+	 * @throws InterruptedException
+	 * @throws SketchExecException - Occurs when there was an error running sketch on the generated code
+	 * 								This is usually because of an exception or error in the source code
+	 * 
+	 */
+	public Map<Integer, String> Synthesize(boolean useLC, boolean oneLine) 
+			throws InterruptedException, SketchExecException {
 		this.targetFunc = extractFuncName(manipulation);
+		//Use a custom built json parser to put the string json in Java objects
 		this.root = jsonRootCompile(this.originalTrace);
-		// 11/28
 		this.code = root.getCode().getCode();
 
+		//TODO find out what mod does
 		if (oneLine)
 			mod = 1;
 
 		List<Expression> args = AuxMethods.extractArguments(root.getTraces(), indexOfCorrectTrace,
 				this.targetFunc);
 
-		this.traces = root.getTraces().findSubTraces(this.targetFunc, indexOfCorrectTrace);
+		root.getTraces().findSubTraces(this.targetFunc, indexOfCorrectTrace);
+		this.traces = (root.getTraces());
 		code = code.replace("\\n", "\n");
 		code = code.replace("\\t", "\t");
 		
@@ -146,8 +221,8 @@ public class MainEntrance {
 			for(int i = 0; i < this.ori_trace.size(); i++){
 				Root addRoot =  jsonRootCompile(ori_trace.get(i));
 				indexOfCorrectTrace = addRoot.getTraces().getLength() - 1;
-				
-				Traces addtraces = addRoot.getTraces().findSubTraces(this.targetFunc, indexOfCorrectTrace);
+				addRoot.getTraces().findSubTraces(this.targetFunc, indexOfCorrectTrace);
+				Traces addtraces = addRoot.getTraces();
 				cf.addOriTraces(addtraces);
 				cf.addTargetTrace(jsonTraceCompile(this.target_trace.get(i)));
 				

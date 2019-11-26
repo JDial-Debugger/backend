@@ -10,7 +10,20 @@ import sketchobj.stmts.*;
 
 public class AuxMethods {
 
-	
+	/**
+	 * For a point in the execution trace, finds the values of the arguments
+	 * that the given method is called with.
+	 * For example: If the point in the execution trace has a stack frame with
+	 * a method called simpleJava somewhere in it, and we are looking for simpleJava
+	 * and in this stack frame, simpleJava was called like simpleJava(4, 6), extractArguments 
+	 * returns an Expression object for the values 4 and 6
+	 * @param traces - the execution trace, in Java object form
+	 * @param targetindex - the index in the trace to extract the current method arguments from
+	 * @param targetName - the name of the method we are looking for
+	 * @return - Each expression represents the value of an argument that was passed into the 
+	 * 			method we are looking for. Returns an empty array if the function does not have
+	 * 			any arguments.
+	 */
 	static public List<Expression> extractArguments(Traces traces, int targetindex, String targetName){
 		List<Expression> result = new ArrayList<>();
 		
@@ -34,8 +47,9 @@ public class AuxMethods {
 				break;
 			}
 		}*/
+		
 		//goes back thru each trace from point of correction to beginning
-		//and finds the trace with that calls the function that the correction is in
+		//and finds the trace point that calls the function that the correction is in
 		for(int i = targetindex; i >=0; i--){
 			if(tracelist.get(i).getEvent().equals("call") && 
 					tracelist.get(i).getFuncname().equals(targetName)){
@@ -43,7 +57,6 @@ public class AuxMethods {
 			}
 		}
 		
-		System.err.println("callTrace is " + callTrace);
 		List<Var> args = callTrace.getLocals().getVar();
 		List<Var> heapObjs = callTrace.getHeap().getVar();
 		
@@ -62,7 +75,7 @@ public class AuxMethods {
 				
 			}
 			if(v.getType() == 3){
-				System.out.println("error");
+				//TODO error handling
 			}
 		}
 		
