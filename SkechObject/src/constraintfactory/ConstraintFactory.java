@@ -21,16 +21,25 @@ import sketchobj.core.Function.FcnType;
 import sketchobj.expr.*;
 import sketchobj.stmts.*;
 import cfg.*;
-
+/**
+ * ConstraintFactory is responsible for translating the original
+ * source code, the execution trace,  and the requirements of the 
+ * manipulation as an input into the sketch synthesizer. 
+ * It does this by taking every statement in the AST for the source code, 
+ * and adding coefficients to every expression in these statements. 
+ * It then uses an array for each local variable to keep track of its state
+ * thoughout the program. Then, it adds a statement for computing a distance between
+ * the original execution trace and the execution trace with the manipulation and tries
+ * to minimize this.
+ *
+ */
 public class ConstraintFactory {
 	// TODO: repair arrayInit.replaceConst(), else statement, Expr.field, all
-	// varDecl should be init now
 
 	// map from coeff to linenumber; map from linenumber to string of statement
 	public static Map<Integer, Integer> coeffIndex_to_Line = new HashMap<Integer, Integer>();
 	public static Map<Integer, String> line_to_string = new HashMap<Integer, String>();
 
-	// number of constant
 	static int constNumber = 0;
 	static Map<String, Set<Integer>> constMap = new HashMap<String, Set<Integer>>();
 	static Map<String, String> varList = new HashMap<>();
@@ -40,16 +49,22 @@ public class ConstraintFactory {
 	static List<Integer> noWeightCoeff = new ArrayList<Integer>();
 	static Integer numLines = -1;
 
-	//
+	//The original execution trace
 	static Traces oriTrace;
+	//The trace point of the manipulation
 	static Trace finalState;
 
-	// static int finalCount;
-	static FcnHeader fh;
+	//The enclosing function of the manipulation
+	static FcnHeader fh; 
+	//The line number of the manipulation
 	static int hitline = 0;
+	//The amount of points in the execution trace that occur on the line that
+	//the manipulation takes place
 	static int hitnumber = 0;
 	static int length = 5;
+	//length of the original execution trace
 	static int originalLength = 5;
+	//the arguments passed to the enclosing function of the manipulation at runtime
 	static List<Expression> args = new ArrayList<>();
 	public static int correctionIndex = 0;
 
@@ -69,7 +84,7 @@ public class ConstraintFactory {
 							// 1: 1 line minimization
 							// 2: 1 line fix before minimization
 
-	// added 11/19 the manipulated variable
+	//the manipulated variable
 	static String final_var = null;
 
 	// IOmod
@@ -80,21 +95,38 @@ public class ConstraintFactory {
 	public static List<List<Expression>> extra_args = new ArrayList<>();
 	public int extra_index = 0;
 
-	public static List<ExternalFunction> externalFuncs = new ArrayList<ExternalFunction>();
+	public static List<ExternalFunction> externalFuncs 
+										= new ArrayList<ExternalFunction>();
 
-	// added whether use prime mod
     public static boolean prime_mod;
+    //All functions in the source code that are not 
+    //the enclosing function of the manipulation
     public List<Function> otherFunctions;
+    //Incremented each time a new coeffecient is added. Used to uniquely name the
+    //coeffecients
     public static int coeffIndex;
     public static Set<Statement> dupStmt = new HashSet<>();
-    //public static Set<Statement> frozenStmt = new HashSet<>();
     public Set<String> primeVars = new HashSet<>();
 
-	// ------------ Construct method
-    // added
-    public ConstraintFactory(Traces oriTrace, Trace finalState, FcnHeader fh, List<Expression> args, Integer mod,
-    		boolean prime_mod, List<Function> otherFunctions) {
-  //  	System.out.println("args:-----------------"+args.toString());
+    /**
+     * Initializes a ConstraintFactory to generate the sketch input
+     * @param oriTrace - The opt execution trace converted to a AST
+     * @param finalState - The trace point at which the manipulation occurs
+     * @param fh - The function enclosing the manipulation
+     * @param args - the arguments passed to the enclosing function at runtime
+     * @param mod - unknown
+     * @param prime_mod - unknown
+     * @param otherFunctions - All other function in the source code that
+     * 							are not the enclosing function
+     */
+    public ConstraintFactory(Traces oriTrace, 
+    						Trace finalState, 
+    						FcnHeader fh, 
+    						List<Expression> args, 
+    						Integer mod,
+    						boolean prime_mod, 
+    						List<Function> otherFunctions) {
+    	
 		ConstraintFactory.fh = fh;
 		ConstraintFactory.oriTrace = oriTrace;
 		ConstraintFactory.finalState = finalState;
@@ -103,14 +135,14 @@ public class ConstraintFactory {
 		ConstraintFactory.coeffIndex = 0;
 		ConstraintFactory.prime_mod = prime_mod;
 		
+		//calculate how many points in the execution trace occur on the line
+		//that the manipulation takes place
 		hitnumber = 0;
 		for (int i = 0; i < oriTrace.getLength(); i++) {
-			System.err.println(i + " getLine() " + oriTrace.getTraces().get(i).getLine());
 			if (oriTrace.getTraces().get(i).getLine() == ConstraintFactory.hitline) {
 				hitnumber++;
 			}
 		}
-//		System.err.println("hit humber is " + hitnumber);
 		originalLength = oriTrace.getLength();
 		length = originalLength * 2;
 
@@ -144,13 +176,10 @@ public class ConstraintFactory {
 
 	// IOmode
 	public void addOriTraces(Traces ori_list){
-		System.out.println("-asdfjalsdfjasjdfklajdsfkasdfj" +ori_trace_list.size());
 		this.ori_trace_list.add(ori_list);
-		System.err.println("added trace length is" + ori_list.getLength());
 	}
 	public void addTargetTrace(Trace target_list){
 		this.target_trace_list.add(target_list);
-		System.out.println("-asdfjalsdfjasjdfklajdsfkasdfj" );
 	}
 
 	// set allowed ranges
@@ -159,35 +188,40 @@ public class ConstraintFactory {
 		ConstraintFactory.repair_range = l;
 	}
 
+	/**
+	 * Generates the input script into the sketch synthesizer.
+	 * A script consists of three parts:
+	 *	 1) coeff decl and guess functions decl
+	 *	 2) the interpreted source function with statements recording program
+	 *	 states and expressions rewrote
+	 *	 3) the constrain function which compute the cost and search for the
+	 *	 least cost rewrite
+	 * @param source - The root statement of the source code AST
+	 * @return - A string that can be used as input into the sketch synthesizer.
+	 * 			This is script that satisfies the manipulation (if possible) while
+	 * 			attempting to minimize the syntact and semantic distance from the
+	 * 			original source code (provided in source param)
+	 */
 	public String getScript_linearCombination(Statement source) {
 
-		// a script consists of three parts:
-		// 1) coeff decl and guess functions decl
-		// 2) the interpreted source function with statements recording program
-		// states and expressions rewrote
-		// 3) the constrain function which compute the cost and search for the
-		// least cost rewrite
-
-		Statement s = source;
 		Statement coeffFunDecls = null;
 
 		String resv_funcs = ReservedFuncs();
-
 
 		buildContext((StmtBlock) source);
 
 		// replace all constants in source code and add coeffchange declaration
 		if (!ConstraintFactory.sign_limited_range) {
-			coeffFunDecls = ConstraintFactory.replaceLinearCombination(s);
+			coeffFunDecls = ConstraintFactory.replaceLinearCombination(source);
 			if (Global.prime_mod) {
-				dupPrimes(s);
+				dupPrimes(source);
 				for (String v : finalState.getOrdered_locals()) {
 					//System.err.println("final state var " + v);
 					for (int i : Global.primes) {
 						Global.dupFinals.add(v + Integer.toString(i));
 					}
 				}
-				buildContext((StmtBlock) s);
+				buildContext((StmtBlock) source);
 			}
 		} else {
 			System.out.println("Bad else statement");
@@ -196,7 +230,7 @@ public class ConstraintFactory {
 		// add record stmts to source code and collect vars info
 		Global.curFunc = ConstraintFactory.fh.getName();
 
-		Map<String, Type> vars = ConstraintFactory.addRecordStmt((StmtBlock) s);
+		Map<String, Type> vars = ConstraintFactory.addRecordStmt((StmtBlock) source);
 		for (String v : finalState.getOrdered_locals()) {
 			vars.put(v, TypePrimitive.inttype);
 		}
@@ -218,17 +252,17 @@ public class ConstraintFactory {
 		}
 		
 		// add declare of <linehit> and <count> 
-		s = new StmtBlock(new StmtVarDecl(new TypePrimitive(4), "linehit", new ExprConstInt(0), 0), s);
-		s = new StmtBlock(new StmtVarDecl(new TypePrimitive(4), "count", new ExprConstInt(-1), 0), s);
+		source = new StmtBlock(new StmtVarDecl(new TypePrimitive(4), "linehit", new ExprConstInt(0), 0), source);
+		source = new StmtBlock(new StmtVarDecl(new TypePrimitive(4), "count", new ExprConstInt(-1), 0), source);
 		if (Global.prime_mod) {
 			for (Map.Entry<String, Boolean> entry : Global.feasibleVars.entrySet()) {
 				if (!finalState.getOrdered_locals().contains(entry.getKey()))
-					s = new StmtBlock(new StmtVarDecl(new TypePrimitive(4), entry.getKey() + "ini"
-						, new ExprConstInt(0), 0), s);
+					source = new StmtBlock(new StmtVarDecl(new TypePrimitive(4), entry.getKey() + "ini"
+						, new ExprConstInt(0), 0), source);
 			}
 		}
 
-		Function f = new Function(ConstraintFactory.fh, s);
+		Function f = new Function(ConstraintFactory.fh, source);
 
 		List<Statement> stmts = new ArrayList<>();
 

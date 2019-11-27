@@ -65,8 +65,11 @@ public class MainEntrance {
 	//The function name at the top of the stack frame at the point in the trace at 
 	//which the manipulation occurs (e.g. the enclosing function)
 	private String targetFunc;
+	//A unique list of all function names in the execution trace
 	private List<String> function_names;
+	//Maps the name of a function in the execution to the object in the AST for the source code
 	private Map<String, Function> func_name_to_code;
+	//The execution trace, converted from JSON to a Java AST
 	private Traces traces;
 
 	private int mod;
@@ -180,12 +183,14 @@ public class MainEntrance {
 
 		List<Expression> args = AuxMethods.extractArguments(root.getTraces(), indexOfCorrectTrace,
 				this.targetFunc);
-
+		//trim traces to only traces in targetFunc
 		root.getTraces().findSubTraces(this.targetFunc, indexOfCorrectTrace);
-		this.traces = (root.getTraces());
+		this.traces = root.getTraces();
+		
 		code = code.replace("\\n", "\n");
 		code = code.replace("\\t", "\t");
 		
+		//Create AST for the source code (Time to look at compiler's class notes ;) )
 		ANTLRInputStream input = new ANTLRInputStream(code);
 		Function function = (Function) javaCompile(input, targetFunc);
 		CFG cfg = new CFG(function);
@@ -197,18 +202,24 @@ public class MainEntrance {
 		cfg.inilocs();
 		if (Global.only_mod)
 			cfg.getAltFacts();
+		//Now that we have the AST for the source code, map all function names
+		//to their function object in the AST
 		this.buildFuncNameList();
+		//Holds all function objects in the AST that are not the function containing
+		//the manipulation
 		List<Function> otherFunctions = new ArrayList<>();
 		for(int i = 0; i < this.function_names.size(); i++){
 			String curName = this.function_names.get(i);
-			System.err.println("function name is" + curName);
 			if(!curName.equals(targetFunc)) {
 				otherFunctions.add(this.func_name_to_code.get(curName));
 			}
 		}
-
+		
+		//TODO find out what mod does 
 		boolean prime_mod = global.Global.prime_mod;
 		boolean rec_mod = global.Global.rec_mod;
+		
+		
 		ConstraintFactory cf = new ConstraintFactory(traces, jsonTraceCompile(manipulation),
 				new FcnHeader(function.getName(), function.getReturnType(), function.getParames()), args, mod, prime_mod,
 				otherFunctions);
@@ -249,21 +260,23 @@ public class MainEntrance {
 		
 	}
 
+	/*
+	 * Searches for all function names in the execution trace, and adds them 
+	 * uniquely to this.function_names. Then maps each function name to its
+	 * object in the AST for the original source code
+	 */
 	private void buildFuncNameList() {
 		Root curRoot = jsonRootCompile(this.originalTrace);
-		//String curCode = curRoot.getCode().getCode();
-		//curCode = curCode.replace("\\n", "\n");
-		//curCode = curCode.replace("\\t", "\t");
 
 		List<Trace> traces = curRoot.getTraces().getTraces();
 		for(Trace trace: traces){
 			String name = trace.getFuncname();
-			// need to improve
 			if (name.equals("main"))
 				continue;
 			if(!this.function_names.contains(name)) {
-				ANTLRInputStream input1 = new ANTLRInputStream(code);
 				this.function_names.add(name);
+				
+				ANTLRInputStream input1 = new ANTLRInputStream(code);
 				Function function = (Function) javaCompile(input1, name);
 				this.func_name_to_code.put(name, function);
 			}
