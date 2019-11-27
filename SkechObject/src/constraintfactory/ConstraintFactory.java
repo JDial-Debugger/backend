@@ -216,7 +216,6 @@ public class ConstraintFactory {
 			if (Global.prime_mod) {
 				dupPrimes(source);
 				for (String v : finalState.getOrdered_locals()) {
-					//System.err.println("final state var " + v);
 					for (int i : Global.primes) {
 						Global.dupFinals.add(v + Integer.toString(i));
 					}
@@ -224,7 +223,7 @@ public class ConstraintFactory {
 				buildContext((StmtBlock) source);
 			}
 		} else {
-			System.out.println("Bad else statement");
+			//TODO Error handling
 		}
 
 		// add record stmts to source code and collect vars info
@@ -234,14 +233,13 @@ public class ConstraintFactory {
 		for (String v : finalState.getOrdered_locals()) {
 			vars.put(v, TypePrimitive.inttype);
 		}
-		//System.err.println("s3 is: ");
-		//System.err.println(s);
+		
 		ConstraintFactory.namesToType = vars;
 		List<String> varsNames = new ArrayList<String>(vars.keySet());
 		for (String str : varsNames) {
 			varList.put(str, ConstraintFactory.fh.getName());
 		}
-		//varList = new ArrayList<>(varsNames);
+		
 		for(int i = 0;i<vars.keySet().size();i++)
 		{
 			funcVarList.add(Global.curFunc);
@@ -511,44 +509,29 @@ public class ConstraintFactory {
 	}
 
 	private static void dupPrimes(Statement s) {
-		// System.err.println("in dup ");
 		if (s == null)
 			return;
 		Global.line = s.getLineNumber();
 		if (s instanceof StmtBlock) {
-			for (int i = 0; i < ((StmtBlock) s).stmts.size(); i++) {
-				//System.err.println("size is : " + ((StmtBlock) s).stmts.size());
-				//System.err.println("i is : " + i);
-				Statement si = ((StmtBlock) s).stmts.get(i);
+			List<Statement> stmts = ((StmtBlock) s).stmts;
+			for (int i = 0; i < stmts.size(); i++) {
+				Statement si = stmts.get(i);
+				
 				Global.line = si.getLineNumber();
-				//System.err.println("si is : " + si);
-				//System.err.println("class is : " + si.getClass().getName());
-				/*if (Global.facts.get(si.getLineNumber()).size() != 0)
-					continue;*/
+				
 				List<Statement> rec = recover(si);
 				if (rec.size() > 0) {
 					((StmtBlock) s).stmts.add(i, new StmtBlock(rec));
 					i++;
 				}
-				//System.err.println("rec is" + rec);
 				if (si instanceof StmtAssign) {
-					//System.err.println("cur assign: " + si);
 					boolean keepActual = true;
 					boolean isAdd = ((StmtAssign) si).getOp() == ExprBinary.BINOP_ADD ||
 							((StmtAssign) si).getOp() == ExprBinary.BINOP_SUB;
-					//System.err.println("isAdd is : " + isAdd);
 					Expression l = ((StmtAssign) si).getLHS();
-					//if (!Global.only_mod) {
-						if (Global.facts.get(si.getLineNumber()) == null || 
-							Collections.disjoint(Global.facts.get(si.getLineNumber()), CFG.extractAllVarExpr(l)))
-							keepActual = false;
-					/*} else {
-						if (!Global.altfacts.contains(si.getLineNumber()))
-							keepActual = false;
-					}*/
-					//System.err.println("keep actual is " + keepActual);
-					//if (frozenStmt.contains(si))
-						//keepActual = false;
+					if (Global.facts.get(si.getLineNumber()) == null || 
+						Collections.disjoint(Global.facts.get(si.getLineNumber()), CFG.extractAllVarExpr(l)))
+						keepActual = false;
 					if (!keepActual) {
 						((StmtBlock) s).stmts.remove(i);
 						i--;
@@ -1598,13 +1581,24 @@ public class ConstraintFactory {
 		StmtReturn return_2 = new StmtReturn(new ExprConstInt(ori), 0);
 		Statement ifst = new StmtIfThen(condition, return_1, return_2, 0);
 
-		return new Function("Const" + index, t, new ArrayList<Parameter>(), ifst, FcnType.Static);
+		return new Function("Const" + index, 
+							t, 
+							new ArrayList<Parameter>(), 
+							ifst, 
+							FcnType.Static);
 	}
 
+	/**
+	 * Creates a statement node for the AST that records the programs 
+	 * state at a given line number
+	 * @param lineNumber
+	 * @param allVars
+	 * @return - The statement node for an AST to record th	
+	 */
 	static public Statement recordState(int lineNumber, Map<String, Type> allVars) {
-		List<String> Vars = new ArrayList<String>(allVars.keySet());
+		List<String> varsInScope = new ArrayList<String>(allVars.keySet());
 		StmtBlock result = new StmtBlock();
-		// count ++
+		//Of the form: (count)++;
 		result.addStmt(new StmtExpr(new ExprUnary(5, new ExprVar("count"), 0), 0));
 		// varToUpdateArray[count] = varToUpdate;
 		/*if(global.Global.rec_mod)
@@ -1614,40 +1608,40 @@ public class ConstraintFactory {
 								new ExprArrayRange.RangeLen(new ExprVar("count"), null), 0),
 						new ExprVar("funcCount"), 0));*/
 
-
+		//Of the form: lineArray[count] = 3
 		result.addStmt(
 				new StmtAssign(
 						new ExprArrayRange(new ExprVar("lineArray"),
 								new ExprArrayRange.RangeLen(new ExprVar("count"), null), 0),
 						new ExprConstInt(lineNumber), 0));
 
-		for (int h = 0;h<Vars.size();h++)
-		{
-			String s = Vars.get(h);
-			if (allVars.get(s) instanceof TypeArray)
+		//for every variable in scope of this statement
+		for (String varInScope : varsInScope) {
+			if (allVars.get(varInScope) instanceof TypeArray)
 				continue;
+			
 			if (Global.prime_mod) {
-				if (Global.allvars.containsKey(s)) {
-					if (!Global.facts.get(lineNumber).contains(s)) {
+				if (Global.allvars.containsKey(varInScope)) {
+					if (!Global.facts.get(lineNumber).contains(varInScope)) {
 						for (int p : Global.primes)
 							result.addStmt(new StmtAssign(new ExprArrayRange(
-									new ExprVar(Global.curFunc + s + Integer.toString(p) + "Array"),
+									new ExprVar(Global.curFunc + varInScope + Integer.toString(p) + "Array"),
 									new ExprArrayRange.RangeLen(new ExprVar("count"), null), 0),
-									new ExprVar(s + Integer.toString(p)), 0));
+									new ExprVar(varInScope + Integer.toString(p)), 0));
 					} else {
-						result.addStmt(new StmtAssign(new ExprArrayRange(new ExprVar(Global.curFunc + s + "Array"),
-								new ExprArrayRange.RangeLen(new ExprVar("count"), null), 0), new ExprVar(s), 0));
+						result.addStmt(new StmtAssign(new ExprArrayRange(new ExprVar(Global.curFunc + varInScope + "Array"),
+								new ExprArrayRange.RangeLen(new ExprVar("count"), null), 0), new ExprVar(varInScope), 0));
 					}
 				} else {
 				}
 				continue;
 			}
-			result.addStmt(new StmtAssign(new ExprArrayRange(new ExprVar(Global.curFunc + s + "Array"),
-					new ExprArrayRange.RangeLen(new ExprVar("count"), null), 0), new ExprVar(s), 0));
+			result.addStmt(new StmtAssign(new ExprArrayRange(new ExprVar(Global.curFunc + varInScope + "Array"),
+					new ExprArrayRange.RangeLen(new ExprVar("count"), null), 0), new ExprVar(varInScope), 0));
 		}
 		if (Global.prime_mod) {
 			for (String al : Global.alwaysVars) {
-				if (!Vars.contains(al) && Vars.contains(al + Integer.toString(Global.primes[1]))) {
+				if (!varsInScope.contains(al) && varsInScope.contains(al + Integer.toString(Global.primes[1]))) {
 					for (int p : Global.primes)
 						result.addStmt(new StmtAssign(new ExprArrayRange(
 								new ExprVar(Global.curFunc + al + Integer.toString(p) + "Array"),
@@ -1675,15 +1669,6 @@ public class ConstraintFactory {
 			Statement iflinehit = new StmtIfThen(
 					new ExprBinary(new ExprVar("linehit"), "==", new ExprString("??"), 0),
 					cons, null, 0);
-			//added 11/26
-
-//			Statement iflinehit = new StmtIfThen(
-//					new ExprBinary(new ExprVar("linehit"), "==", new ExprConstInt(1), 0),
-//					cons, null, 0);
-//
-			//Statement iflinehit = new StmtIfThen(
-			//		new ExprBinary(new ExprVar("linehit"), "==", new ExprConstInt(ConstraintFactory.hitnumber), 0),
-			//		cons, null, 0);
 			result.addStmt(iflinehit);
 		}
 		return result;
@@ -1740,9 +1725,14 @@ public class ConstraintFactory {
 		sb.buildContext(prectx, 0);
 	}
 
-	static public Map<String, Type> addRecordStmt(StmtBlock sorce) {
-		System.err.println("dupstmt: " + ConstraintFactory.dupStmt);
-		return sorce.addRecordStmt(null, 0, new HashMap<String, Type>());
+	/**
+	 * Adds statements to each step of the sketch input script 
+	 * to record the program state
+	 * @param source - the root statement block of the source code
+	 * @return
+	 */
+	static public Map<String, Type> addRecordStmt(StmtBlock source) {
+		return source.addRecordStmt(null, 0, new HashMap<String, Type>());
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
