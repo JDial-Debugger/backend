@@ -138,7 +138,6 @@ public class StmtAssign extends Statement {
 		List<String> tmp = postctx.getVarsInScope();
 		if (!tmp.contains(lhs.toString())&& (position > 0 || Global.dupFinals.contains(lhs.toString())
 				|| Global.params.contains(lhs.toString()))) {
-			//tmp.add(lhs.toString());
 			postctx.addVar(lhs.toString(), TypePrimitive.inttype);
 		} else if (!postctx.getAllVars().containsKey(lhs.toString())) {
 			postctx.addVar(lhs.toString(), TypePrimitive.inttype);
@@ -149,9 +148,6 @@ public class StmtAssign extends Statement {
 		postctx.setVarsInScope(tmp);
 		this.setPostctx(new Context(postctx));
 		this.setPrectx(new Context(prectx));
-		//System.err.println("assign is: " + this);
-		//System.err.println("pretext is" + prectx);
-		//System.err.println("postext is" + postctx);
 		return postctx;
 	}
 
