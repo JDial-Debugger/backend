@@ -445,11 +445,6 @@ public class ConstraintFactory {
 		}
 		constNumber = coeffIndex;
 
-		// ConstructLineToString() is only for debugging purpose, it has no effect on final output
-		System.err.println(s.ConstructLineToString(line_to_string));
-		//System.out.println("end of replaceLinearCombination()");
-		//System.out.println(ConstraintFactory.line_to_string);
-		//System.out.println(list);
 		return new StmtBlock(list);
 	}
 	
@@ -1589,11 +1584,11 @@ public class ConstraintFactory {
 	}
 
 	/**
-	 * Creates a statement node for the AST that records the programs 
-	 * state at a given line number
-	 * @param lineNumber
-	 * @param allVars
-	 * @return - The statement node for an AST to record th	
+	 * Creates a statement node for the AST that records the programs state 
+	 * at a given line number and given the variables that are in use at this point
+	 * @param lineNumber - the line number to record the state at
+	 * @param allVars - the variables in scope at this point
+	 * @return - The statement node for an AST to input into sketch
 	 */
 	static public Statement recordState(int lineNumber, Map<String, Type> allVars) {
 		List<String> varsInScope = new ArrayList<String>(allVars.keySet());
@@ -1610,10 +1605,10 @@ public class ConstraintFactory {
 
 		//Of the form: lineArray[count] = 3
 		result.addStmt(
-				new StmtAssign(
-						new ExprArrayRange(new ExprVar("lineArray"),
-								new ExprArrayRange.RangeLen(new ExprVar("count"), null), 0),
-						new ExprConstInt(lineNumber), 0));
+			new StmtAssign(
+				new ExprArrayRange(new ExprVar("lineArray"),
+				new ExprArrayRange.RangeLen(new ExprVar("count"), null), 0),
+				new ExprConstInt(lineNumber), 0));
 
 		//for every variable in scope of this statement
 		for (String varInScope : varsInScope) {
@@ -1636,9 +1631,14 @@ public class ConstraintFactory {
 				}
 				continue;
 			}
-			result.addStmt(new StmtAssign(new ExprArrayRange(new ExprVar(Global.curFunc + varInScope + "Array"),
-					new ExprArrayRange.RangeLen(new ExprVar("count"), null), 0), new ExprVar(varInScope), 0));
+			//Of the form: funcNameVarNameArray[count] = varName
+			result.addStmt(new StmtAssign(
+							new ExprArrayRange(
+									new ExprVar(Global.curFunc + varInScope + "Array"),
+									new ExprArrayRange.RangeLen(new ExprVar("count"), null), 0), 
+							new ExprVar(varInScope), 0));
 		}
+		
 		if (Global.prime_mod) {
 			for (String al : Global.alwaysVars) {
 				if (!varsInScope.contains(al) && varsInScope.contains(al + Integer.toString(Global.primes[1]))) {
@@ -1650,22 +1650,34 @@ public class ConstraintFactory {
 				}
 			}
 		}
+		//If this statement is on the line that the manipulation occurs on
 		if (lineNumber == hitline) {
+			//Of the form: (linehit)++;
 			result.addStmt(new StmtExpr(new ExprUnary(5, new ExprVar("linehit"), 0), 0));
+			
 			List<Statement> consStmts = new ArrayList<>();
-			for (String v : finalState.getOrdered_locals()) {
-				if (allVars.get(v) instanceof TypeArray)
+			for (String localVarName : finalState.getOrdered_locals()) {
+				if (allVars.get(localVarName) instanceof TypeArray)
 					continue;
-				consStmts.add(new StmtAssign(new ExprVar(v + "final"), new ExprVar(v), 0));
+				//Of the form finalVarName = varName
+				consStmts.add(new StmtAssign(
+								new ExprVar(localVarName + "final"), 
+								new ExprVar(localVarName), 
+								0));
 			}
-			consStmts.add(new StmtAssign(new ExprVar("finalcount"), new ExprVar("count"), 0));
+			//Of the form finalcount = count;
+			consStmts.add(new StmtAssign(
+							new ExprVar("finalcount"), 
+							new ExprVar("count"), 
+							0));
+			//of the form: return;
 			if (ConstraintFactory.fh.getReturnType() instanceof TypeVoid) {
 				consStmts.add(new StmtReturn(0));
 			}
+			//Of the form: return 0;
 			consStmts.add(new StmtReturn(new ExprConstInt(0), 0));
 			Statement cons = new StmtBlock(consStmts);
-			// added
-
+			//Of the form: if (linehit == (??)) { <consStmts> }
 			Statement iflinehit = new StmtIfThen(
 					new ExprBinary(new ExprVar("linehit"), "==", new ExprString("??"), 0),
 					cons, null, 0);
