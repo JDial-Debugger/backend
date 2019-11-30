@@ -15,8 +15,8 @@ SkechObject/lib/sketch-1.6.7/
 #Generated parsers
 #  json parser
 SkechObject/src/jsonparser/json*.java
-SketchObject/src/jsonparser/json*.tokens
+SkechObject/src/jsonparser/json*.tokens
 #  java parser
-SketchObject/src/javaparser/simpleJava*.java
-SketchObject/src/javaparser/simpleJava*.tokens
+SkechObject/src/javaparser/simpleJava*.java
+SkechObject/src/javaparser/simpleJava*.tokens
 
