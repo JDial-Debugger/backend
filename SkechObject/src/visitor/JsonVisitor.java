@@ -85,6 +85,16 @@ public class JsonVisitor extends jsonBaseVisitor<JsonNode> {
 			varl.add(new Var(s.getText().replace("\"", ""), 0, 0));
 		return new VarList(varl);
 	}
+	
+	@Override
+	public Assertions visitAssertions(jsonParser.AssertionsContext ctx) {
+		List<String> assertions = new ArrayList<String>();
+		for (TerminalNode s : ctx.STRING()) {
+			assertions.add(s.getText());
+		}
+		return new Assertions(assertions);
+		
+	}
 
 	@Override
 	public VarList visitHeap(jsonParser.HeapContext ctx) {

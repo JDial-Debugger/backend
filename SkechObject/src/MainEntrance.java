@@ -641,9 +641,6 @@ public class MainEntrance {
 				for (ExternalFunction ef : efs) {
 					script_ex = ef.toString() + script_ex;
 				}
-				// System.out.println(script_ex);
-				// Map<Integer, Integer> result =
-				// CallSketch.CallByString(script_ex);
 				consistancy = true;
 			}
 			return null;
@@ -653,7 +650,6 @@ public class MainEntrance {
 	private String replaceCoeff(String stmtString, Map<Integer, Integer> result,
 			Map<Integer, Integer> coeffIndex_to_Line, int tmpLine) {
 		List<Integer> rangedCoeff = new ArrayList<Integer>();
-		// System.out.println(result);
 		for (int k : coeffIndex_to_Line.keySet()) {
 			if (coeffIndex_to_Line.get(k) == tmpLine)
 				rangedCoeff.add(k);

@@ -11,8 +11,6 @@ import sketchobj.stmts.*;
 
 public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 
-	// ----------head----------
-
 	private String targetFunc;
 
 	//added 11/18
@@ -23,7 +21,6 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 		this.targetFunc = targetFunc;
 	}
 	
-
 	/**
 	 * compilationUnit : packageDeclaration? importDeclaration* typeDeclaration*
 	 * EOF

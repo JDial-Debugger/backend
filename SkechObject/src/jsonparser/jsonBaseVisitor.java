@@ -1,4 +1,4 @@
-// Generated from json.g4 by ANTLR 4.5.3
+// Generated from json.g4 by ANTLR 4.5.1
 package jsonparser;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -24,6 +24,13 @@ public class jsonBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements j
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitUserlog(jsonParser.UserlogContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitCode(jsonParser.CodeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -38,6 +45,13 @@ public class jsonBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements j
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitAssertions(jsonParser.AssertionsContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitTraces(jsonParser.TracesContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -46,13 +60,6 @@ public class jsonBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements j
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitTrace(jsonParser.TraceContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitUserlog(jsonParser.UserlogContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -81,6 +88,13 @@ public class jsonBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements j
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitGlobals(jsonParser.GlobalsContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitVarnames(jsonParser.VarnamesContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -172,13 +186,6 @@ public class jsonBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements j
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitEncoded_locals(jsonParser.Encoded_localsContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitVarnames(jsonParser.VarnamesContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

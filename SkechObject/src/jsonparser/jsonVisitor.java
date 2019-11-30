@@ -1,4 +1,4 @@
-// Generated from json.g4 by ANTLR 4.5.3
+// Generated from json.g4 by ANTLR 4.5.1
 package jsonparser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -17,6 +17,12 @@ public interface jsonVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitJson(jsonParser.JsonContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link jsonParser#userlog}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUserlog(jsonParser.UserlogContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link jsonParser#code}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -29,6 +35,12 @@ public interface jsonVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStdin(jsonParser.StdinContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link jsonParser#assertions}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssertions(jsonParser.AssertionsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link jsonParser#traces}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -40,12 +52,6 @@ public interface jsonVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitTrace(jsonParser.TraceContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link jsonParser#userlog}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitUserlog(jsonParser.UserlogContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link jsonParser#stdout}.
 	 * @param ctx the parse tree
@@ -70,6 +76,12 @@ public interface jsonVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitGlobals(jsonParser.GlobalsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link jsonParser#varnames}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarnames(jsonParser.VarnamesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link jsonParser#ordered_globals}.
 	 * @param ctx the parse tree
@@ -148,12 +160,6 @@ public interface jsonVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitEncoded_locals(jsonParser.Encoded_localsContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link jsonParser#varnames}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVarnames(jsonParser.VarnamesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link jsonParser#ordered_varnames}.
 	 * @param ctx the parse tree

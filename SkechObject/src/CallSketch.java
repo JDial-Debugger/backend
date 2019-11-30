@@ -27,7 +27,7 @@ public class CallSketch {
 	static public Map<Integer, Integer> CallByString(String sketchInput) 
 			throws InterruptedException, SketchExecException {
 
-		File dir = new File("/vagrant/backend/suggest/tmp");
+		File dir = new File("../../tmp");
 		dir.mkdirs();
 		File tmp = new File(dir, "tmp.txt");
 		Runtime rt = Runtime.getRuntime();
@@ -38,8 +38,8 @@ public class CallSketch {
 			tmp.createNewFile();
 			WriteStringToFile(tmp, sketchInput);
 			String[] envp = new String[] {"PATH=$PATH:/lib"};
-			String backendDIR = "/vagrant/backend/suggest/JDial-debugger/SkechObject/";
-			String suggestDIR = "/vagrant/backend/suggest/";
+			String backendDIR = "../../JDial-debugger/SkechObject/";
+			String suggestDIR = "../../";
 			File libdir = new File(backendDIR + "lib/sketch-1.6.7/sketch-frontend"); 
 		//	System.out.println("TMP: " + backendDIR + "tmp/tmp.txt");
 			String bitString = "--bnd-mbits 7 --bnd-cbits 5";
