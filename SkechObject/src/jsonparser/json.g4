@@ -5,6 +5,7 @@ json
 			'"code"' COLON code COMMA 
 			'"stdin"' COLON stdin COMMA 
 			'"trace"' COLON traces COMMA
+			'"assertions"' COLON assertions COMMA
 			'"userlog"' COLON userlog 	'}'
 	;
 	
@@ -20,6 +21,10 @@ code
 stdin	:	STRING
 	;	
 
+assertions
+	:	 '[' (STRING COMMA)* (STRING)? ']'
+	;
+	
 traces
 	:	 '[' (trace COMMA)* trace ']'
 	;
@@ -145,7 +150,7 @@ STRING
 	;
 
 ESC
-	: '\\' ('\"'|'\\'|'/'|'b'|'f'|'n'|'r'|'t')
+	: '\\' ('"'|'\\'|'/'|'b'|'f'|'n'|'r'|'t')
 	;
 
 fragment
