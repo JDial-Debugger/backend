@@ -8,3 +8,15 @@ SkechObject/experiments/*
 
 SkechObject/lib/sketch-1.6.7.linux-x86.tar.gz
 SkechObject/lib/sketch-1.6.7/
+
+#Compiled classes
+*.class
+
+#Generated parsers
+#  json parser
+SkechObject/src/jsonparser/json*.java
+SketchObject/src/jsonparser/json*.tokens
+#  java parser
+SketchObject/src/javaparser/simpleJava*.java
+SketchObject/src/javaparser/simpleJava*.tokens
+
