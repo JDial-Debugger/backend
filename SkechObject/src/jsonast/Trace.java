@@ -10,21 +10,37 @@ public class Trace extends JsonNode {
 	private RenderStack rstack;
 	private String funcname;
 	private VarList heap;
+	private Assertions assertions;
 	
-	///
 	private List<String> ordered_globals;
 	private VarList globals;
-	
 
 	private List<String> ordered_locals;
 	private VarList locals;
-	///
-
-	public Trace(String stdout, String event, Integer line, RenderStack rstack, VarList globals, VarList oglobals,
-			String funcname, VarList heap) {
+	
+	public Trace(String stdout, 
+				String event, 
+				Integer line, 
+				RenderStack rstack, 
+				VarList globals, 
+				VarList oglobals,
+				String funcname, 
+				VarList heap) {
+		this(stdout, event, line, rstack, globals, oglobals, funcname, heap, null);
+	}
+	public Trace(String stdout, 
+				String event, 
+				Integer line, 
+				RenderStack rstack, 
+				VarList globals, 
+				VarList oglobals,
+				String funcname, 
+				VarList heap,
+				Assertions assertions) {
 		this.stdout = stdout;
 		this.event = event;
 		this.line = line;
+		this.assertions = assertions;
 		this.setRstack(rstack);
 		this.setFuncname(funcname);
 		this.setHeap(heap);
@@ -49,6 +65,10 @@ public class Trace extends JsonNode {
 
 	public String getEvent() {
 		return event;
+	}
+	
+	public Assertions getAssertions() {
+		return assertions;
 	}
 
 	public void setEvent(String event) {

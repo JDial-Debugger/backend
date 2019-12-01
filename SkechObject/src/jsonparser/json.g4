@@ -5,7 +5,6 @@ json
 			'"code"' COLON code COMMA 
 			'"stdin"' COLON stdin COMMA 
 			'"trace"' COLON traces COMMA
-			'"assertions"' COLON assertions COMMA
 			'"userlog"' COLON userlog 	'}'
 	;
 	
@@ -21,16 +20,12 @@ code
 stdin	:	STRING
 	;	
 
-assertions
-	:	 '[' (STRING COMMA)* (STRING)? ']'
-	;
-	
 traces
 	:	 '[' (trace COMMA)* trace ']'
 	;
 
 trace	
-	:	'{' stdout event line stack_to_render globals ordered_globals func_name heap '}'
+	:	'{' stdout event line stack_to_render globals ordered_globals func_name heap assertions? '}'
 	;
 
 
@@ -46,12 +41,22 @@ line
 	:	'"line"' COLON NUMBER COMMA
 	;
 
+assertions
+	:	'"assertions"' COLON '[' assertionList ']'
+	;
+	
+assertionList
+	:	 (STRING COMMA)* (STRING)?
+	;
+	
 globals
 	:	'"globals"' COLON '{' varlist '}' COMMA
 	;
+	
 varnames
 	:	(STRING  COMMA)* (STRING)?
 	;
+	
 ordered_globals
 	:	'"ordered_globals"' COLON '[' varnames ']' COMMA
 	;
@@ -61,7 +66,7 @@ func_name
 	;
 
 heap
-	:	'"heap"' COLON '{' heap_content '}' 
+	:	'"heap"' COLON '{' heap_content '}' (COMMA)? 
 	;
 
 varlist
