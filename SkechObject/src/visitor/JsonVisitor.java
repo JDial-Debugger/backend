@@ -39,11 +39,20 @@ public class JsonVisitor extends jsonBaseVisitor<JsonNode> {
 
 	@Override
 	public Trace visitTrace(jsonParser.TraceContext ctx) {
-		Trace ret = new Trace((String) ctx.stdout().STRING().getText().replace("\"", ""), (String) ctx.event().STRING().getText().replace("\"", ""),
-				(Integer) Integer.parseInt(ctx.line().NUMBER().getText()), (RenderStack) visit(ctx.stack_to_render().stack()),
-				(VarList) visit(ctx.globals()), (VarList) visit(ctx.ordered_globals()),
-				(String) ctx.func_name().STRING().getText().replace("\"", ""), (VarList) visit(ctx.heap()));
-		//hacky fix, for some reason when assertions in code, we get a starting function of clinit which skrews things up
+		Assertions assertions = null;
+		if (ctx.assertions() != null) {
+			assertions = (Assertions) visit(ctx.assertions());
+		}
+		Trace ret = new Trace(
+				(String) ctx.stdout().STRING().getText().replace("\"", ""), 
+				(String) ctx.event().STRING().getText().replace("\"", ""),
+				(Integer) Integer.parseInt(ctx.line().NUMBER().getText()), 
+				(RenderStack) visit(ctx.stack_to_render().stack()),
+				(VarList) visit(ctx.globals()), 
+				(VarList) visit(ctx.ordered_globals()),
+				(String) ctx.func_name().STRING().getText().replace("\"", ""), 
+				(VarList) visit(ctx.heap()),
+				assertions);
 		if(ret.getFuncname().contains("<clinit>")) {
 			return null;
 		}
@@ -61,6 +70,15 @@ public class JsonVisitor extends jsonBaseVisitor<JsonNode> {
 		for (jsonParser.VarContext v : ctx.var())
 			varl.add((Var) visit(v));
 		return new VarList(varl);
+	}
+	
+	@Override 
+	public Assertions visitAssertions(jsonParser.AssertionsContext ctx) {
+		List<String> assertions = new ArrayList<String>();
+		for (TerminalNode assertionStr : ctx.assertionList().STRING()) {
+			assertions.add(assertionStr.getText());
+		}
+		return new Assertions(assertions);
 	}
 
 	@Override
@@ -86,15 +104,6 @@ public class JsonVisitor extends jsonBaseVisitor<JsonNode> {
 		return new VarList(varl);
 	}
 	
-	@Override
-	public Assertions visitAssertions(jsonParser.AssertionsContext ctx) {
-		List<String> assertions = new ArrayList<String>();
-		for (TerminalNode s : ctx.STRING()) {
-			assertions.add(s.getText());
-		}
-		return new Assertions(assertions);
-		
-	}
 
 	@Override
 	public VarList visitHeap(jsonParser.HeapContext ctx) {

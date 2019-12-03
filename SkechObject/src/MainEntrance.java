@@ -599,8 +599,10 @@ public class MainEntrance {
 	}
 	private void printRepair(Map<Integer, String> repair) {
 		for(int k : repair.keySet() ) {
-			System.out.println(k + "||||" + repair.get(k).replaceAll("\n", ""));
-			
+			String repairedLine = repair.get(k);
+			if (repairedLine != null) {
+				System.out.println(k + "||||" + repair.get(k).replaceAll("\n", ""));
+			}
 		}
 	}
 	public Map<Integer, String> actualSynthesize(boolean useLC, String script, ConstraintFactory cf,
@@ -649,6 +651,11 @@ public class MainEntrance {
 
 	private String replaceCoeff(String stmtString, Map<Integer, Integer> result,
 			Map<Integer, Integer> coeffIndex_to_Line, int tmpLine) {
+		
+		if (stmtString == null) {
+			return null;
+		}
+		
 		List<Integer> rangedCoeff = new ArrayList<Integer>();
 		for (int k : coeffIndex_to_Line.keySet()) {
 			if (coeffIndex_to_Line.get(k) == tmpLine)

@@ -4,8 +4,8 @@ json
 	:	'{' 
 			'"code"' COLON code COMMA 
 			'"stdin"' COLON stdin COMMA 
-			'"trace"' COLON traces COMMA
-			'"userlog"' COLON userlog 	'}'
+			'"trace"' COLON traces
+	 	'}'
 	;
 	
 userlog
@@ -42,7 +42,7 @@ line
 	;
 
 assertions
-	:	'"assertions"' COLON '[' assertionList ']'
+	:	COMMA '"assertions"' COLON '[' assertionList ']'
 	;
 	
 assertionList
@@ -66,7 +66,7 @@ func_name
 	;
 
 heap
-	:	'"heap"' COLON '{' heap_content '}' (COMMA)? 
+	:	'"heap"' COLON '{' heap_content '}' 
 	;
 
 varlist
