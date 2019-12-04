@@ -35,15 +35,13 @@ public class CallSketch {
 		try {
 			tmp.createNewFile();
 			WriteStringToFile(tmp, sketchInput);
+			
 			String suggestDIR = System.getenv("SUGGEST_PATH");
 			String backendDIR = suggestDIR + "JDial-debugger/SkechObject/";
-			File libdir = new File(backendDIR + "lib/sketch-1.6.7/sketch-frontend"); 
 			String bitString = "--bnd-mbits 7 --bnd-cbits 5";
-			Process proc = rt.exec("./sketch " 
+			Process proc = rt.exec("sketch " 
 									+ suggestDIR 
-									+ "/tmp/tmp.txt", 
-								null, 
-								libdir);
+									+ "/tmp/tmp.txt");
 			PrintWriter out = new PrintWriter(suggestDIR + "/tmp/tmpOutput.txt");
 			InputStream stderr = proc.getErrorStream();
 			
