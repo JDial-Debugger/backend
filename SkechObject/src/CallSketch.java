@@ -27,27 +27,35 @@ public class CallSketch {
 	static public Map<Integer, Integer> CallByString(String sketchInput) 
 			throws InterruptedException, SketchExecException {
 
-		File dir = new File("../../tmp");
-		dir.mkdirs();
-		File tmp = new File(dir, "tmp.txt");
+		String suggestDIR = System.getenv("SUGGEST_PATH");
+		File sketchIODir = new File(suggestDIR + "tmp");
+		sketchIODir.mkdirs();
+		File tmp = new File(sketchIODir, "tmp.txt");
+		
 		Runtime rt = Runtime.getRuntime();
 		Map<Integer, Integer> coefToVal = new HashMap<Integer, Integer>();
+		
 		try {
 			tmp.createNewFile();
 			WriteStringToFile(tmp, sketchInput);
 			
-			String suggestDIR = System.getenv("SUGGEST_PATH");
 			String backendDIR = suggestDIR + "JDial-debugger/SkechObject/";
 			String bitString = "--bnd-mbits 7 --bnd-cbits 5";
+			String[] envp = new String[] {
+				"SKETCH_HOME=" + System.getenv("SKETCH_HOME"),
+			};
+			
 			Process proc = rt.exec("sketch " 
 									+ suggestDIR 
-									+ "/tmp/tmp.txt");
+									+ "/tmp/tmp.txt",
+									null);
 			PrintWriter out = new PrintWriter(suggestDIR + "/tmp/tmpOutput.txt");
 			InputStream stderr = proc.getErrorStream();
 			
 			//TODO Add better error reporting
-			InputStreamReader irErr = new InputStreamReader(stderr);
-			BufferedReader brErr = new BufferedReader(irErr);
+			Scanner errScnr = new Scanner(stderr).useDelimiter("\\A");
+		    String errOutput = errScnr.hasNext() ? errScnr.next() : "";
+		    errScnr.close();
 			
 			InputStreamReader ir = new InputStreamReader(proc.getInputStream());
 			LineNumberReader input = new LineNumberReader(ir);

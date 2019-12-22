@@ -359,12 +359,6 @@ public class ConstraintFactory {
 		} else {
 			tmp3 = constraintFunction().toString();
 		}
-		System.err.println("tmp1: ");
-		System.err.println(tmp1);
-		System.err.println("tmp2: ");
-		System.err.println(tmp2);
-		System.err.println("tmp3: ");
-		System.err.println(tmp3);
 		return tmp1 + tmp2 + st + tmp3;
 	}
 
@@ -444,6 +438,7 @@ public class ConstraintFactory {
 			pushAll(stmtStack, data.getChildren());
 		}
 		constNumber = coeffIndex;
+		s.ConstructLineToString(line_to_string);
 
 		return new StmtBlock(list);
 	}

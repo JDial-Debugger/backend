@@ -610,25 +610,24 @@ public class MainEntrance {
 			throws InterruptedException, SketchExecException {
 
 		List<ExternalFunction> externalFuncs = ConstraintFactory.externalFuncs;
-	//	 System.out.println(script);
-		// System.out.println(cf.line_to_string);
 
 		// no external Functions
 		if (externalFuncs.size() == 0) {
 
-			Map<Integer, Integer> result = CallSketch.CallByString(script);
-			List<Integer> indexset = new ArrayList<Integer>();
-			indexset.addAll(result.keySet());
+			Map<Integer, Integer> coefToVal = CallSketch.CallByString(script);
 			Map<Integer, String> repair = new HashMap<Integer, String>();
+			
 			int tmpLine = -1;
-			//k is the number of a coeffecient
-			for (int coefIdx : result.keySet()) {
-				if (ConstraintFactory.coeffIndex_to_Line.get(coefIdx) != null && ConstraintFactory.coeffIndex_to_Line.get(coefIdx) == tmpLine) 
+			Map<Integer, String> coeffMap = ConstraintFactory.line_to_string;
+			
+			for (int coefIdx : coefToVal.keySet()) {
+				if (ConstraintFactory.coeffIndex_to_Line.get(coefIdx) != null 
+					&& ConstraintFactory.coeffIndex_to_Line.get(coefIdx) == tmpLine) 
 					continue;
 				if(ConstraintFactory.coeffIndex_to_Line.get(coefIdx) != null)
 					tmpLine = ConstraintFactory.coeffIndex_to_Line.get(coefIdx);
 				String stmtString = ConstraintFactory.line_to_string.get(tmpLine);
-				repair.put(tmpLine, replaceCoeff(stmtString, result, ConstraintFactory.coeffIndex_to_Line, tmpLine));
+				repair.put(tmpLine, replaceCoeff(stmtString, coefToVal, ConstraintFactory.coeffIndex_to_Line, tmpLine));
 			}
 			printRepair(repair);
 			return repair;
