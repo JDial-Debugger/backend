@@ -1,5 +1,8 @@
 # JDial-Debugger
 
+All documentation for this project can be found under the README and wiki at https://github.com/JDial-Debugger/complete
+
+
 Test instruction: 
 
 1) build sketch and put the sketch and the sketch jar (for example in my machine is sketch-1.7.2-all-Linux-amd64.jar) file in lib/
