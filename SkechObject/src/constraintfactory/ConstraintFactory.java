@@ -107,6 +107,9 @@ public class ConstraintFactory {
     public static int coeffIndex;
     public static Set<Statement> dupStmt = new HashSet<>();
     public Set<String> primeVars = new HashSet<>();
+    
+    //Holds all assertions in the manipulation, if there are any
+    private List<Statement> assertions;
 
     /**
      * Initializes a ConstraintFactory to generate the sketch input
@@ -118,6 +121,8 @@ public class ConstraintFactory {
      * @param prime_mod - unknown
      * @param otherFunctions - All other function in the source code that
      * 							are not the enclosing function
+     * @param assertions - if the manipulation contains assertions, each
+     * 						assertions is stored as a separate Statement
      */
     public ConstraintFactory(Traces oriTrace, 
     						Trace finalState, 
@@ -125,15 +130,17 @@ public class ConstraintFactory {
     						List<Expression> args, 
     						Integer mod,
     						boolean prime_mod, 
-    						List<Function> otherFunctions) {
+    						List<Function> otherFunctions,
+    						List<Statement> assertions) {
     	
 		ConstraintFactory.fh = fh;
 		ConstraintFactory.oriTrace = oriTrace;
 		ConstraintFactory.finalState = finalState;
 		ConstraintFactory.hitline = finalState.getLine();
-		this.otherFunctions = otherFunctions;
 		ConstraintFactory.coeffIndex = 0;
 		ConstraintFactory.prime_mod = prime_mod;
+		this.otherFunctions = otherFunctions;
+		this.assertions = assertions;
 		
 		//calculate how many points in the execution trace occur on the line
 		//that the manipulation takes place
@@ -157,8 +164,22 @@ public class ConstraintFactory {
 		ConstraintFactory.mod = mod;
 
 	}
+    
+    public ConstraintFactory(Traces oriTrace, 
+    						Trace finalState, 
+    						FcnHeader fh, 
+    						List<Expression> args, 
+    						Integer mod,
+    						boolean prime_mod, 
+    						List<Function> otherFunctions) {
+    	
+    	this(oriTrace, finalState, fh, args, mod, prime_mod, otherFunctions, null);
+    }
 
-	public ConstraintFactory(Traces oriTrace, Trace finalState, FcnHeader fh, List<Expression> args) {
+	public ConstraintFactory(Traces oriTrace, 
+							Trace finalState, 
+							FcnHeader fh, 
+							List<Expression> args) {
 		this(oriTrace, finalState, fh, args, 0, false, new ArrayList<Function>());
 	}
 
@@ -167,7 +188,10 @@ public class ConstraintFactory {
 		// this.args = args;
 	}
 
-	public ConstraintFactory(Traces oriTrace, Trace finalState, FcnHeader fh, Expression parameter) {
+	public ConstraintFactory(Traces oriTrace, 
+							Trace finalState, 
+							FcnHeader fh, 
+							Expression parameter) {
 		this(oriTrace, finalState, fh);
 		List<Expression> l = new ArrayList<Expression>();
 		l.add(parameter);
