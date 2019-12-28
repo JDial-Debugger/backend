@@ -190,9 +190,9 @@ public class MainEntrance {
 		code = code.replace("\\n", "\n");
 		code = code.replace("\\t", "\t");
 		
-		//Create AST for the source code (Time to look at compiler's class notes ;) )
+		//Create AST for the source code
 		ANTLRInputStream input = new ANTLRInputStream(code);
-		Function function = (Function) javaCompile(input, targetFunc);
+		Function function = (Function) javaSketchObjectCompile(input, targetFunc);
 		CFG cfg = new CFG(function);
 		cfg.printCFG();
 		Map<Integer, Set<String>> facts = cfg.dataflow();
@@ -220,9 +220,15 @@ public class MainEntrance {
 		boolean rec_mod = global.Global.rec_mod;
 		
 		
-		ConstraintFactory cf = new ConstraintFactory(traces, jsonTraceCompile(manipulation),
-				new FcnHeader(function.getName(), function.getReturnType(), function.getParames()), args, mod, prime_mod,
-				otherFunctions);
+		ConstraintFactory cf = new ConstraintFactory(traces, 
+													 jsonTraceCompile(manipulation),
+													 new FcnHeader(function.getName(), 
+															 	   function.getReturnType(), 
+															 	   function.getParames()), 
+													 args, 
+													 mod, 
+													 prime_mod,
+													 otherFunctions);
 		ConstraintFactory.correctionIndex = this.indexOfCorrectTrace;
 		if (this.repair_range != null)
 			cf.setRange(this.repair_range);
@@ -253,7 +259,7 @@ public class MainEntrance {
 		}
 		script = script.replaceAll("External_", "");
 		if (mod != 2) {
-			return this.actualSynthesize(useLC, script, cf, null);
+			return this.actualSynthesize(script);
 		}
 		
 		return null;
@@ -277,7 +283,7 @@ public class MainEntrance {
 				this.function_names.add(name);
 				
 				ANTLRInputStream input1 = new ANTLRInputStream(code);
-				Function function = (Function) javaCompile(input1, name);
+				Function function = (Function) javaSketchObjectCompile(input1, name);
 				this.func_name_to_code.put(name, function);
 			}
 		}
@@ -597,6 +603,9 @@ public class MainEntrance {
 		return strResult;
 		//delete External_
 	}
+	//Prints repair in a form to be interpreted by frontend in the form 
+	//<line number>||||<correct line string>\n
+	//Might be beneficial to make this JSON in the future
 	private void printRepair(Map<Integer, String> repair) {
 		for(int k : repair.keySet() ) {
 			String repairedLine = repair.get(k);
@@ -605,8 +614,16 @@ public class MainEntrance {
 			}
 		}
 	}
-	public Map<Integer, String> actualSynthesize(boolean useLC, String script, ConstraintFactory cf,
-			Statement targetStmt) 
+	
+	/**
+	 * Maps coeffecient values from sketch back to changes in the original
+	 * source code
+	 * @param script - Input to sketch
+	 * @return
+	 * @throws InterruptedException
+	 * @throws SketchExecException
+	 */
+	public Map<Integer, String> actualSynthesize(String script)
 			throws InterruptedException, SketchExecException {
 
 		List<ExternalFunction> externalFuncs = ConstraintFactory.externalFuncs;
@@ -618,7 +635,6 @@ public class MainEntrance {
 			Map<Integer, String> repair = new HashMap<Integer, String>();
 			
 			int tmpLine = -1;
-			Map<Integer, String> coeffMap = ConstraintFactory.line_to_string;
 			
 			for (int coefIdx : coefToVal.keySet()) {
 				if (ConstraintFactory.coeffIndex_to_Line.get(coefIdx) != null 
@@ -761,12 +777,22 @@ public class MainEntrance {
 		return (Trace) new JsonVisitor().visit(tree);
 	}
 
-	public static SketchObject javaCompile(ANTLRInputStream input, String target) {
+	public static ParseTree javaCompile(ANTLRInputStream input) {
 		simpleJavaLexer lexer = new simpleJavaLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		simpleJavaParser parser = new simpleJavaParser(tokens);
 		ParseTree tree = parser.compilationUnit();
+		return tree;
+	}
+	
+	public static SketchObject javaSketchObjectCompile(ANTLRInputStream input, String target) {
+		ParseTree tree = javaCompile(input);
 		return new JavaVisitor(target).visit(tree);
+	}
+	
+	public static Statement javaStatementCompile(ANTLRInputStream input, String target) {
+		ParseTree tree = javaCompile(input);
+		return (Statement) new JavaVisitor(target).visit(tree);
 	}
 
 	public String eval(String input) {
