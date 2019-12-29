@@ -109,7 +109,7 @@ public class ConstraintFactory {
     public Set<String> primeVars = new HashSet<>();
     
     //Holds all assertions in the manipulation, if there are any
-    private List<Statement> assertions;
+    private List<StmtFuncAssert> assertions;
 
     /**
      * Initializes a ConstraintFactory to generate the sketch input
@@ -131,7 +131,7 @@ public class ConstraintFactory {
     						Integer mod,
     						boolean prime_mod, 
     						List<Function> otherFunctions,
-    						List<Statement> assertions) {
+    						List<StmtFuncAssert> assertions) {
     	
 		ConstraintFactory.fh = fh;
 		ConstraintFactory.oriTrace = oriTrace;
@@ -222,15 +222,18 @@ public class ConstraintFactory {
 	 *	 least cost rewrite
 	 * @param source - The root statement of the source code AST
 	 * @return - A string that can be used as input into the sketch synthesizer.
-	 * 			This is script that satisfies the manipulation (if possible) while
-	 * 			attempting to minimize the syntact and semantic distance from the
+	 * 			This is a script that satisfies the manipulation (if possible) while
+	 * 			attempting to minimize the syntactic and semantic distance from the
 	 * 			original source code (provided in source param)
 	 */
-	public String getScript_linearCombination(Statement source) {
+	public String getScriptLinearCombination(Statement source) {
+		
+		//For now we ignore manipulations if the user provided assertions
+		if (this.assertions != null) {
+			
+		}
 
 		Statement coeffFunDecls = null;
-
-		String resv_funcs = ReservedFuncs();
 
 		buildContext((StmtBlock) source);
 

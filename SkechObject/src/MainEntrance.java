@@ -25,6 +25,7 @@ import sketchobj.core.Function;
 import sketchobj.core.SketchObject;
 import sketchobj.expr.Expression;
 import sketchobj.stmts.Statement;
+import sketchobj.stmts.StmtFuncAssert;
 import visitor.JavaVisitor;
 import visitor.JsonVisitor;
 import cfg.*;
@@ -219,6 +220,14 @@ public class MainEntrance {
 		boolean prime_mod = global.Global.prime_mod;
 		boolean rec_mod = global.Global.rec_mod;
 		
+		Trace correctionTrace = jsonTraceCompile(manipulation);
+		
+		//Convert function assertions to parse tree nodes
+		List<StmtFuncAssert> assertionStatements = new ArrayList<StmtFuncAssert>();
+		for (String assertion : correctionTrace.getAssertions().getAssertions()) {
+			ANTLRInputStream assertionInput = new ANTLRInputStream(assertion.replace("\"", ""));
+			assertionStatements.add(javaStatementCompile(assertionInput));
+		}
 		
 		ConstraintFactory cf = new ConstraintFactory(traces, 
 													 jsonTraceCompile(manipulation),
@@ -228,7 +237,8 @@ public class MainEntrance {
 													 args, 
 													 mod, 
 													 prime_mod,
-													 otherFunctions);
+													 otherFunctions,
+													 assertionStatements);
 		ConstraintFactory.correctionIndex = this.indexOfCorrectTrace;
 		if (this.repair_range != null)
 			cf.setRange(this.repair_range);
@@ -253,13 +263,13 @@ public class MainEntrance {
 		}
 
 		if (rec_mod){
-			script = cf.getScript_linearCombination(function.getBody());
+			script = cf.getScriptLinearCombination(function.getBody());
 		} else {
-			script = cf.getScript_linearCombination(function.getBody());
+			script = cf.getScriptLinearCombination(function.getBody());
 		}
 		script = script.replaceAll("External_", "");
 		if (mod != 2) {
-			return this.actualSynthesize(script);
+			return this.getSourceLineChanges(script);
 		}
 		
 		return null;
@@ -617,13 +627,15 @@ public class MainEntrance {
 	
 	/**
 	 * Maps coeffecient values from sketch back to changes in the original
-	 * source code
-	 * @param script - Input to sketch
-	 * @return
-	 * @throws InterruptedException
-	 * @throws SketchExecException
+	 * source code. Prints result to System.out for frontend to use.
+	 * @param sketchInput - Input script to sketch
+	 * @return - Maps a line number in the source code to a string that is
+	 * 			 the generated source code suggestion for that line
+	 * @throws InterruptedException - 
+	 * @throws SketchExecException - If an error occurs executing sketch on
+	 * 								 the given input
 	 */
-	public Map<Integer, String> actualSynthesize(String script)
+	public Map<Integer, String> getSourceLineChanges(String sketchInput)
 			throws InterruptedException, SketchExecException {
 
 		List<ExternalFunction> externalFuncs = ConstraintFactory.externalFuncs;
@@ -631,7 +643,7 @@ public class MainEntrance {
 		// no external Functions
 		if (externalFuncs.size() == 0) {
 
-			Map<Integer, Integer> coefToVal = CallSketch.CallByString(script);
+			Map<Integer, Integer> coefToVal = CallSketch.CallByString(sketchInput);
 			Map<Integer, String> repair = new HashMap<Integer, String>();
 			
 			int tmpLine = -1;
@@ -654,7 +666,7 @@ public class MainEntrance {
 				efs.add(s);
 			}
 			while (!consistancy) {
-				String script_ex = script;
+				String script_ex = sketchInput;
 				for (ExternalFunction ef : efs) {
 					script_ex = ef.toString() + script_ex;
 				}
@@ -777,22 +789,34 @@ public class MainEntrance {
 		return (Trace) new JsonVisitor().visit(tree);
 	}
 
-	public static ParseTree javaCompile(ANTLRInputStream input) {
+	private static simpleJavaParser javaCompile(ANTLRInputStream input) {
 		simpleJavaLexer lexer = new simpleJavaLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		simpleJavaParser parser = new simpleJavaParser(tokens);
-		ParseTree tree = parser.compilationUnit();
-		return tree;
+		return parser;
 	}
 	
+	/**
+	 * Uses ANTLR 4 to get an AST for an entire single-file java program
+	 * @param input - input stream to generate the parse tree and ast from
+	 * @param target - Currently the function name containing the manipulation 
+	 * 				   is passed in. Not sure why this is: TODO find out
+	 * @return - Parse tree node representing the entire program (Usually an entire class)
+	 */
 	public static SketchObject javaSketchObjectCompile(ANTLRInputStream input, String target) {
-		ParseTree tree = javaCompile(input);
-		return new JavaVisitor(target).visit(tree);
+		simpleJavaParser parser = javaCompile(input);
+		return new JavaVisitor(target).visit(parser.compilationUnit());
 	}
 	
-	public static Statement javaStatementCompile(ANTLRInputStream input, String target) {
-		ParseTree tree = javaCompile(input);
-		return (Statement) new JavaVisitor(target).visit(tree);
+	/**
+	 * Uses ANTLR 4 to get an AST for a single assert statement of a function call
+	 * example: assert func1(4, 6) == 7;
+	 * @param input - input stream to generate the parse tree and ast from
+	 * @return - Parse tree node representing the assert statement
+	 */
+	public static StmtFuncAssert javaStatementCompile(ANTLRInputStream input) {
+		simpleJavaParser parser = javaCompile(input);
+		return (StmtFuncAssert) new JavaVisitor(null).visit(parser.assertStatement());
 	}
 
 	public String eval(String input) {

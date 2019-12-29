@@ -27,7 +27,6 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	 **/
 	@Override
 	public SketchObject visitCompilationUnit(simpleJavaParser.CompilationUnitContext ctx) {
-
 		return visit(ctx.typeDeclaration(0).classDeclaration().normalClassDeclaration().classBody());
 	}
 
@@ -37,9 +36,10 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	@Override
 	public SketchObject visitClassBody(simpleJavaParser.ClassBodyContext ctx) {
 		for (int i = 0; i < ctx.classBodyDeclaration().size(); i++) {
-			if (ctx.classBodyDeclaration().get(i).classMemberDeclaration().methodDeclaration().methodHeader()
-					.getChild(1).getChild(0).getText().equals(targetFunc))
+			if (targetFunc == null || ctx.classBodyDeclaration().get(i).classMemberDeclaration().methodDeclaration().methodHeader()
+					.getChild(1).getChild(0).getText().equals(targetFunc)) {
 				return visit(ctx.classBodyDeclaration().get(i).classMemberDeclaration().methodDeclaration());
+			}
 		}
 		return null;
 	}
@@ -220,17 +220,22 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	}
 	
 	/**
-	 * Completely ignores rhs of assert statement, and puts the lhs expression in sketch format:
-	 * assert( <expr> ); by using the sketchobj ExporFuncCall
+	 * Returns a special node for asserting function returns that should not be included
+	 * with source code. Requires that exactly one side of the conditional in the assert
+	 * statement is a function call
 	 */
 	@Override
-	public SketchObject visitAssertStatement(simpleJavaParser.AssertStatementContext ctx) {
-		List<Expression> params = new ArrayList<Expression>();
-		//get lhs
-		params.add((Expression) visit(ctx.expression().get(0)));
-		ExprFunCall assertCall = new ExprFunCall("assert", params);
-		return new StmtExpr(assertCall, ctx.start.getLine());
-		
+	public StmtFuncAssert visitAssertStatement(simpleJavaParser.AssertStatementContext ctx) {
+		Expression lhs = (Expression) visit(ctx.expression(0));
+		Expression rhs = (Expression) visit(ctx.expression(1));
+		//check if function call in exactly one of lhs or rhs
+		if ( lhs instanceof ExprFunCall && !(rhs instanceof ExprFunCall)) {
+			return new StmtFuncAssert((ExprFunCall) lhs, rhs);
+		} else if (rhs instanceof ExprFunCall && !(lhs instanceof ExprFunCall)) {
+			return new StmtFuncAssert((ExprFunCall) rhs, lhs);
+		} else {
+			return null;
+		}
 	}
 
 	/** localVariableDeclarationStatement **/

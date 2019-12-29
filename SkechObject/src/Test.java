@@ -45,7 +45,7 @@ public class Test {
 		code = code.replace("\\t", "\t");
 
 		ANTLRInputStream input = new ANTLRInputStream(code);
-		Function function = (Function) MainEntrance.javaCompile(input, "main");
+		Function function = (Function) MainEntrance.javaSketchObjectCompile(input, "main");
 		System.out.println(function);
 		// assert s.toString().equals("{7=2}") ;
 	}
