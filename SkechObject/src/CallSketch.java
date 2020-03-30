@@ -105,7 +105,7 @@ public class CallSketch {
 			//about the coef's original values on these lines
 			HashSet<Integer> changedLineNums = new HashSet<Integer>();
 			for(Integer coefIdx : coefToInitVal.keySet()) {
-				changedLineNums.add(ConstraintFactory.coeffIndex_to_Line.get(coefIdx));
+				changedLineNums.add(ConstraintFactory.coeffIndexToLine.get(coefIdx));
 			}
 			
 			//second pass, we check for what the coef function returns 
@@ -120,7 +120,7 @@ public class CallSketch {
 					scnr.nextLine();
 					scnr.nextLine();
 					line = scnr.nextLine();
-					boolean isOnRepairLine = changedLineNums.contains(ConstraintFactory.coeffIndex_to_Line.get(curCoeff));
+					boolean isOnRepairLine = changedLineNums.contains(ConstraintFactory.coeffIndexToLine.get(curCoeff));
 					//	now on the next line there is 2 possible options:
 					//1)	if(coeffXchange_yadayada == 0
 					//2)	_out = coeffXchange_yadayada

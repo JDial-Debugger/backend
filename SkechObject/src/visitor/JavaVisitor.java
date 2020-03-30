@@ -226,8 +226,9 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	 */
 	@Override
 	public StmtFuncAssert visitAssertStatement(simpleJavaParser.AssertStatementContext ctx) {
-		Expression lhs = (Expression) visit(ctx.expression(0));
-		Expression rhs = (Expression) visit(ctx.expression(1));
+		ExprBinary assertExpr = (ExprBinary) visit(ctx.expression(0));
+		Expression lhs = assertExpr.getLeft();
+		Expression rhs = assertExpr.getRight();
 		//check if function call in exactly one of lhs or rhs
 		if ( lhs instanceof ExprFunCall && !(rhs instanceof ExprFunCall)) {
 			return new StmtFuncAssert((ExprFunCall) lhs, rhs);

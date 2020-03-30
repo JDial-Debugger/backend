@@ -37,7 +37,7 @@ public class ConstraintFactory {
 	// TODO: repair arrayInit.replaceConst(), else statement, Expr.field, all
 
 	// map from coeff to linenumber; map from linenumber to string of statement
-	public static Map<Integer, Integer> coeffIndex_to_Line = new HashMap<Integer, Integer>();
+	public static Map<Integer, Integer> coeffIndexToLine = new HashMap<Integer, Integer>();
 	public static Map<Integer, String> line_to_string = new HashMap<Integer, String>();
 
 	static int constNumber = 0;
@@ -287,7 +287,7 @@ public class ConstraintFactory {
 			}
 		}
 
-		Function f = new Function(ConstraintFactory.fh, source);
+		Function repairFuncHoles = new Function(ConstraintFactory.fh, source);
 
 		List<Statement> stmts = new ArrayList<>();
 
@@ -302,12 +302,10 @@ public class ConstraintFactory {
 
 			Statement s1 = cur.getBody();
 
-		//	System.out.println(s1);
 
 			buildContext((StmtBlock) s1);
-		//	System.out.println(s1.toString_Context());
+			
 			// replace all constants in source code
-
 			if (!ConstraintFactory.sign_limited_range) {
 				coeffFunDecls1 = ConstraintFactory.replaceLinearCombination(s1);
 				// constFunDecls = ConstraintFactory.replaceConst(s);
@@ -330,9 +328,8 @@ public class ConstraintFactory {
 		stmts.add(coeffFunDecls);
 		if (coeffFunDecls1 != null)
 			stmts.add(coeffFunDecls1);
-		stmts.add(
-				new StmtBlock(varArrayDecl("line", length, new TypePrimitive(4)), varArrayDecls(varsNames, varsTypes,
-						f.getName())));
+		stmts.add(new StmtBlock(varArrayDecl("line", length, new TypePrimitive(4)), 
+				  				varArrayDecls(varsNames, varsTypes, repairFuncHoles.getName())));
 
 		//if(global.Global.rec_mod)
 			//stmts.add(varArrayDecl("stack", length, new TypePrimitive(4)));
@@ -370,7 +367,7 @@ public class ConstraintFactory {
 		Statement block = new StmtBlock(stmts);
 
 		String tmp1 = block.toString();
-		String tmp2 = f.toString();
+		String tmp2 = repairFuncHoles.toString();
 		// args of getAugFunctions() need change
 		String tmp3 = "";
 		if (Global.inc_mod) {
@@ -388,12 +385,14 @@ public class ConstraintFactory {
 		}
 		return tmp1 + tmp2 + st + tmp3;
 	}
-
-
+	
+	/*
+	 * 
+	 */
 	private Statement getGlobalDecl() {
 		StmtBlock result = new StmtBlock();
 		List<Integer> appeared = new ArrayList<Integer>();
-		for (int line : ConstraintFactory.coeffIndex_to_Line.values()) {
+		for (int line : ConstraintFactory.coeffIndexToLine.values()) {
 			if (appeared.contains(line))
 				continue;
 			result.addStmt(new StmtVarDecl(new TypePrimitive(1), "line" + line + "change", new ExprConstInt(0), 0));
@@ -409,14 +408,32 @@ public class ConstraintFactory {
 		return null;
 	}
 
-	/*
-	 * Replaces a given normal code statement with a series of coefficients for sketch input
+	/**
+	 * Replaces a given normal code statement with a series of coefficients 
+	 * for sketch input
 	 * Example: int x = 5 -> int x = coeff1 * 5 + coeff2 * coeff3
+	 * @param s - root statement for the code. Edits all sub statements to
+	 * substitute coefficients
+	 * @return - Chunk of statements that declare and initialize coeffecients
+	 * example: 
+	 bit coeff0change = ??;
+	 int Coeff0(){
+		if(coeff0change == 0){
+			return 0;
+		}
+		if(??){
+			return 1;
+		}
+		return -1;
+	}
+
 	 */
 	private static Statement replaceLinearCombination(Statement s) {
+		
 		List<Statement> list = new ArrayList<Statement>();
 		Stack<SketchObject> stmtStack = new Stack<SketchObject>();
 		stmtStack.push(s);
+		
 		//iterates through each statement contained in @param s
 		while (!stmtStack.empty()) {
 			//current expression to try and coeffs to
@@ -434,31 +451,26 @@ public class ConstraintFactory {
 				while (coeffIndex <= data.getPrimaryCoeffIndex()) {
 					list.add(coeffChangeDecl(coeffIndex, new TypePrimitive(1)));
 					list.add(new StmtFunDecl(addCoeffFun(coeffIndex, 1, data.getType())));
-					coeffIndex_to_Line.put(coeffIndex, data.getOriline());
+					coeffIndexToLine.put(coeffIndex, data.getOriline());
 					coeffIndex++;
 				}
 				if (data.getLiveVarsIndexSet() != null) {
 					for (int ii : data.getLiveVarsIndexSet()) {
 						list.add(coeffChangeDecl(ii, new TypePrimitive(1)));
 						list.add(new StmtFunDecl(addCoeffFun(ii, 0, data.getType())));
-						coeffIndex_to_Line.put(ii, data.getOriline());
+						coeffIndexToLine.put(ii, data.getOriline());
 					}
 
 				}
 				coeffIndex = data.getIndex();
 				if (!data.isIfLC()) {
 					ConstraintFactory.noWeightCoeff.add(coeffIndex - 2);
-					System.err.println("case2");
-					System.err.println(coeffChangeDecl(coeffIndex - 2, new TypePrimitive(1)));
-					System.err.println(new StmtFunDecl(addCoeffFun(coeffIndex - 2, 0, data.getType())));
-					System.err.println(coeffChangeDecl(coeffIndex - 1, new TypePrimitive(4)));
-					System.err.println(new StmtFunDecl(addLCConstFun(coeffIndex - 1, data.getType())));
 					list.add(coeffChangeDecl(coeffIndex - 2, new TypePrimitive(1)));//bit coeff0change = ??;
 					list.add(new StmtFunDecl(addCoeffFun(coeffIndex - 2, 0, data.getType())));//Coeff0()
 					list.add(coeffChangeDecl(coeffIndex - 1, new TypePrimitive(4)));
 					list.add(new StmtFunDecl(addLCConstFun(coeffIndex - 1, data.getType())));
-					coeffIndex_to_Line.put(coeffIndex - 1, data.getOriline());
-					coeffIndex_to_Line.put(coeffIndex - 2, data.getOriline());
+					coeffIndexToLine.put(coeffIndex - 1, data.getOriline());
+					coeffIndexToLine.put(coeffIndex - 2, data.getOriline());
 				}
 			}
 			coeffIndex = data.getIndex();
@@ -978,15 +990,15 @@ public class ConstraintFactory {
 		StmtBlock result = new StmtBlock();
 		Map<Integer, Expression> assign = new HashMap<Integer, Expression>();
 		List<Integer> appeared = new ArrayList<Integer>();
-		for (int line : ConstraintFactory.coeffIndex_to_Line.values()) {
+		for (int line : ConstraintFactory.coeffIndexToLine.values()) {
 			if (appeared.contains(line))
 				continue;
 			assign.put(line, null);
 			appeared.add(line);
 		}
 
-		for (int coeff : ConstraintFactory.coeffIndex_to_Line.keySet()) {
-			int line = ConstraintFactory.coeffIndex_to_Line.get(coeff);
+		for (int coeff : ConstraintFactory.coeffIndexToLine.keySet()) {
+			int line = ConstraintFactory.coeffIndexToLine.get(coeff);
 			Expression old = assign.get(line);
 			if (old == null)
 				old = new ExprBinary(new ExprVar("coeff" + coeff + "change"), "!=", new ExprConstInt(0), -1);
@@ -1258,14 +1270,19 @@ public class ConstraintFactory {
 			}
 		}
 
-		for (String v : finalState.getOrdered_locals()) {
-			if (finalState.getLocals().find(v) != null)
-				stmts.add(new StmtVarDecl(new TypePrimitive(4), "correctFinal_" + v,
-						new ExprConstInt(finalState.getLocals().find(v).getValue()), 0));
-		}
 
-		// f(args)
-		stmts.add(new StmtExpr(new ExprFunCall(fh.getName(), args, fh.getName()), 0));
+		//Dont care about manipulation values if there are assertions
+		if (this.assertions != null) {
+			stmts.addAll(this.assertions);
+			
+		} else {
+			for (String v : finalState.getOrdered_locals()) {
+				if (finalState.getLocals().find(v) != null)
+					stmts.add(new StmtVarDecl(new TypePrimitive(4), "correctFinal_" + v,
+							new ExprConstInt(finalState.getLocals().find(v).getValue()), 0));
+			}
+			stmts.add(new StmtExpr(new ExprFunCall(fh.getName(), args, fh.getName()), 0));
+		}
  		List<Statement> forBody = new ArrayList<Statement>();
 		for (Map.Entry<String, String> entry : varList.entrySet()) {
 			String v = entry.getKey();

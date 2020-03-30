@@ -649,13 +649,13 @@ public class MainEntrance {
 			int tmpLine = -1;
 			
 			for (int coefIdx : coefToVal.keySet()) {
-				if (ConstraintFactory.coeffIndex_to_Line.get(coefIdx) != null 
-					&& ConstraintFactory.coeffIndex_to_Line.get(coefIdx) == tmpLine) 
+				if (ConstraintFactory.coeffIndexToLine.get(coefIdx) != null 
+					&& ConstraintFactory.coeffIndexToLine.get(coefIdx) == tmpLine) 
 					continue;
-				if(ConstraintFactory.coeffIndex_to_Line.get(coefIdx) != null)
-					tmpLine = ConstraintFactory.coeffIndex_to_Line.get(coefIdx);
+				if(ConstraintFactory.coeffIndexToLine.get(coefIdx) != null)
+					tmpLine = ConstraintFactory.coeffIndexToLine.get(coefIdx);
 				String stmtString = ConstraintFactory.line_to_string.get(tmpLine);
-				repair.put(tmpLine, replaceCoeff(stmtString, coefToVal, ConstraintFactory.coeffIndex_to_Line, tmpLine));
+				repair.put(tmpLine, replaceCoeff(stmtString, coefToVal, ConstraintFactory.coeffIndexToLine, tmpLine));
 			}
 			printRepair(repair);
 			return repair;
