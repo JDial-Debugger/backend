@@ -932,7 +932,7 @@ public class ConstraintFactory {
 		List<Integer> arrayInit = new ArrayList<>();
 		List<Integer> level = new ArrayList<>();
 		for (int i = 0; i < bound; i++) {
-			level.add(oriTrace.getTraces().get(i).getRstack().getFrams().size());
+			level.add(oriTrace.getTraces().get(i).getRstack().getFrames().size());
 			if (oriTrace.getTraces().get(i).getOrderedLocals().contains(v)) {
 				if (oriTrace.getTraces().get(i).getLocals().find(v).getType() == 0) {
 					arrayInit.add(oriTrace.getTraces().get(i).getLocals().find(v).getValue());

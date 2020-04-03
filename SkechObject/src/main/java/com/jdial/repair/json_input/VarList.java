@@ -4,21 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class VarList extends JsonNode{
+public class VarList {
 
 	private List<Var> var;
 
-	public VarList(List<Var> varl) {
-		this.setVar(varl);
-	}
-
-	public List<Var> getVar() {
-		return var;
-	}
-
-	public void setVar(List<Var> var) {
-		this.var = var;
-	}
+	public VarList() {}
+	
+	public List<Var> getVar() { return this.var; }
 
 	public List<String> toStringList() {
 		List<String> result = new ArrayList<String>();

@@ -2,79 +2,27 @@ package json_input;
 
 import java.util.List;
 
-public class Frame extends JsonNode {
+public class Frame {
 
 	private String name;
-	private VarList encoded_locals;
-	private VarList ordered_varnames;
-	private boolean is_highlighted;
-	private boolean is_zombie;
+	private VarList encodedLocals;
+	private VarList orderedVarnames;
+	private boolean highlighted;
+	private boolean zombie;
 	private Integer id;
 
-	public Frame(String name, VarList encoded_locals, VarList ordered_varnames, boolean is_highlighted,
-			boolean is_zombie, Integer id) {
-		this.setName(name);
-		this.setEncoded_locals(encoded_locals);
-		this.setOrdered_varnames(ordered_varnames);
-		this.setIs_highlighted(is_highlighted);
-		this.setIs_zombie(is_zombie);
-		this.setId(id);
-	}
+	public Frame() {}
 	
 	public String toString(){
-		return name + "\n" + id+"\n"+encoded_locals.toString();
+		return name + "\n" + id+"\n"+encodedLocals.toString();
 	}
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public VarList getEncoded_locals() {
-		return encoded_locals;
-	}
-
-	public void setEncoded_locals(VarList encoded_locals) {
-		this.encoded_locals = encoded_locals;
-	}
-
-	public VarList getOrdered_varnames() {
-		return ordered_varnames;
-	}
-
-	public void setOrdered_varnames(VarList ordered_varnames) {
-		this.ordered_varnames = ordered_varnames;
-	}
-
-	public boolean isIs_highlighted() {
-		return is_highlighted;
-	}
-
-	public void setIs_highlighted(boolean is_highlighted) {
-		this.is_highlighted = is_highlighted;
-	}
-
-	public boolean isIs_zombie() {
-		return is_zombie;
-	}
-
-	public void setIs_zombie(boolean is_zombie) {
-		this.is_zombie = is_zombie;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public List<String> getOrdered_locals() {
-		
-		return this.ordered_varnames.toStringList();
-	}
+	
+	public String getName() { return this.name; }
+	public VarList getEncodedLocals() { return this.encodedLocals; }
+	public VarList getOrderedVarnames() { return this.orderedVarnames; }
+	public boolean isHighlighted() { return this.highlighted; }
+	public boolean isZombie() { return this.zombie; }
+	public Integer getId() { return this.id; }
+	public List<String> getOrderedLocals() { return this.orderedVarnames.toStringList(); }
 
 }

@@ -7,15 +7,16 @@ import java.util.Set;
 
 import jsonparser.jsonParser.TraceContext;
 
-public class Trace extends ProgramState implements Frameable {
+public class Trace implements Frameable {
 
 	private List<TracePoint> tracePoints;
 
 	public Trace() {}
-
-
+	
+	public List<TracePoint> getTracePoints() { return this.tracePoints; }
 
 	public String toString() {
+		
 		String result = "";
 		int i = 0;
 		for (TracePoint t : this.tracePoints) {
@@ -25,11 +26,14 @@ public class Trace extends ProgramState implements Frameable {
 	}
 
 	@Override
-	public Set<String> getCalledFuncs(String callerFunction) {
+	public Set<String> getCalledFuncs(String callerFunc) {
+		
 		Set<String> calledFuncs = new HashSet<String>();
-		// TODO LEFT OFF HERE
-		// TODO Auto-generated method stub
-		return null;
+		
+		for(TracePoint tracePoint : this.getTracePoints()) {
+			calledFuncs.addAll(tracePoint.getRstack().getCalledFuncs(callerFunc));
+		}
+		return calledFuncs;
 	}
 
 	
@@ -37,17 +41,16 @@ public class Trace extends ProgramState implements Frameable {
 	 * Removes all points in the execution trace that are not in the same
 	 * call stack as the point with the given index in the trace list.
 	 * @param targetFunc - the containing function name
-	 * @param bound - the index in the execution trace at which to search
+	 * @param bound - the upper index of the trace points to not trim
 	 */
-	@Override
 	public void trimTracePoints(String targetFunc, Integer bound) {
 		
 		List<Integer> toRemove = new ArrayList<Integer>();
 		
 		//if no bound, use return of targetFunc as bound
 		if (bound == null) {
-			for (int i = 0; i < tracePoints.size(); ++i) {
-				TracePoint tracePoint = tracePoints.get(i);
+			for (int i = 0; i < this.getTracePoints().size(); ++i) {
+				TracePoint tracePoint = this.getTracePoints().get(i);
 				if (tracePoint.getFuncName().equals(targetFunc)
 						&& tracePoint.getEvent() == Event.RETURN) {
 						bound = i;
@@ -59,28 +62,28 @@ public class Trace extends ProgramState implements Frameable {
 		
 		for (int i = bound; i >= 0; i--) {
 			
-			if (this.tracePoints.get(i).getFuncName().equals(targetFunc)) {
+			if (this.getTracePoints().get(i).getFuncName().equals(targetFunc)) {
 				firstIndex = i;
 			}
 			
 			//TODO: find out why this is necessary
-			if (!this.tracePoints.get(i).getEvent().equals("step_line") || 
-					(i > 0 && tracePoints.get(i-1).getEvent().equals("return"))) {
+			if (!this.getTracePoints().get(i).getEvent().equals("step_line") || 
+					(i > 0 && this.getTracePoints().get(i - 1)
+							.getEvent().equals("return"))) {
 				toRemove.add(i);
 				continue;
 			}
 
 		}
 		
-		for (int i = this.tracePoints.size() - 1; i >= 0; i--) {
+		for (int i = this.getTracePoints().size() - 1; i >= 0; i--) {
 			if (toRemove.contains(i) || i > bound || i < firstIndex){
 				
-				this.tracePoints.remove(i);
+				this.getTracePoints().remove(i);
 			}
 		}
 	}
 	
-	@Override
 	public void trimTracePoints(String targetFunc) {
 		this.trimTracePoints(targetFunc, null);
 	}

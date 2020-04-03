@@ -2,7 +2,7 @@ package json_input;
 
 import java.util.List;
 
-public class Var extends JsonNode {
+public class Var {
 
 	private String name;
 	private Integer value;
@@ -10,57 +10,29 @@ public class Var extends JsonNode {
 	private List<?> list;
 
 	public Var(String text, Integer parseInt) {
-		this.setName(text);
-		this.setValue(parseInt);
-		this.setType(0);
+		this.name = text;
+		this.value = parseInt;
+		this.type = 0;
 	}
 
 	public Var(String text, int parseInt, int i) {
 		this.name = text;
 		this.value = parseInt;
-		this.setType(i);
+		this.type = i;
 	}
 
 	public Var(String text, List<?> visit) {
 		this.name = text;
-		this.type =1;
-		this.setList(visit);
+		this.type = 1;
+		this.list = visit;
 	}
 
-	public String getName() {
-		return name;
-	}
+	public String getName() { return this.name; }
+	public Integer getValue() { return value; }
+	public Integer getType() { return type; }
+	public List<?> getList() { return list; }
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Integer getValue() {
-		return value;
-	}
-
-	public void setValue(Integer value) {
-		this.value = value;
-	}
-
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	}
-
-	public List<?> getList() {
-		return list;
-	}
-
-	public void setList(List<?> list) {
-		this.list = list;
-	}
-
-	
-	public String getListasString(){
+	public String getListAsString(){
 		String result = "{" +list.get(0).toString();
 		for(int i = 1; i < list.size(); i++){
 			result += "," + list.get(i).toString(); 

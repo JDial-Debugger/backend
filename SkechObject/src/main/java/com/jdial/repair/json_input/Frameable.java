@@ -9,9 +9,9 @@ public interface Frameable {
 	/**
 	 * Searches for all functions that appear in a higher stack frame than 
 	 * caller function
-	 * @param callerFunction - The function to search for that directly or 
+	 * @param callerFunc - The function to search for that directly or 
 	 * indirectly calls the function names to look for
 	 * @return - The called function names 
 	 */
-	Set<String> getCalledFuncs(String callerFunction);
+	Set<String> getCalledFuncs(String callerFunc);
 }

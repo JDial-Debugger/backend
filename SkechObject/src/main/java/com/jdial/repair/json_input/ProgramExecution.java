@@ -2,7 +2,7 @@ package json_input;
 
 import java.util.Set;
 
-public class ProgramExecution extends ProgramState implements Frameable {
+public class ProgramExecution implements Frameable {
 	private String stdin;
 	private Trace trace;
 	private String code;
@@ -16,8 +16,4 @@ public class ProgramExecution extends ProgramState implements Frameable {
 	public Set<String> getCalledFuncs(String callerFunction) {
 		return this.trace.getCalledFuncs(callerFunction);
 	}
-	public void trimTracePoints(String targetFunction) {
-		return this.trace.trimTracePoints(targetFunction);
-	}
-
 }

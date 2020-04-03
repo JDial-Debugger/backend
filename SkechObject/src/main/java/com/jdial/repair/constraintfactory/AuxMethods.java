@@ -68,7 +68,7 @@ public class AuxMethods {
 				Integer heapIndex = v.getValue();
 				for(Var h: heapObjs){
 					if(h.getName().equals(heapIndex.toString())){
-						result.add(new ExprString(h.getListasString()));
+						result.add(new ExprString(h.getListAsString()));
 						break;
 					}
 				}
