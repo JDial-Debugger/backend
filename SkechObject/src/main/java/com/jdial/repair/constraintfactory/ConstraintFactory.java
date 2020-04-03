@@ -241,7 +241,7 @@ public class ConstraintFactory {
 			coeffFunDecls = ConstraintFactory.replaceLinearCombination(source);
 			if (Global.prime_mod) {
 				dupPrimes(source);
-				for (String v : finalState.getOrdered_locals()) {
+				for (String v : finalState.getOrderedLocals()) {
 					for (int i : Global.primes) {
 						Global.dupFinals.add(v + Integer.toString(i));
 					}
@@ -256,7 +256,7 @@ public class ConstraintFactory {
 		Global.curFunc = ConstraintFactory.fh.getName();
 
 		Map<String, Type> vars = ConstraintFactory.addRecordStmt((StmtBlock) source);
-		for (String v : finalState.getOrdered_locals()) {
+		for (String v : finalState.getOrderedLocals()) {
 			vars.put(v, TypePrimitive.inttype);
 		}
 		
@@ -280,7 +280,7 @@ public class ConstraintFactory {
 		source = new StmtBlock(new StmtVarDecl(new TypePrimitive(4), "count", new ExprConstInt(-1), 0), source);
 		if (Global.prime_mod) {
 			for (Map.Entry<String, Boolean> entry : Global.feasibleVars.entrySet()) {
-				if (!finalState.getOrdered_locals().contains(entry.getKey()))
+				if (!finalState.getOrderedLocals().contains(entry.getKey()))
 					source = new StmtBlock(new StmtVarDecl(new TypePrimitive(4), entry.getKey() + "ini"
 						, new ExprConstInt(0), 0), source);
 			}
@@ -335,7 +335,7 @@ public class ConstraintFactory {
 
 		// add final state
 		if (!Global.test_mod)
-			for (String v : finalState.getOrdered_locals()) {
+			for (String v : finalState.getOrderedLocals()) {
 				// added
 				/*if (ConstraintFactory.prime_mod) {
 					for (int i : Global.primes) {
@@ -507,7 +507,7 @@ public class ConstraintFactory {
 			if (entry.getValue().contains(line)) {
 				//for (Parameter para :fh.getPara()) {
 					//if (para.getName().equals(entry.getKey())) {
-				if (!finalState.getOrdered_locals().contains(entry.getKey()))
+				if (!finalState.getOrderedLocals().contains(entry.getKey()))
 					tbi.add(entry.getKey());
 					//	break;
 				//	}
@@ -636,7 +636,7 @@ public class ConstraintFactory {
 					//if (!Global.feasibleVars.get(declaredVar))
 						//Global.feasibleVars.put(declaredVar, true);
 
-					String finalVar = finalState.getOrdered_locals().get(0);
+					String finalVar = finalState.getOrderedLocals().get(0);
 					//System.err.println("final var is "+ finalVar);
 					//System.err.println("var name is " + ((StmtVarDecl) si).getName(0));
 					if (((StmtVarDecl) si).getName(0).equals(finalVar)) {
@@ -933,7 +933,7 @@ public class ConstraintFactory {
 		List<Integer> level = new ArrayList<>();
 		for (int i = 0; i < bound; i++) {
 			level.add(oriTrace.getTraces().get(i).getRstack().getFrams().size());
-			if (oriTrace.getTraces().get(i).getOrdered_locals().contains(v)) {
+			if (oriTrace.getTraces().get(i).getOrderedLocals().contains(v)) {
 				if (oriTrace.getTraces().get(i).getLocals().find(v).getType() == 0) {
 					arrayInit.add(oriTrace.getTraces().get(i).getLocals().find(v).getValue());
 				}
@@ -1038,7 +1038,7 @@ public class ConstraintFactory {
 					arrayInit.add(new ExprConstInt(0));
 					continue;
 				}
-				if (oriTrace.getTraces().get(i).getOrdered_locals().contains(v)) {
+				if (oriTrace.getTraces().get(i).getOrderedLocals().contains(v)) {
 					vIsOriginal = true;
 					if (oriTrace.getTraces().get(i).getLocals().find(v).getType() == 0)
 						arrayInit.add(
@@ -1058,7 +1058,7 @@ public class ConstraintFactory {
 			}
 		}
 
-		for (String v : finalState.getOrdered_locals()) {
+		for (String v : finalState.getOrderedLocals()) {
 			if (finalState.getLocals().find(v) != null)
 				stmts.add(new StmtVarDecl(new TypePrimitive(4), "correctFinal_" + v,
 						new ExprConstInt(finalState.getLocals().find(v).getValue()), 0));
@@ -1069,7 +1069,7 @@ public class ConstraintFactory {
 			stmts.add(new StmtExpr(new ExprFunCall(fh.getName(), args, fh.getName()), 0));
 
 			for (int p : Global.primes) {
-				for (String v : finalState.getOrdered_locals()) {
+				for (String v : finalState.getOrderedLocals()) {
 					String var = v + Integer.toString(p);
 					stmts.add(new StmtExpr(new ExprVar(var + " = (" + var + " < 0)? " + var + "+" +
 					Integer.toString(p) + " : " + var),0));
@@ -1078,7 +1078,7 @@ public class ConstraintFactory {
 		}
 
 		// hard constrain
-		for (String v : finalState.getOrdered_locals()) {
+		for (String v : finalState.getOrderedLocals()) {
 			if (ConstraintFactory.prime_mod) {
 				for (int i : Global.primes) {
 					String num = Integer.toString(i);
@@ -1132,7 +1132,7 @@ public class ConstraintFactory {
 					arrayInit.add(new ExprConstInt(0));
 					continue;
 				}
-				if (oriTrace.getTraces().get(i).getOrdered_locals().contains(v)) {
+				if (oriTrace.getTraces().get(i).getOrderedLocals().contains(v)) {
 					vIsOriginal = true;
 					if (oriTrace.getTraces().get(i).getLocals().find(v).getType() == 0)
 						arrayInit.add(
@@ -1152,7 +1152,7 @@ public class ConstraintFactory {
 			}
 		}
 
-		for (String v : finalState.getOrdered_locals()) {
+		for (String v : finalState.getOrderedLocals()) {
 			if (finalState.getLocals().find(v) != null)
 				stmts.add(new StmtVarDecl(new TypePrimitive(4), "correctFinal_" + v,
 						new ExprConstInt(finalState.getLocals().find(v).getValue()), 0));
@@ -1163,7 +1163,7 @@ public class ConstraintFactory {
 			stmts.add(new StmtExpr(new ExprFunCall(fh.getName(), args, fh.getName()), 0));
 
 			for (int p : Global.primes) {
-				for (String v : finalState.getOrdered_locals()) {
+				for (String v : finalState.getOrderedLocals()) {
 					String var = v + Integer.toString(p);
 					stmts.add(new StmtExpr(new ExprVar(var + " = (" + var + " < 0)? " + var + "+" +
 					Integer.toString(p) + " : " + var),0));
@@ -1172,7 +1172,7 @@ public class ConstraintFactory {
 		}
 
 		// hard constrain
-		for (String v : finalState.getOrdered_locals()) {
+		for (String v : finalState.getOrderedLocals()) {
 			if (ConstraintFactory.prime_mod) {
 				for (int i : Global.primes) {
 					String num = Integer.toString(i);
@@ -1249,7 +1249,7 @@ public class ConstraintFactory {
 					arrayInit.add(new ExprConstInt(0));
 					continue;
 				}
-				if (oriTrace.getTraces().get(i).getOrdered_locals().contains(v)) {
+				if (oriTrace.getTraces().get(i).getOrderedLocals().contains(v)) {
 					vIsOriginal = true;
 					if (oriTrace.getTraces().get(i).getLocals().find(v).getType() == 0)
 						arrayInit.add(
@@ -1275,7 +1275,7 @@ public class ConstraintFactory {
 			stmts.addAll(this.assertions);
 			
 		} else {
-			for (String v : finalState.getOrdered_locals()) {
+			for (String v : finalState.getOrderedLocals()) {
 				if (finalState.getLocals().find(v) != null)
 					stmts.add(new StmtVarDecl(new TypePrimitive(4), "correctFinal_" + v,
 							new ExprConstInt(finalState.getLocals().find(v).getValue()), 0));
@@ -1327,7 +1327,7 @@ public class ConstraintFactory {
 			//stmts.add(new StmtExpr(new ExprFunCall(fh.getName(), args, fh.getName()), 0));
 			
 			for (int p : Global.primes) {
-				for (String v : finalState.getOrdered_locals()) {
+				for (String v : finalState.getOrderedLocals()) {
 					String var = v + Integer.toString(p);
 					stmts.add(new StmtExpr(new ExprVar(var + " = (" + var + " < 0)? " + var + "+" +
 					Integer.toString(p) + " : " + var),0));
@@ -1336,7 +1336,7 @@ public class ConstraintFactory {
 		}
 
 		// hard constrain
-		for (String v : finalState.getOrdered_locals()) {
+		for (String v : finalState.getOrderedLocals()) {
 			if (ConstraintFactory.prime_mod) {
 				for (int i : Global.primes) {
 					String num = Integer.toString(i);
@@ -1395,7 +1395,7 @@ public class ConstraintFactory {
 	private List<Statement> pgenSemCompareIO(int cur_p, int bound, Trace ori, TracePoint tar){
 		 List<Statement> stmts = new ArrayList<>();
 
-		for (String v : tar.getOrdered_locals()) {
+		for (String v : tar.getOrderedLocals()) {
 			if (tar.getLocals().find(v) != null)
 				stmts.add(new StmtAssign(new ExprVar("correctFinal_" + v),
 						new ExprConstInt(tar.getLocals().find(v).getValue()), 0));
@@ -1406,7 +1406,7 @@ public class ConstraintFactory {
 			stmts.add(new StmtExpr(new ExprFunCall(fh.getName(), extra_args.get(extra_index++), fh.getName()), 0));
 
 			for (int p : Global.primes) {
-				for (String v : finalState.getOrdered_locals()) {
+				for (String v : finalState.getOrderedLocals()) {
 					String var = v + Integer.toString(p);
 					stmts.add(new StmtExpr(new ExprVar(var + " = (" + var + " < 0)? " + var + "+" +
 					Integer.toString(p) + " : " + var),0));
@@ -1416,7 +1416,7 @@ public class ConstraintFactory {
 		}
 
 		// hard constrain
-		for (String v : tar.getOrdered_locals()) {
+		for (String v : tar.getOrderedLocals()) {
 			if (ConstraintFactory.prime_mod) {
 				for (int i : Global.primes) {
 					String num = Integer.toString(i);
@@ -1453,7 +1453,7 @@ public class ConstraintFactory {
 						arrayInit.add(new ExprConstInt(0));
 						continue;
 					}
-					if (ori.getTraces().get(i).getOrdered_locals().contains(v)) {
+					if (ori.getTraces().get(i).getOrderedLocals().contains(v)) {
 						vIsOriginal = true;
 						if (ori.getTraces().get(i).getLocals().find(v).getType() == 0)
 							arrayInit.add(
@@ -1471,7 +1471,7 @@ public class ConstraintFactory {
 					addedVars.add(v);
 				}
 			}
-		for (String v : tar.getOrdered_locals()) {
+		for (String v : tar.getOrderedLocals()) {
 			if (tar.getLocals().find(v) != null)
 				stmts.add(new StmtAssign(new ExprVar("correctFinal_" + v),
 						new ExprConstInt(tar.getLocals().find(v).getValue()), 0));
@@ -1523,7 +1523,7 @@ public class ConstraintFactory {
 			stmts.add(new StmtExpr(new ExprFunCall(fh.getName(), extra_args.get(extra_index++), fh.getName()), 0));
 
 			for (int p : Global.primes) {
-				for (String v : finalState.getOrdered_locals()) {
+				for (String v : finalState.getOrderedLocals()) {
 					String var = v + Integer.toString(p);
 					stmts.add(new StmtExpr(new ExprVar(var + " = (" + var + " < 0)? " + var + "+" +
 					Integer.toString(p) + " : " + var),0));
@@ -1533,7 +1533,7 @@ public class ConstraintFactory {
 		}
 
 		// hard constrain
-		for (String v : tar.getOrdered_locals()) {
+		for (String v : tar.getOrderedLocals()) {
 			if (ConstraintFactory.prime_mod) {
 				for (int i : Global.primes) {
 					String num = Integer.toString(i);
@@ -1694,7 +1694,7 @@ public class ConstraintFactory {
 			result.addStmt(new StmtExpr(new ExprUnary(5, new ExprVar("linehit"), 0), 0));
 			
 			List<Statement> consStmts = new ArrayList<>();
-			for (String localVarName : finalState.getOrdered_locals()) {
+			for (String localVarName : finalState.getOrderedLocals()) {
 				if (allVars.get(localVarName) instanceof TypeArray)
 					continue;
 				//Of the form finalVarName = varName

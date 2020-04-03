@@ -13,5 +13,5 @@ public interface Frameable {
 	 * indirectly calls the function names to look for
 	 * @return - The called function names 
 	 */
-	Set<String> getCalledFunctions(String callerFunction);
+	Set<String> getCalledFuncs(String callerFunction);
 }

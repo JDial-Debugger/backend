@@ -52,7 +52,7 @@ public class AuxMethods {
 		//and finds the trace point that calls the function that the correction is in
 		for(int i = targetindex; i >=0; i--){
 			if(tracelist.get(i).getEvent().equals("call") && 
-					tracelist.get(i).getFuncname().equals(targetName)){
+					tracelist.get(i).getFuncName().equals(targetName)){
 				callTrace = tracelist.get(i);
 			}
 		}

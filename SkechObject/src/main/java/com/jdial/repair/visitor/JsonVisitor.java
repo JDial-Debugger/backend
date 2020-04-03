@@ -53,7 +53,7 @@ public class JsonVisitor extends jsonBaseVisitor<JsonNode> {
 				(String) ctx.func_name().STRING().getText().replace("\"", ""), 
 				(VarList) visit(ctx.heap()),
 				assertions);
-		if(ret.getFuncname().contains("<clinit>")) {
+		if(ret.getFuncName().contains("<clinit>")) {
 			return null;
 		}
 		return ret;

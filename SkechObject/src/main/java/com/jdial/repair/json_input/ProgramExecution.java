@@ -13,8 +13,8 @@ public class ProgramExecution extends ProgramState implements Frameable {
 	public String getCode() { return this.code; }
 
 	@Override
-	public Set<String> getCalledFunctions(String callerFunction) {
-		return this.trace.getCalledFunctions(callerFunction);
+	public Set<String> getCalledFuncs(String callerFunction) {
+		return this.trace.getCalledFuncs(callerFunction);
 	}
 	public void trimTracePoints(String targetFunction) {
 		return this.trace.trimTracePoints(targetFunction);

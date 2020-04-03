@@ -1,6 +1,9 @@
 import java.util.Map;
 import com.google.gson.Gson;
 
+import json_input.Trace;
+import json_input.TracePoint;
+
 public class RepairEngine {
 
 	/**
@@ -37,11 +40,11 @@ public class RepairEngine {
 
 	}
 	
-	public Map<Integer, String> getTracePointRepair(String traceString, String correctPointString, int correctPointIdx) {
+	public Map<Integer, String> getTracePointRepair(Trace traceString, TracePoint correctPointString, int correctPointIdx) {
 		return null;
 	}
 	
-	public Map<Integer, String> getFuncCorrectionRepair(Map<String, Integer> funcTraceCorrections) {
+	public Map<Integer, String> getFuncCorrectionRepair(Map<Trace, Integer> funcTraceCorrections) {
 		return null;
 	}
 /*	

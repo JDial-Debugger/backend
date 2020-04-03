@@ -286,7 +286,7 @@ public class MainEntrance {
 
 		List<TracePoint> traces = curRoot.getTraces().getTraces();
 		for(TracePoint trace: traces){
-			String name = trace.getFuncname();
+			String name = trace.getFuncName();
 			if (name.equals("main"))
 				continue;
 			if(!this.function_names.contains(name)) {
@@ -768,7 +768,7 @@ public class MainEntrance {
 
 	public String extractFuncName(String trace) {
 		TracePoint tr = jsonTraceCompile(trace);
-		return tr.getFuncname();
+		return tr.getFuncName();
 	}
 
 	public static Root jsonRootCompile(String s) {
