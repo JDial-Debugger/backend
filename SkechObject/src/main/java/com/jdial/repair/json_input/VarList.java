@@ -10,6 +10,10 @@ public class VarList {
 
 	public VarList() {}
 	
+	public VarList(List<Var> var) {
+		this.var = var;
+	}
+	
 	public List<Var> getVar() { return this.var; }
 
 	public List<String> toStringList() {

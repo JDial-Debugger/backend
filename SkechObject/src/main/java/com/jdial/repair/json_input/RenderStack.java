@@ -9,6 +9,10 @@ public class RenderStack implements Frameable {
 	private List<Frame> frames;
 
 	public RenderStack() {}
+	
+	public RenderStack(List<Frame> frames) {
+		this.frames = frames;
+	}
 
 	public List<Frame> getFrames() { return this.frames; }
 	

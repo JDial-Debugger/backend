@@ -9,16 +9,16 @@ public class Var {
 	private Integer type; // type 0 : int 1 : ref
 	private List<?> list;
 
-	public Var(String text, Integer parseInt) {
-		this.name = text;
-		this.value = parseInt;
+	public Var(String name, Integer value) {
+		this.name = name;
+		this.value = value;
 		this.type = 0;
 	}
 
-	public Var(String text, int parseInt, int i) {
-		this.name = text;
-		this.value = parseInt;
-		this.type = i;
+	public Var(String name, int value, int type) {
+		this.name = name;
+		this.value = value;
+		this.type = type;
 	}
 
 	public Var(String text, List<?> visit) {

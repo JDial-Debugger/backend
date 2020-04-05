@@ -13,6 +13,10 @@ public class Trace implements Frameable {
 
 	public Trace() {}
 	
+	public Trace(List<TracePoint> tracePoints) {
+		this.tracePoints = tracePoints;
+	}
+	
 	public List<TracePoint> getTracePoints() { return this.tracePoints; }
 
 	public String toString() {
