@@ -1,10 +1,8 @@
 package json_input;
 
-import java.lang.reflect.Field;
-import java.util.Set;
+import static org.junit.Assert.assertSame;
 
 import javax.annotation.Generated;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,52 +14,37 @@ public class ProgramExecutionTest {
 
 	}
 
-	private ProgramExecution createTestSubject() {
-		ProgramExecution subject = new ProgramExecution();
-		try {
-			Field traceField = ProgramExecution.class.getDeclaredField("trace");
-			traceField.setAccessible(true);
-		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	private static class simple1 {
+		static Trace testTrace = new Trace();
+		static String testStdin = "stdin";
+		static String testCode = "Code";
+		static ProgramExecution getTestSubject() {
+			return new ProgramExecution(testStdin, testTrace, testCode);
 		}
-		return new ProgramExecution();
 	}
 
-	@MethodRef(name = "getTrace", signature = "()QTrace;")
+	//@MethodRef(name = "getTrace", signature = "()QTrace;")
 	@Test
 	public void testGetTrace() throws Exception {
 		ProgramExecution testSubject;
 		Trace result;
 
 		// default test
-		testSubject = createTestSubject();
+		testSubject = simple1.getTestSubject();
 		result = testSubject.getTrace();
+		assertSame(result, simple1.testTrace);
+		
 	}
 
-	@MethodRef(name = "getCode", signature = "()QString;")
+	//@MethodRef(name = "getCode", signature = "()QString;")
 	@Test
 	public void testGetCode() throws Exception {
 		ProgramExecution testSubject;
 		String result;
 
 		// default test
-		testSubject = createTestSubject();
+		testSubject = simple1.getTestSubject();
 		result = testSubject.getCode();
-	}
-
-	@MethodRef(name = "getCalledFuncs", signature = "(QString;)QSet<QString;>;")
-	@Test
-	public void testGetCalledFuncs() throws Exception {
-		ProgramExecution testSubject;
-		String callerFunction = "";
-		Set<String> result;
-
-		// default test
-		testSubject = createTestSubject();
-		result = testSubject.getCalledFuncs(callerFunction);
+		assertSame(result, simple1.testCode);
 	}
 }
