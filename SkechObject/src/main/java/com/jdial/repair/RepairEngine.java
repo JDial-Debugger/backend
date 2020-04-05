@@ -3,6 +3,7 @@ import com.google.gson.Gson;
 
 import json_input.Trace;
 import json_input.TracePoint;
+import repair.TracePointCorrection;
 
 public class RepairEngine {
 
@@ -37,6 +38,7 @@ public class RepairEngine {
 	public static void main(String[] args) {
 		String json = args[0];
 		
+		
 
 	}
 	
@@ -44,17 +46,17 @@ public class RepairEngine {
 		return null;
 	}
 	
-	public Map<Integer, String> getFuncCorrectionRepair(Map<Trace, Integer> funcTraceCorrections) {
+	public Map<Integer, String> getFuncCorrectionRepair(Map<Trace, Integer> funcTraceCorrections, String targetFunc) {
 		return null;
 	}
 /*	
 	private boolean doExecutionsMatchCode(List<ProgramExecution> executions) {
 		return false;
 	}
-	
-	private JsonNode parseJson(String json) {
+*/	
+	private TracePointCorrection parseTracePointCorrectionJson(String json) {
 		return null;
 	}
-*/	
+	
 
 }
