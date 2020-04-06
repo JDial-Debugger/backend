@@ -46,13 +46,13 @@ public class TracePoint {
 	public Integer getLine() { return this.lineNumber; }
 	public RenderStack getRstack() { return this.stack; }
 	public String getFuncName() { return this.funcName; }
-	public VarList getHeap() { return this.heap; }
+	public Map<String, List<Object>> getHeap() { return this.heap; }
 	
 	public List<String> getOrderedLocals() { 
 		return this.stack.getFrames().get(0).getOrderedLocals();
 	}
 	
-	public VarList getLocals() { 
+	public Map<String, Integer> getLocals() { 
 		return this.stack.getFrames().get(0).getEncodedLocals();
 	}
 }

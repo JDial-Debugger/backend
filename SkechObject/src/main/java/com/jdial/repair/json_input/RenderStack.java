@@ -35,7 +35,7 @@ public class RenderStack implements Frameable {
 				break;
 			}
 			
-			calledFuncs.add(frame.getName());
+			calledFuncs.add(frame.getName().split(":")[0]);
 		}
 		return calledFuncs;
 	}
