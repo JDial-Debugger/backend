@@ -1,5 +1,7 @@
 package json_input;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,73 @@ public class TracePoint {
 		this.heap = heap;
 	}
 	
+	/**
+	 * Performs a deep copy of the given tracepoint
+	 * @param copy - the trace point to create a copy for
+	 */
+	public TracePoint(TracePoint copy) {
+		this.stdout = copy.getStdout();
+		this.event = copy.getEvent();
+		this.lineNumber = copy.getLine();
+		this.stack = new RenderStack(copy.getRstack());
+		this.funcName = copy.getFuncName();
+		this.heap = new HashMap<String, List<Object>>();
+		//TODO implement heap deep copy
+		this.heap = copy.getHeap();
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((event == null) ? 0 : event.hashCode());
+		result = prime * result + ((funcName == null) ? 0 : funcName.hashCode());
+		result = prime * result + ((heap == null) ? 0 : heap.hashCode());
+		result = prime * result + ((lineNumber == null) ? 0 : lineNumber.hashCode());
+		result = prime * result + ((stack == null) ? 0 : stack.hashCode());
+		result = prime * result + ((stdout == null) ? 0 : stdout.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TracePoint other = (TracePoint) obj;
+		if (event != other.event)
+			return false;
+		if (funcName == null) {
+			if (other.funcName != null)
+				return false;
+		} else if (!funcName.equals(other.funcName))
+			return false;
+		if (heap == null) {
+			if (other.heap != null)
+				return false;
+		} else if (!heap.equals(other.heap))
+			return false;
+		if (lineNumber == null) {
+			if (other.lineNumber != null)
+				return false;
+		} else if (!lineNumber.equals(other.lineNumber))
+			return false;
+		if (stack == null) {
+			if (other.stack != null)
+				return false;
+		} else if (!stack.equals(other.stack))
+			return false;
+		if (stdout == null) {
+			if (other.stdout != null)
+				return false;
+		} else if (!stdout.equals(other.stdout))
+			return false;
+		return true;
+	}
+
 	public String toString(){
 		return this.funcName
 				+ "\nEvent: "

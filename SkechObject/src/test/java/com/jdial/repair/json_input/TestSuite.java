@@ -6,6 +6,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 
-{ RenderStackTest.class, ProgramExecutionTest.class })
+{ RenderStackTest.class, TraceTest.class, ProgramExecutionTest.class })
 public class TestSuite { // nothing
 }

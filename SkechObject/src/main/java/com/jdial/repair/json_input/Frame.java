@@ -1,6 +1,8 @@
 package json_input;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Frame {
@@ -25,6 +27,15 @@ public class Frame {
 		this.highlighted = highlighted;
 		this.zombie = zombie;
 		this.id = id;
+	}
+	
+	public Frame(Frame frame) {
+		this.highlighted = frame.isHighlighted();
+		this.zombie = frame.isZombie();
+		this.id = frame.getId();
+		this.name = frame.getName();
+		this.encodedLocals = new HashMap<String, Integer>(frame.getEncodedLocals());
+		this.orderedVarnames = new ArrayList<String>(frame.getOrderedVarnames());
 	}
 	
 	@Override
