@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import constants.Errors;
 import jsonparser.jsonParser.TraceContext;
 
@@ -14,6 +17,7 @@ public class Trace implements Frameable {
 	private List<TracePoint> tracePoints;
 	
 	private static final int DEFAULT_BOUND = -1;
+	private static final Logger logger = LoggerFactory.getLogger(Trace.class);
 
 	public Trace() {}
 	
@@ -46,15 +50,19 @@ public class Trace implements Frameable {
 
 	@Override
 	public Set<String> getCalledFuncs(String callerFunc, int callLine) {
-		//TODO leftoff here: need to create test subject seperately with each test
+		
 		Set<String> calledFuncs = new HashSet<String>();
 		
 		for(TracePoint tracePoint : this.getTracePoints()) {
-			calledFuncs.addAll(tracePoint.getRstack().getCalledFuncs(callerFunc, callLine));
+			calledFuncs.addAll(tracePoint.getRstack()
+					.getCalledFuncs(callerFunc, callLine));
 		}
+		logger.debug("Found called functions for caller function: " + callerFunc + ":" + callLine);
+		logger.debug("Called functions: " + calledFuncs);
 		return calledFuncs;
 	}
 
+	
 	/**
 	 * Removes all points in the execution trace that are not in the same
 	 * call stack as the point with the given index in the trace list.
@@ -76,20 +84,44 @@ public class Trace implements Frameable {
 		int[] bounds;
 		if (bound == null) {
 			
+			logger.debug("Trimming Tracepoints from target function: " 
+					+ targetFunc 
+					+ ":" 
+					+ callLine);
 			bounds = this.getBoundsByCallLine(targetFunc, callLine);
 		//back track to find call trace point index
 		} else if (callLine == null) {
+			logger.debug("Trimming Tracepoints from target function: " 
+					+ targetFunc 
+					+ " and bound" 
+					+ bound);
 			bounds = this.getBoundsByUpper(targetFunc, bound);
 			
 		} else {
-			throw new IllegalArgumentException("Exactly one of bound and callLine should be null");
+			throw new IllegalArgumentException("Exactly one of bound "
+										+ "and callLine should be null");
 		}
 		
 		if (bounds[0] == -1) {
-			throw new InvalidTraceException(Errors.targetFuncNotFound(targetFunc), this);
+			throw new InvalidTraceException(
+					Errors.targetFuncNotFound(targetFunc), this);
 		}
 		
+		logger.debug("Bounds for trace points: [" 
+					+ bounds[0] + "-" + bounds[1] + "]");
+		logger.info((this.tracePoints.size() - bounds[1] - 1 + bounds[0]) 
+				+ " trace points trimmed from trace");
+		
 		this.tracePoints = this.getTracePoints().subList(bounds[0], bounds[1] + 1);
+	}
+	
+	/**
+	 * Uses function at bound for target function
+	 * @param bound
+	 */
+	public void trimTracePoints(Integer bound) {
+		String targetFunc = this.tracePoints.get(bound).getFuncName();
+		this.trimTracePoints(targetFunc, bound, null);
 	}
 	
 	/**
