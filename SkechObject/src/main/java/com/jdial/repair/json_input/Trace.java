@@ -54,8 +54,7 @@ public class Trace implements Frameable {
 		Set<String> calledFuncs = new HashSet<String>();
 		
 		for(TracePoint tracePoint : this.getTracePoints()) {
-			calledFuncs.addAll(tracePoint.getRstack()
-					.getCalledFuncs(callerFunc, callLine));
+			calledFuncs.addAll(tracePoint.getCalledFuncs(callerFunc, callLine));
 		}
 		logger.debug("Found called functions for caller function: " + callerFunc + ":" + callLine);
 		logger.debug("Called functions: " + calledFuncs);
@@ -151,7 +150,7 @@ public class Trace implements Frameable {
 					&& tracePoint.getFuncName().equals((targetFunc))) {
 				bounds[0] = i;
 				targetFuncCallerFrame.append(
-						tracePoint.getRstack().getFrames().get(1).getName());
+						tracePoint.getRstack().get(1).getName());
 			}
 			lastFuncName.setLength(0);
 			lastFuncName.append(tracePoint.getFuncName());
@@ -159,7 +158,7 @@ public class Trace implements Frameable {
 			
 			if (tracePoint.getFuncName().equals(targetFunc)
 					&& tracePoint.getEvent() == Event.RETURN
-					&& tracePoint.getRstack().getFrames().get(1).getName()
+					&& tracePoint.getRstack().get(1).getName()
 						.equals(targetFuncCallerFrame.toString())) {
 				
 				bounds[1] = i;

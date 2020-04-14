@@ -1,10 +1,13 @@
 package repair;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,10 +63,16 @@ public class RepairEngine {
 			return;
 		}
 		
+		
 		String repairType = args[0];
 		String json = args[1];
 		
 		Gson gson = new Gson();
+		repair(repairType, json, gson);
+	}
+	
+	public static void repair(String repairType, String json, Gson parser) {
+		
 		JsonObject repairJson = JsonParser.parseString(json).getAsJsonObject();
 		String code = repairJson.get("code").getAsString();
 		
@@ -72,15 +81,25 @@ public class RepairEngine {
 		if (repairType.equals(TRACE_POINT_CORRECTION_TYPE)) {
 			logger.info("Trace Point Correction Repair Initiating...");
 			
-			addExampleByTracePointRepair(examples, repairJson, gson);
+			addExampleByTracePointRepair(examples, repairJson, parser);
 		} else if (repairType.equals(FUNC_CORRECTION_TYPE)) {
 			logger.info("Function Correction Repair Initiating...");
 			
-			addExamplesByFuncRepair(examples, repairJson, gson);
+			addExamplesByFuncRepair(examples, repairJson, parser);
 			
 		} else {
 			logger.error(Errors.invalidRepairType(repairType));
 			return;
+		}
+		
+		Set<String> relevantFuncs = getRelevantFuncs(examples);
+		
+	}
+	
+	private static Set<String> relevantFuncs(List<CorrectionExample> examples) {
+		Set<String> funcs = new HashSet<String>();
+		for (CorrectionExample example : examples) {
+			funcs.addAll(example.getProgramTrace().get)
 		}
 	}
 	
@@ -90,9 +109,9 @@ public class RepairEngine {
 			Gson gson) {
 		
 		Type tracePointsType = new TypeToken<List<TracePoint>>() {}.getType();
-		List<TracePoint> tracePoints = gson.fromJson(
-								repairJson.get("trace"), tracePointsType);
-		Trace trace = new Trace(tracePoints);
+		TracePoint[] tracePoints = gson.fromJson(
+								repairJson.get("trace"), TracePoint[].class);
+		Trace trace = new Trace(Arrays.asList(tracePoints));
 		
 		Integer correctionIdx = gson.fromJson(repairJson.get("correctionIdx"), 
 												Integer.class);

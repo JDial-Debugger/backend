@@ -2,16 +2,35 @@ package json_input;
 
 import java.util.HashMap;
 import java.util.List;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
+
+import constants.Json;
 public class Frame {
 
+	@SerializedName(value = "func_name")
 	private String name;
+	@SerializedName(value = "encoded_locals")
+	@JsonAdapter(EncodedLocalsDeserializer.class)
 	private Map<String, Integer> encodedLocals;
+	@SerializedName(value = "ordered_varnames")
+	@JsonAdapter(OrderedVarnamesDeserializer.class)
 	private List<String> orderedVarnames;
+	@SerializedName(value = "is_highlighted")
 	private boolean highlighted;
+	@SerializedName(value = "is_zombie")
 	private boolean zombie;
+	@SerializedName(value = "frame_id")
 	private Integer id;
 
 	public Frame() {}
@@ -99,4 +118,36 @@ public class Frame {
 		return true;
 	}
 
+	private class EncodedLocalsDeserializer implements JsonDeserializer<Map<String, Integer>> {
+		@Override
+		public Map<String, Integer> deserialize(JsonElement json, 
+												Type typeOfT, 
+												JsonDeserializationContext context)
+				throws JsonParseException {
+			JsonObject jsonObject = json.getAsJsonObject();
+			Map<String, Integer> encodedLocals = new HashMap<String, Integer>();
+			jsonObject.entrySet().forEach(entry -> {
+				if (entry.getKey().equals(Json.RETURN_VAR_NAME)) {
+					encodedLocals.put(entry.getKey(), null);
+				} else {
+					encodedLocals.put(entry.getKey(), entry.getValue().getAsInt());
+				}
+			});
+			return encodedLocals;
+		}
+	}
+	private class OrderedVarnamesDeserializer implements JsonDeserializer<List<String>> {
+		@Override
+		public List<String> deserialize(JsonElement json, 
+												Type typeOfT, 
+												JsonDeserializationContext context)
+				throws JsonParseException {
+			JsonArray jsonArray = json.getAsJsonArray();
+			List<String> orderedVarnames = new ArrayList<String>();
+			jsonArray.forEach(element -> {
+				orderedVarnames.add(element.getAsString());
+			});
+			return orderedVarnames;
+		}
+	}
 }
