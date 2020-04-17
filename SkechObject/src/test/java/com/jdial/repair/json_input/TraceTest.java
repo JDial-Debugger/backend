@@ -36,7 +36,7 @@ public class TraceTest {
 		
 		
 		Trace testSubject = TraceTestFactory.SIMPLE1.getTrace();
-		String callerFunc = "main";
+		String callerFunc = "SimpleJava";
 		int callerFuncLine = 10;
 		
 		Set<String> expected = new HashSet<String>(Arrays.asList("SimpleJava"));

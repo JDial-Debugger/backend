@@ -99,7 +99,7 @@ public class RepairEngine {
 	private static Set<String> relevantFuncs(List<CorrectionExample> examples) {
 		Set<String> funcs = new HashSet<String>();
 		for (CorrectionExample example : examples) {
-			funcs.addAll(example.getProgramTrace().get)
+			funcs.addAll(example.getProgramTrace().getCalledFuncs(callerFunc, callLine))
 		}
 	}
 	

@@ -49,13 +49,26 @@ public class Trace implements Frameable {
 	}
 
 	@Override
-	public Set<String> getCalledFuncs(String callerFunc, int callLine) {
+	public Set<String> getCalledFuncs(String targetFunc, int callLine) {
 		
 		Set<String> calledFuncs = new HashSet<String>();
-		
-		for(TracePoint tracePoint : this.getTracePoints()) {
-			calledFuncs.addAll(tracePoint.getCalledFuncs(callerFunc, callLine));
+		//find the trace point where callerFunc is called in order to get
+		//the name of the function that called targetFunc
+		List<TracePoint> tracePoints = this.getTracePoints();
+		String callerFunc = null;
+		for (int i = 0; i < tracePoints.size(); ++i) {
+			
+			TracePoint tracePoint = tracePoints.get(i);
+			
+			if (callerFunc != null) {
+				calledFuncs.addAll(tracePoint.getCalledFuncs(callerFunc, callLine));
+			} else if (tracePoint.getFuncName().equals(targetFunc) 
+					&& Integer.parseInt(tracePoint.getRstack()
+							.get(1).getName().split(":")[1]) == callLine) {
+				callerFunc = tracePoint.getRstack().get(1).getName().split(":")[0];
+			}
 		}
+		
 		logger.debug("Found called functions for caller function: " + callerFunc + ":" + callLine);
 		logger.debug("Called functions: " + calledFuncs);
 		return calledFuncs;

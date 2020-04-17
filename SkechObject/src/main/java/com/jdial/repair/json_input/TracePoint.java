@@ -24,7 +24,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class TracePoint implements Frameable {
 
-	private static final Logger logger = LoggerFactory.getLogger(RenderStack.class);
+	private static final Logger logger = LoggerFactory.getLogger(TracePoint.class);
 	
 	private String stdout;
 	private Event event;
