@@ -6,6 +6,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
 
-{ TraceTest.class, ProgramExecutionTest.class })
+{ TraceTest.class })
 public class TestSuite { // nothing
 }

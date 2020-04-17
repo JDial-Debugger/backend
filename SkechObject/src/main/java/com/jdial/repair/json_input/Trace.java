@@ -73,6 +73,18 @@ public class Trace implements Frameable {
 		logger.debug("Called functions: " + calledFuncs);
 		return calledFuncs;
 	}
+	
+	/**
+	 * If no args specified, will use the beginning trace point to find the 
+	 * target function and call line
+	 * @return
+	 */
+	public Set<String> getCalledFuncs() {
+		TracePoint start = this.getTracePoints().get(0);
+		int callerLine = Integer.parseInt(start.getRstack().get(1)
+				.getName().split(":")[1]);
+		return this.getCalledFuncs(start.getFuncName(), callerLine);
+	}
 
 	
 	/**

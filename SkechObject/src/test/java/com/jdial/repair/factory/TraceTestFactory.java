@@ -10,7 +10,6 @@ import com.google.common.collect.ImmutableMap;
 
 import json_input.Event;
 import json_input.Frame;
-import json_input.RenderStack;
 import json_input.Trace;
 import json_input.TracePoint;
 

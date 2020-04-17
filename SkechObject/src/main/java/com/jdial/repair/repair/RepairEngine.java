@@ -96,11 +96,18 @@ public class RepairEngine {
 		
 	}
 	
-	private static Set<String> relevantFuncs(List<CorrectionExample> examples) {
+	/**
+	 * Gets all function names invoked during execution of any of the examples
+	 * TODO: does not work for overloaded methods
+	 * @param examples - the examples to find function invocations in
+	 * @return - All function names invoked
+	 */
+	private static Set<String> getRelevantFuncs(List<CorrectionExample> examples) {
 		Set<String> funcs = new HashSet<String>();
 		for (CorrectionExample example : examples) {
-			funcs.addAll(example.getProgramTrace().getCalledFuncs(callerFunc, callLine))
+			funcs.addAll(example.getProgramTrace().getCalledFuncs());
 		}
+		return funcs;
 	}
 	
 	private static void addExampleByTracePointRepair(
