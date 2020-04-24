@@ -2,9 +2,11 @@ package sketchobj.stmts;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
@@ -162,6 +164,15 @@ public class StmtBlock extends Statement {
 			result += it.next().toString_Context() + "\n";
 		}
 		return result + ": "+ this.getPostctx().toString();
+	}
+
+	@Override
+	public Set<String> getVarNames(int sideFlag) {
+		Set<String> result = new HashSet<String>();
+		for (Statement curStmt : this.getStmts()) {
+			result.addAll(curStmt.getVarNames(sideFlag));
+		}
+		return result;
 	}
 
 }

@@ -2,6 +2,8 @@ package sketchobj.stmts;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
@@ -97,5 +99,11 @@ public class StmtDoWhile extends Statement {
 	public String toString_Context() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	//TODO: not implemented
+	@Override
+	public Set<String> getVarNames(int sideFlag) {
+		return new HashSet<String>();
 	}
 }

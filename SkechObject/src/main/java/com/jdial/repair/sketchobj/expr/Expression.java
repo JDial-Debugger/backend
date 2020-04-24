@@ -2,6 +2,7 @@ package sketchobj.expr;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
@@ -88,5 +89,7 @@ public abstract class Expression extends SketchNode{
 	}
 	
 	public abstract Expression clone();
+	
+	public abstract Set<String> getVarNames();
 
 }

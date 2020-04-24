@@ -22,10 +22,11 @@ public class RepairEngineTest {
 
 	@Test
 	public void testMain() throws Exception {
-		String[] args = new String[] { "" };
-
+		String repairType = "tracePointCorrection";
+		String json = Resources.toString(Resources.getResource("basicTracePointCorrection1.json"), Charset.defaultCharset());
+		String[] args = new String[] { repairType, json };
 		// default test
-		//RepairEngine.main(args);
+		RepairEngine.main(args);
 	}
 	
 	@Test

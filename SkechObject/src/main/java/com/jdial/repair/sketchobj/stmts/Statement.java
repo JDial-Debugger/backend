@@ -3,12 +3,12 @@ package sketchobj.stmts;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
 import sketchobj.core.Context;
 import sketchobj.core.SketchNode;
-import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
 
 public abstract class Statement extends SketchNode {
@@ -19,6 +19,7 @@ public abstract class Statement extends SketchNode {
 	private Context prectx;
 
 	public abstract boolean isBasic();
+	
 
 	public int size() {
 		// TODO Auto-generated method stub
@@ -51,7 +52,10 @@ public abstract class Statement extends SketchNode {
 	}
 
 
-	public abstract Map<String, Type> addRecordStmt(StmtBlock parent, int index, Map<String, Type> m);
+	public abstract Map<String, Type> addRecordStmt(
+			StmtBlock parent, 
+			int index, 
+			Map<String, Type> m);
 
 	public Context getPrectx() {
 		return prectx;
@@ -62,7 +66,7 @@ public abstract class Statement extends SketchNode {
 	}
 
 	@Override
-	public ConstData replaceLinearCombination(int index,List<Integer> allowRange) {
+	public ConstData replaceLinearCombination(int index, List<Integer> allowRange) {
 		if (allowRange.contains(this.getLineNumber()))
 			return this.replaceLinearCombination(index);
 		return new ConstData(null, new ArrayList(), index, 0, null,this.lineNumber);
@@ -72,19 +76,33 @@ public abstract class Statement extends SketchNode {
 	public ConstData replaceConst(int index, List<Integer> repair_range) {
 		if (repair_range.contains(this.lineNumber)){
 			return this.replaceConst(index);
-
 			}
 		else
 			return this.replaceConst_Exclude_This(index, repair_range);
 	}
 
-	public abstract ConstData replaceConst_Exclude_This(int index,List<Integer> repair_range);
+	public abstract ConstData replaceConst_Exclude_This(
+			int index, 
+			List<Integer> repair_range);
 
-	public abstract List<ExternalFunction> extractExternalFuncs(List<ExternalFunction> externalFuncNames);
+	public abstract List<ExternalFunction> extractExternalFuncs(
+			List<ExternalFunction> externalFuncNames);
 
-	public abstract Map<Integer,String> ConstructLineToString(Map<Integer, String> line_to_string);
+	public abstract Map<Integer,String> ConstructLineToString(
+			Map<Integer, String> line_to_string);
 	
 	public abstract Statement clone();
+
+	/**
+	 * Gets variable names from the specified side in this statement
+	 * if the statement does not contain any, returns an
+	 * empty set. If the statement cannot be divided into two sides,
+	 * returns all variable names
+	 * @param sideFlag - set 1 for right side var names, -1 for
+	 * left side var names, 0 for both
+	 * @return - all variable names contained in the statement
+	 */
+	public abstract Set<String> getVarNames(int sideFlag);
 	
 	public String toString_Context(){
 		return this.toString()+": "+this.postctx.toString();

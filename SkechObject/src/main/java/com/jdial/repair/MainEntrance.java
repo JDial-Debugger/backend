@@ -15,7 +15,6 @@ import constraintfactory.ExternalFunction;
 import global.Global;
 import javaparser.simpleJavaLexer;
 import javaparser.simpleJavaParser;
-import json_input.Root;
 import json_input.TracePoint;
 import json_input.Trace;
 import jsonparser.jsonLexer;
@@ -233,7 +232,7 @@ public class MainEntrance {
 													 jsonTraceCompile(manipulation),
 													 new FcnHeader(function.getName(), 
 															 	   function.getReturnType(), 
-															 	   function.getParames()), 
+															 	   function.getParams()), 
 													 args, 
 													 mod, 
 													 prime_mod,

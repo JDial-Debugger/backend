@@ -1,7 +1,9 @@
 package sketchobj.stmts;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
@@ -86,6 +88,12 @@ public class StmtFuncAssert extends Statement {
 	public Context buildContext(Context postctx2, int scopePosition) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	//TODO: unimplemented
+	@Override
+	public Set<String> getVarNames(int sideFlag) {
+		return new HashSet<String>();
 	}
 
 }

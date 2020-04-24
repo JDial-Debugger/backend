@@ -2,8 +2,10 @@ package sketchobj.stmts;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
@@ -34,12 +36,12 @@ public class StmtWhile extends Statement {
 	
 	/** Returns the loop condition. */
 	public Expression getCond() {
-		return cond;
+		return this.cond;
 	}
 
 	/** Returns the loop body. */
 	public Statement getBody() {
-		return body;
+		return this.body;
 	}
 
 	public String toString() {
@@ -55,11 +57,11 @@ public class StmtWhile extends Statement {
 			int value = ((ExprConstant) cond).getVal();
 			Type t = ((ExprConstant) cond).getType();
 			cond = new ExprFunCall("Const" + index, new ArrayList<Expression>());
-			toAdd.add(body);
+			toAdd.add(this.body);
 			return new ConstData(t, toAdd, index + 1, value, null,this.getLineNumber());
 		}
-		toAdd.add(cond);
-		toAdd.add(body);
+		toAdd.add(this.cond);
+		toAdd.add(this.body);
 		return new ConstData(null, toAdd, index, 0, null,this.getLineNumber());
 	}
 	@Override
@@ -78,7 +80,7 @@ public class StmtWhile extends Statement {
 		this.setPrectx(prectx);
 		this.setPostctx(new Context(postctx));
 		postctx.pushVars(new HashMap<String, Type>());
-		postctx = body.buildContext(postctx, sp+1);
+		postctx = this.body.buildContext(postctx, sp+1);
 		postctx.popVars();
 		postctx.setVarsInScope(new ArrayList<String>());
 		return postctx;
@@ -88,7 +90,7 @@ public class StmtWhile extends Statement {
 	public Map<String, Type> addRecordStmt(StmtBlock parent, int index, Map<String, Type> m) {
 		parent.stmts.set(index,
 				new StmtBlock(ConstraintFactory.recordState(this.getPrectx().getLinenumber(), this.getPrectx().getAllVars()),this));
-		body = new StmtBlock(body,ConstraintFactory.recordState(body.getPostctx().getLinenumber(), body.getPostctx().getAllVars()));
+		this.body = new StmtBlock(this.body,ConstraintFactory.recordState(body.getPostctx().getLinenumber(), body.getPostctx().getAllVars()));
 		m.putAll(this.getPostctx().getAllVars());
 		return ((StmtBlock)body).stmts.get(0).addRecordStmt((StmtBlock) body,0,m);
 	}
@@ -118,6 +120,12 @@ public class StmtWhile extends Statement {
 		line_to_string.put(this.getLineNumber(), "while(" + getCond() + ")");
 		line_to_string = body.ConstructLineToString(line_to_string);
 		return line_to_string;
+	}
+
+	//TODO: unimplemented
+	@Override
+	public Set<String> getVarNames(int sideFlag) {
+		return new HashSet<String>();
 	}
 
 

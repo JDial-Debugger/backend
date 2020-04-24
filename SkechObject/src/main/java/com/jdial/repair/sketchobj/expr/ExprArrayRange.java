@@ -2,7 +2,9 @@ package sketchobj.expr;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
@@ -266,6 +268,14 @@ public class ExprArrayRange extends Expression
 	@Override
 	public ConstData replaceLinearCombination(int index) {
 		return new ConstData(null, new ArrayList<>(), index, 0, null,0);
+	}
+
+	@Override
+	public Set<String> getVarNames() {
+		Set<String> names = new HashSet<String>();
+		names.addAll(this.getBase().getVarNames());
+		names.addAll(this.getOffset().getVarNames());
+		return names;
 	}
 
 

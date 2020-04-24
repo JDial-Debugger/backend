@@ -1,8 +1,10 @@
 package sketchobj.stmts;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
@@ -111,7 +113,7 @@ public class StmtFor extends Statement {
 
 	@Override
 	public Context buildContext(Context prectx, int position) {
-		Global.nestedVars.addAll(CFG.extractLVarStmt(init));
+		Global.nestedVars.addAll(init.getVarNames(-1));
 		
 		prectx = new Context(prectx);
 		prectx.setLinenumber(this.getLineNumber());
@@ -201,6 +203,12 @@ public class StmtFor extends Statement {
 
 		result += this.body.toString_Context() + "}\n";
 		return result + ": "+this.getPostctx().toString();
+	}
+
+	//TODO: unimplemented
+	@Override
+	public Set<String> getVarNames(int sideFlag) {
+		return new HashSet<String>();
 	}
 
 

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,11 +20,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
+import cfg.CFG;
 import constants.Errors;
 import constants.Json;
+import javaparser.simpleJavaLexer;
+import javaparser.simpleJavaParser;
 import json_input.Correction;
 import json_input.Trace;
 import json_input.TracePoint;
+import sketchobj.core.Function;
+import sketchobj.core.SketchObject;
+import visitor.JavaVisitor;
 
 public class RepairEngine {
 	
@@ -92,7 +100,29 @@ public class RepairEngine {
 			return;
 		}
 		
-		Set<String> relevantFuncs = getRelevantFuncs(examples);
+		Set<String> relevantFuncNames = getRelevantFuncs(examples);
+		logger.debug("Functions found in Traces: " + relevantFuncNames);
+		Map<String, Function> relevantFuncs = parseJava(code, relevantFuncNames);
+	}
+	
+	private static Map<String, Function> parseJava(String source, Set<String> relevantFuncNames) {
+		
+		ANTLRInputStream input = new ANTLRInputStream(source);
+		simpleJavaLexer lexer = new simpleJavaLexer(input);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		simpleJavaParser parser = new simpleJavaParser(tokens);
+		Map<String, Function> relevantFuncs = new HashMap<String, Function>();
+		
+		for (String funcName : relevantFuncNames) {
+			SketchObject funcAst = new JavaVisitor(funcName).visit(parser.compilationUnit());
+			
+			relevantFuncs.put(funcName, (Function) funcAst);
+			
+		}
+		return relevantFuncs;
+	}
+	
+	private static void buildFuncContext(StmtBlock body, List<Parameter>) {
 		
 	}
 	

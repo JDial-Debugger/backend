@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import global.Global;
 import sketchobj.core.Function;
 import sketchobj.core.Parameter;
@@ -23,6 +26,12 @@ import sketchobj.expr.Expression;
 import sketchobj.stmts.*;
 
 // Assume each line has at most one Statement
+/**
+ * 
+ * Represents the control flow graph of a program. Used to find which variables
+ * can have coefficients. Consists of nodes and connections between nodes.
+ *
+ */
 public class CFG {
 
     private Node enter;
@@ -31,15 +40,24 @@ public class CFG {
     private Map<Integer, Node> nodes;
     private Map<Integer, List<String>> keepActual;
     private boolean forInit = false;
+    private static final Logger logger = LoggerFactory.getLogger(CFG.class);
+    private Set<String> allVarNames;
+    private Set<String> allTypeArrayVarNames;
 
     public CFG(Function function) {
     	this.edges = new HashMap<Integer, List<Integer>>();
     	this.nodes = new HashMap<Integer, Node>();
     	this.keepActual = new HashMap<Integer, List<String>>();
-    	List<Parameter> params = function.getParames();
+    	this.allVarNames = new HashSet<String>();
+    	this.allTypeArrayVarNames = new HashSet<String>();
+    	
+    	List<Parameter> params = function.getParams();
+    	//add params of function
     	for (Parameter param : params) {
-    		if (!Global.allvars.containsKey(param.getName())) {
-    			Global.allvars.put(param.getName(), param.getType() instanceof TypeArray);
+    		if (param.getType() instanceof TypeArray) {
+				this.allTypeArrayVarNames.add(param.getName());
+    		} else {
+				this.allVarNames.add(param.getName());
     		}
     	}
     	Connection con = buildStmt(function.getBody());
@@ -48,6 +66,9 @@ public class CFG {
     		this.keepActual.put(entry.getKey(), new ArrayList<String>());
     	}
     }
+    
+    public Set<String> getAllVarNames() { return this.allVarNames; }
+    public Set<String> getAllTypeArrayVarNames() { return this.allTypeArrayVarNames; }
 
     private void updateEdges(int key, int value) {
     	if (this.edges.containsKey(key)) {
@@ -60,6 +81,12 @@ public class CFG {
     }
 
 
+    /**
+     * Creates nodes and connections recursively for the statement
+     * @param stmt - The statement to construct a node for
+     * @return - mapping of the node for this statement to subsequent
+     * nodes in the graph
+     */
     private Connection buildStmt (Statement stmt) {
     	Node in = null;
     	Node out = null;
@@ -202,13 +229,12 @@ public class CFG {
         if (stmt instanceof StmtVarDecl) {
         	List<Type> types = ((StmtVarDecl) stmt).getTypes();
         	List<String> names = ((StmtVarDecl) stmt).getNames();
+        	
         	for (int i = 0; i < types.size(); i++) {
-        		if (!Global.allvars.containsKey(names.get(i)) && !this.forInit) {
-	        		if (types.get(i) instanceof TypeArray) {
-	        			Global.allvars.put(names.get(i), true);
-	        		} else {
-	        			Global.allvars.put(names.get(i), false);
-	        		}
+        		if (types.get(i) instanceof TypeArray) {
+					this.allTypeArrayVarNames.add(names.get(i));
+        		} else {
+					this.allVarNames.add(names.get(i));
         		}
     		}
 
@@ -242,7 +268,7 @@ public class CFG {
     	return null;
     }
 
-	private Connection combineList(ArrayList<Connection> list) {
+	private Connection combineList(List<Connection> list) {
 		/*int removed = 0;
     	for (int i = 0; i < list.size(); i++) {
     		Connection tmp = list.get(i - removed);
@@ -252,6 +278,7 @@ public class CFG {
     		}
     	}*/
 
+		//filter out non-existant connections
 		for (int i = list.size() - 1; i >= 0; i--) {
     		Connection tmp = list.get(i);
     		if (tmp == null) {
@@ -265,7 +292,7 @@ public class CFG {
 
     	int actualSize = list.size();
     	if (actualSize == 0) {
-			System.err.println("empty CFG list!");
+			logger.warn("empty CFG list!");
 			return new Connection(-1);
 		}
     	if (actualSize == 1) {
@@ -286,22 +313,21 @@ public class CFG {
     	return new Connection(in, out);
 	}
 
-	public void printCFG() {
-		String res = "";
-		res += "CFG:\n";
-		res += "entrance is Node " + Integer.toString(enter.getId()) + "\n";
-		res += "size is " +  Integer.toString(this.nodes.size()) + "\n";
-		res += "nodes: \n";
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("CFG:\n");
+		sb.append("entrance is Node " + Integer.toString(enter.getId()) + "\n");
+		sb.append("size is " +  Integer.toString(this.nodes.size()) + "\n");
+		sb.append("nodes: \n");
 		for (Map.Entry<Integer, Node> entry : this.nodes.entrySet()) {
-		    res += (entry.getValue().toStringNode() + "\n");
+		    sb.append(entry.getValue().toStringNode() + "\n");
 		}
-		res += "edges: \n";
+		sb.append("edges: \n");
 		for (Map.Entry<Integer, List<Integer>> entry : this.edges.entrySet()) {
-		    res += (entry.getKey() + " : " + entry.getValue() + "\n");
+		    sb.append(entry.getKey() + " : " + entry.getValue() + "\n");
 		}
-
-//		System.out.println(res);
-		//System.out.println(Global.allvars);
+		return sb.toString();
 	}
 
 	/* backward may dataflow analysis framework
@@ -319,8 +345,13 @@ public class CFG {
 		end
 	end
 	*/
-
-	public Map<Integer, Set<String>> dataflow(){
+	/**
+	 * For each part in the control graph, finds active variables
+	 * @return - for each part of the control graph, all available 
+	 * variable names
+	 */
+	public Map<Integer, Set<String>> dataflow() {
+		
 		Set<Integer> indexes = this.nodes.keySet();
 		Map<Integer, Set<String>> in = new HashMap<Integer, Set<String>>();
 		Map<Integer, Set<String>> out = new HashMap<Integer, Set<String>>();
@@ -329,8 +360,10 @@ public class CFG {
 			in.put(i, new HashSet<String>());
 			out.put(i, new HashSet<String>());
 		}
+		
 		Queue<Integer> W = new LinkedList<Integer>(indexes);
 		while (!W.isEmpty()) {
+			
 			int s = W.poll();
 			List<Integer> succ = this.edges.get(s);
 			Set<String> outS = new HashSet<String>();
@@ -343,13 +376,13 @@ public class CFG {
 
 			// if there is a StmtAssign, add more vars to gen
 			if (nodes.get(s).isStmt()) {
+				
 				Statement st = nodes.get(s).getStmt();
 				if (st instanceof StmtAssign) {
-					Set<String> leftVars = extractAllVarExpr(((StmtAssign) st).getLHS());
-					Set<String> rightVars = extractAllVarExpr(((StmtAssign) st).getRHS());
-					//System.out.println("node num: " + s);
-					//System.out.println("left vars are " + leftVars);
-					//System.out.println("right vars are " + rightVars);
+					
+					Set<String> leftVars = st.getVarNames(-1);
+					Set<String> rightVars = st.getVarNames(1);
+					
 					for (String str : leftVars) {
 						if (outS.contains(str)) {
 							if (gen.containsKey(s)) {
@@ -361,15 +394,21 @@ public class CFG {
 						}
 					}
 				}
+				
 				if (st instanceof StmtVarDecl) {
-					for (int i = 0; i < ((StmtVarDecl) st).getNames().size(); i++) {
-						if (outS.contains(((StmtVarDecl) st).getName(i))) {
-							Expression e = ((StmtVarDecl) st).getInit(i);
-							if (e != null) {
+					
+					StmtVarDecl curStmt = (StmtVarDecl) st;
+					
+					for (int i = 0; i < curStmt.getNames().size(); i++) {
+						
+						if (outS.contains(curStmt.getName(i))) {
+							
+							Expression expr = curStmt.getInit(i);
+							if (expr != null) {
 								if (gen.containsKey(s)) {
-									gen.get(s).addAll(extractAllVarExpr(e));
+									gen.get(s).addAll(expr.getVarNames());
 								} else {
-									gen.put(s, extractAllVarExpr(e));
+									gen.put(s, expr.getVarNames());
 								}
 							}
 						}
@@ -378,20 +417,19 @@ public class CFG {
 			}
 
 			Set<String> temp = new HashSet<>(outS);
+			
 			if (gen.containsKey(s)) {
 				temp.addAll(gen.get(s));
 			}
 
 			if (!temp.equals(in.get(s))) {
+				
 				in.put(s, temp);
+				
 				for (int i : this.getPred(s)) {
 					W.offer(i);
 				}
 			}
-		}
-		for (Map.Entry<Integer, Set<String>> entry : in.entrySet()) {
-	//		System.out.println(entry.getKey());
-	//		System.out.println(entry.getValue());
 		}
 		return in;
 	}
@@ -466,9 +504,18 @@ public class CFG {
 		return res;
 	}
 
+	/**
+	 * Finds the preceeding control blocks for the given control block
+	 * @param nodeNum - the control block to find preds for
+	 * @return - all control blocks that transfer control to the
+	 * given block
+	 */
 	private Set<Integer> getPred(int nodeNum) {
+		
 		Set<Integer> res = new HashSet<Integer>();
+		
 		for (Map.Entry<Integer, List<Integer>> entry : this.edges.entrySet()) {
+			
 			if (entry.getValue().contains(nodeNum)) {
 				res.add(entry.getKey());
 			}
@@ -476,178 +523,53 @@ public class CFG {
 		return res;
 	}
 
-	// get the starting points of backwards data-flow analysis
-	// if there is a < b at line 5, add Map.Entry<5, {a,b}>
+	/**
+	 * 
+	 * get the starting points of backwards data-flow analysis
+	 * if there is a < b at line 5, add Map.Entry<5, {a,b}>
+	 * @return - the control flow block to varnames used during that block
+	 */
 	private Map<Integer, Set<String>> getHead() {
+		
 		Map<Integer, Set<String>> map = new HashMap<Integer, Set<String>>();
+		
 		for (Map.Entry<Integer, Node> entry : this.nodes.entrySet()) {
+			
 			int key = entry.getKey();
 			Node node = entry.getValue();
+			logger.debug("Finding vars for node: " + key);
 			if (node.getType() == 1) {
-				Set<String> set = extractVarFromStmt(node.getStmt());
-				if (set.size() > 0)
+				
+				Set<String> set = node.getStmt().getVarNames(0);
+				logger.debug("Adding stmt vars to head: " + set);
+				if (set.size() > 0) {
 					map.put(key, set);
+				}
 			} else if (node.getType() == 2) {
-				Set<String> set = extractVarFromExpr(node.getExpr(), 0);
-				System.err.println("node is " + node.getExpr());
-				System.err.println("set is " + set);
-				if (set.size() > 0)
+				
+				Set<String> set = node.getExpr().getVarNames();
+				logger.debug("Adding expr vars to head: " + set);
+				if (set.size() > 0) {
 					map.put(key, set);
+				}
+			} else {
+				logger.debug("node type not stmt or expr");
 			}
 		}
-
 		return map;
 	}
 
-	// ignore StmtFunDecl for now
-	private Set<String> extractVarFromStmt(Statement stmt) {
-		Set<String> res = new HashSet<String>();
-		if (stmt instanceof StmtAssert) {
-			return (extractVarFromExpr(((StmtAssert) stmt).getCond(), 0));
-		}
-		if (stmt instanceof StmtAssign) {
-			return (extractVarFromExpr(((StmtAssign) stmt).getRHS(), 0));
-		}
-		if (stmt instanceof StmtExpr) {
-			return (extractVarFromExpr(((StmtExpr) stmt).getExpr(), 0));
-		}
-		if (stmt instanceof StmtMinimize) {
-			return (extractVarFromExpr(((StmtMinimize) stmt).getMinimizeExpr(), 0));
-		}
-		if (stmt instanceof StmtReturn) {
-			return (extractVarFromExpr(((StmtReturn) stmt).getValue(), 0));
-		}
-		if (stmt instanceof StmtVarDecl) {
-			List<Expression> inits = ((StmtVarDecl) stmt).getInits();
-			for (int i = 0; i < inits.size(); i++) {
-				res.addAll(extractVarFromExpr(inits.get(i), 0));
-			}
-			return res;
-		}
-		return res;
-	}
-
-	// extract vars on both sides of a < b
-	// flag = 1 means we need to extract all vars from the current expression
-	private Set<String> extractVarFromExpr(Expression expr, int flag) {
-		if (expr instanceof ExprArrayRange) {
-			return extractAllVarExpr(((ExprArrayRange) expr).getOffset());
-		}
-		Set<String> res = new HashSet<String>();
-		if (!(expr instanceof ExprUnary || expr instanceof ExprBinary || expr instanceof ExprVar)) {
-			return res;
-		}
-		if (expr instanceof ExprUnary) {
-			return extractVarFromExpr(((ExprUnary) expr).getExpr(), flag);
-		}
-		if (expr instanceof ExprBinary) {
-			int op = ((ExprBinary) expr).getOp();
-			if ((flag == 1) || (op == ExprBinary.BINOP_LT) || (op == ExprBinary.BINOP_LE) ||
-			(op == ExprBinary.BINOP_GT) || (op == ExprBinary.BINOP_GE)){
-				res.addAll(extractVarFromExpr(((ExprBinary) expr).getLeft(), 1));
-				res.addAll(extractVarFromExpr(((ExprBinary) expr).getRight(), 1));
-				return res;
-			} else {
-				res.addAll(extractVarFromExpr(((ExprBinary) expr).getLeft(), 0));
-				res.addAll(extractVarFromExpr(((ExprBinary) expr).getRight(), 0));
-				return res;
-			}
-		}
-		if (expr instanceof ExprVar) {
-			if (flag == 1) {
-				res.add(((ExprVar) expr).getName());
-			}
-			return res;
-		}
-		return res;
-	}
-
-	// extract all vars, ignore StmtFunDecl for now
-	public static Set<String> extractRVarStmt(Statement stmt) {
-		Set<String> res = new HashSet<String>();
-		if (stmt instanceof StmtAssert) {
-			return extractAllVarExpr(((StmtAssert) stmt).getCond());
-		}
-		if (stmt instanceof StmtAssign) {
-			return extractAllVarExpr(((StmtAssign) stmt).getRHS());
-		}
-		if (stmt instanceof StmtExpr) {
-			return extractAllVarExpr(((StmtExpr) stmt).getExpr());
-		}
-		if (stmt instanceof StmtMinimize) {
-			return extractAllVarExpr(((StmtMinimize) stmt).getMinimizeExpr());
-		}
-		if (stmt instanceof StmtReturn) {
-			return extractAllVarExpr(((StmtReturn) stmt).getValue());
-		}
-		if (stmt instanceof StmtVarDecl) {
-			List<Expression> inits = ((StmtVarDecl) stmt).getInits();
-			for (int i = 0; i < inits.size(); i++) {
-				res.addAll(extractAllVarExpr(inits.get(i)));
-			}
-			return res;
-		}
-		return res;
-	}
-
-	public static Set<String> extractLVarStmt(Statement stmt) {
-		Set<String> res = new HashSet<String>();
-		if (stmt instanceof StmtAssert) {
-			return extractAllVarExpr(((StmtAssert) stmt).getCond());
-		}
-		if (stmt instanceof StmtAssign) {
-			return extractAllVarExpr(((StmtAssign) stmt).getLHS());
-		}
-		if (stmt instanceof StmtExpr) {
-			return extractAllVarExpr(((StmtExpr) stmt).getExpr());
-		}
-		if (stmt instanceof StmtMinimize) {
-			return extractAllVarExpr(((StmtMinimize) stmt).getMinimizeExpr());
-		}
-		if (stmt instanceof StmtReturn) {
-			return extractAllVarExpr(((StmtReturn) stmt).getValue());
-		}
-		if (stmt instanceof StmtVarDecl) {
-			return new HashSet<>(((StmtVarDecl) stmt).getNames());
-		}
-		return res;
-	}
-
-	// extract all vars
-	public static Set<String> extractAllVarExpr(Expression expr) {
-		Set<String> res = new HashSet<String>();
-		if (expr instanceof ExprUnary) {
-			return extractAllVarExpr(((ExprUnary) expr).getExpr());
-		}
-		if (expr instanceof ExprBinary) {
-			res.addAll(extractAllVarExpr(((ExprBinary) expr).getLeft()));
-			res.addAll(extractAllVarExpr(((ExprBinary) expr).getRight()));
-			return res;
-		}
-		if (expr instanceof ExprVar) {
-			res.add(((ExprVar) expr).getName());
-			return res;
-		}
-		if (expr instanceof ExprArrayRange) {
-			res.addAll(extractAllVarExpr(((ExprArrayRange) expr).getBase()));
-			res.addAll(extractAllVarExpr(((ExprArrayRange) expr).getOffset()));
-			return res;
-		}
-		return res;
-	}
-
-	public static void GenfeasibleVars() {
-		for (Map.Entry<String, Boolean> entry : Global.allvars.entrySet()) {
+	public void GenfeasibleVars() {
+		for (String varName : this.allVarNames) {
 			boolean feasible = false;
-			String name = entry.getKey();
 			for (Map.Entry<Integer, Set<String>> entry1 : Global.facts.entrySet()) {
-				if (!entry1.getValue().contains(name)) {
+				if (!entry1.getValue().contains(varName)) {
 					feasible = true;
 					break;
 				}
 			}
 			if (feasible)
-				Global.feasibleVars.put(name, false);
+				Global.feasibleVars.put(varName, false);
 		}
 		//System.err.println(Global.feasibleVars);
 	}
@@ -665,55 +587,56 @@ public class CFG {
 			if (always)
 				Global.alwaysVars.add(name);
 		}
-		//System.err.println(Global.feasibleVars);
 	}
 
+	/**
+	 * 
+	 */
 	public void inilocs() {
-		System.err.println("always: " + Global.alwaysVars);
+		
 		for (Map.Entry<String, Boolean> entry : Global.feasibleVars.entrySet()) {
-			if (!Global.allvars.get(entry.getKey()))
+			if (this.allVarNames.contains(entry.getKey()))
 				Global.inilocs.put(entry.getKey(), new HashSet<>());
 		}
+		
 		for (String var : Global.alwaysVars)
-			if (!Global.allvars.get(var))
+			if (this.allVarNames.contains(var))
 				Global.inilocs.get(var).add(enter.getId());
+		
 		if (!Global.only_mod)
 			for (Map.Entry<Integer, List<Integer>> entry : this.edges.entrySet()) {
-				for (Map.Entry<String, Boolean> entry1 : Global.allvars.entrySet()) {
-					String var = entry1.getKey();
-					if (Global.allvars.get(var))
-						continue;
-					if (Global.facts.get(entry.getKey()).contains(var)) {
+				
+				for (String varName : this.allTypeArrayVarNames) {
+					if (Global.facts.get(entry.getKey()).contains(varName)) {
 						for (int tail : entry.getValue()) {
-							if (!Global.facts.get(tail).contains(var)) {
-								Global.inilocs.get(var).add(tail);
+							if (!Global.facts.get(tail).contains(varName)) {
+								Global.inilocs.get(varName).add(tail);
 							}
 						}
 					}
 				}
 			}
-		System.err.println("inilocs: " + Global.inilocs);
 	}
 
 	public void getAltFacts() {
 		Set<String> nonvars = new HashSet<>();
-		for (String var : Global.allvars.keySet()) {
-			if (!Global.alwaysVars.contains(var))
-				nonvars.add(var);
+		for (String varName : this.allVarNames) {
+			if (!Global.alwaysVars.contains(varName))
+				nonvars.add(varName);
 		}
 		for (Map.Entry<Integer, Node> entry : this.nodes.entrySet()) {
 			Set<String> curvars = new HashSet<>();
 			Node node = entry.getValue();
 			if (node.getType() == 1) {
-				Set<String> leftvars = extractLVarStmt(node.getStmt());
+				Set<String> leftvars = node.getStmt().getVarNames(-1);
 				curvars.addAll(leftvars);
 				if (node.getStmt() instanceof StmtAssign || node.getStmt() instanceof StmtVarDecl) {
 					for (String lv : leftvars)
 						Global.inilocs.remove(lv);
 				}
-				curvars.addAll(extractRVarStmt(node.getStmt()));
+				curvars.addAll(node.getStmt().getVarNames(1));
 			} else if (node.getType() == 2) {
-				curvars.addAll(extractAllVarExpr(node.getExpr()));
+				curvars.addAll(node.getExpr().getVarNames());
 			}
 			if (!Collections.disjoint(nonvars, curvars))
 				Global.altfacts.add(entry.getKey());

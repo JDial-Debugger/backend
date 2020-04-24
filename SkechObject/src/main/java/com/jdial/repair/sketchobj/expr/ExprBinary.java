@@ -1,7 +1,9 @@
 package sketchobj.expr;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
@@ -439,12 +441,11 @@ public class ExprBinary extends Expression {
 	public void checkAtom() {
 		if (this.op != 3) {
 			this.setAtom(false);
-			return;
-		}
-		if (this.left.isAtom() || this.right.isAtom()) {
+		} else if (this.left.isAtom() || this.right.isAtom()) {
 			this.setAtom(true);
-		} else
+		} else {
 			this.setAtom(false);
+		}
 
 	}
 	/**
@@ -452,10 +453,16 @@ public class ExprBinary extends Expression {
 	 **/
 	@Override
 	public ConstData replaceLinearCombination(int index) {
+		
 		if (this.isBoolean()) {
-			System.err.println("is boolean");
 			Integer primaryIndex = -1;
-			if (this.op == 8 || this.op == 9 || this.op == 10 || this.op == 11 || this.op == 12 || this.op == 13) {
+			if (this.op == 8 
+					|| this.op == 9 
+					|| this.op == 10 
+					|| this.op == 11 
+					|| this.op == 12 
+					|| this.op == 13) {
+				
 		//		this.left = new ExprBinary(this.left, "-", this.right,this.lineNumber);
 		//		this.right = new ExprConstInt(0);
 		//		this.left.setCtx(this.getCtx());
@@ -467,9 +474,9 @@ public class ExprBinary extends Expression {
 				this.left.setCtx(this.getCtx());
 				this.left.setT(new TypePrimitive(4));
 				List<SketchObject> toAdd = new ArrayList<SketchObject>();
-				System.err.println("case 1 return");
 				return new ConstData(new TypePrimitive(4), toAdd, index, 0, null, this.lineNumber, null, null, primaryIndex);
 			} else {
+				
 				this.left.setBoolean(true);
 				this.right.setBoolean(true);
 				List<SketchObject> toAdd = new ArrayList<SketchObject>();
@@ -477,7 +484,6 @@ public class ExprBinary extends Expression {
 				toAdd.add(this.left);
 				right.setCtx(this.getCtx());
 				toAdd.add(this.right);
-				System.err.println("case 2 return");
 				return new ConstData(null, toAdd, index, 0, null, primaryIndex);
 			}
 		}
@@ -535,6 +541,14 @@ public class ExprBinary extends Expression {
 			return new ConstData(t, toAdd, index , 0, null, this.lineNumber, liveVarsIndexSet, liveVarsNameSet, primaryIndex, true);
 		}
 		return new ConstData(null, new ArrayList<SketchObject>(), index, 0, null, 0);
+	}
+
+	@Override
+	public Set<String> getVarNames() {
+		Set<String> names = new HashSet<String>();
+		names.addAll(this.getLeft().getVarNames());
+		names.addAll(this.getRight().getVarNames());
+		return names;
 	}
 
 }

@@ -297,7 +297,7 @@ public class ConstraintFactory {
 		for (int i = 0; i < this.otherFunctions.size(); i++) {
 			Function cur = otherFunctions.get(i);
 			Global.curFunc = cur.getName();
-			FcnHeader fh1 = new FcnHeader(cur.getName(), cur.getReturnType(), cur.getParames());
+			FcnHeader fh1 = new FcnHeader(cur.getName(), cur.getReturnType(), cur.getParams());
 
 			Statement s1 = cur.getBody();
 
@@ -1767,7 +1767,7 @@ public class ConstraintFactory {
 	static public void buildContext(StmtBlock sb) {
 		Context prectx = new Context();
 		prectx.setLinenumber(sb.getLineNumber());
-		List<Parameter> params = fh.getPara();
+		List<Parameter> params = fh.getParams();
     	for (Parameter param : params) {
     		prectx.addVar(param.getName(), param.getType());
     	}

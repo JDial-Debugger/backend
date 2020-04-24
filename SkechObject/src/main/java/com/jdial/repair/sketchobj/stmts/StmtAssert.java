@@ -1,8 +1,10 @@
 package sketchobj.stmts;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
@@ -132,16 +134,11 @@ public class StmtAssert extends Statement {
 	    }
 
 	    /** Returns the assertion condition. */
-	    public Expression getCond()
-	    {
-	        return cond;
-	    }
-
+	    public Expression getCond() { return this.cond; }
 
 	    /** Output to string. */
 	    public String toString () {
 	        String result = getAssertSymbol() + " (" + this.cond + ");";
-
 	        /*
 	         * XXX/cgjones: this is being cut out because asserts need to be
 	         * printed in the Promela code generator, but Promela doesn't support
@@ -153,8 +150,6 @@ public class StmtAssert extends Statement {
 	            result += ": \"" + msg + "\"";
 	        }
 	        */
-
-
 	        return result;
 	    }
 
@@ -176,13 +171,11 @@ public class StmtAssert extends Statement {
 //	        return msg;
 //	    }
 
-
 		@Override
 		public ConstData replaceConst(int index) {
 			// TODO Auto-generated method stub
 			return null;
 		}
-
 
 		@Override
 		public Map<String, Type> addRecordStmt(StmtBlock parent, int index, Map<String, Type> m) {
@@ -195,7 +188,6 @@ public class StmtAssert extends Statement {
 			// TODO Auto-generated method stub
 			return null;
 		}
-
 
 		@Override
 		public boolean isBasic() {
@@ -237,5 +229,10 @@ public class StmtAssert extends Statement {
 		public String toString_Context() {
 			// TODO Auto-generated method stub
 			return null;
+		}
+
+		@Override
+		public Set<String> getVarNames(int sideFlag) {
+			return this.getCond().getVarNames();
 		}
 }

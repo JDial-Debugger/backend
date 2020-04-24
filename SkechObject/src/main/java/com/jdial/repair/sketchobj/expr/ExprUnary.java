@@ -2,6 +2,7 @@ package sketchobj.expr;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
@@ -180,5 +181,11 @@ public class ExprUnary extends Expression
 	@Override
 	public ConstData replaceLinearCombination(int index) {
 		return new ConstData(null, new ArrayList<>(), index, 0, null,0);
+	}
+	
+	//TODO unimplemented
+	@Override
+	public Set<String> getVarNames() {
+		return this.getExpr().getVarNames();
 	}
 }

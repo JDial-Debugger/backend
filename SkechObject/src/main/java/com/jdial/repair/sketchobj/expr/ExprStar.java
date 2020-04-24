@@ -1,6 +1,8 @@
 package sketchobj.expr;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
@@ -52,5 +54,11 @@ public class ExprStar extends Expression {
 	public ConstData replaceLinearCombination(int index) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	//TODO unimplemented
+	@Override
+	public Set<String> getVarNames() {
+		return new HashSet<String>();
 	}
 }

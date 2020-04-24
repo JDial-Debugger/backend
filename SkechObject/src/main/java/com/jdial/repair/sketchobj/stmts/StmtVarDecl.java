@@ -2,10 +2,12 @@ package sketchobj.stmts;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.Vector;
 
 import constraintfactory.ConstData;
@@ -493,6 +495,21 @@ public class StmtVarDecl extends Statement {
 	public String toString_Context() {
 		return this.toString() + ": " + this.getPostctx().toString();
 
+	}
+
+	@Override
+	public Set<String> getVarNames(int sideFlag) {
+		
+		Set<String> names = new HashSet<String>();
+		if (sideFlag == -1 || sideFlag == 0) {
+			names.addAll(this.getNames());
+		} 
+		if (sideFlag == 1 || sideFlag == 0) {
+			for (Expression expr : this.getInits()) {
+				names.addAll(expr.getVarNames());
+			}
+		} 
+		return names;
 	}
 
 }

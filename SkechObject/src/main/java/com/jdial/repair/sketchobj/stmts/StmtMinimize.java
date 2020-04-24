@@ -1,7 +1,9 @@
 package sketchobj.stmts;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
@@ -84,5 +86,9 @@ public class StmtMinimize extends Statement {
 	public Statement clone() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public Set<String> getVarNames(int sideFlag) {
+		return this.getMinimizeExpr().getVarNames();
 	}
 }

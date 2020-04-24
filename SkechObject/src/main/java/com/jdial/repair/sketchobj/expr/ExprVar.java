@@ -1,7 +1,9 @@
 package sketchobj.expr;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
@@ -90,12 +92,21 @@ public class ExprVar extends Expression
 	public List<ExternalFunction> extractExternalFuncs(List<ExternalFunction> externalFuncNames) {
 		return externalFuncNames;
 	}
+	
 	@Override
 	public void checkAtom() {
 		this.setAtom(true);
 	}
+	
 	@Override
 	public ConstData replaceLinearCombination(int index) {
 		return new ConstData(null, new ArrayList<>(), index, 0, null,0);
+	}
+	
+	@Override
+	public Set<String> getVarNames() {
+		Set<String> names = new HashSet<String>();
+		names.add(this.getName());
+		return names;
 	}
 }

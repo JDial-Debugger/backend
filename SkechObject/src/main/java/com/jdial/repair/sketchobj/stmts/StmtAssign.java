@@ -3,6 +3,7 @@ package sketchobj.stmts;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
@@ -23,6 +24,7 @@ import sketchobj.expr.Expression;
 import constraintfactory.ConstraintFactory;
 
 public class StmtAssign extends Statement {
+	
 	private Expression lhs, rhs;
 	private int op; // operation += -= *= /=
 
@@ -258,6 +260,19 @@ public class StmtAssign extends Statement {
 	@Override
 	public String toString_Context() {
 		return this.toString() + ": " + this.getPostctx().toString();
+	}
+
+	@Override
+	public Set<String> getVarNames(int sideFlag) {
+		if (sideFlag == 1) {
+			return this.getRHS().getVarNames();
+		} else if (sideFlag == -1) {
+			return this.getLHS().getVarNames();
+		} else {
+			Set<String> rhsVars = this.getRHS().getVarNames();
+			rhsVars.addAll(this.getLHS().getVarNames());
+			return rhsVars;
+		}
 	}
 
 }

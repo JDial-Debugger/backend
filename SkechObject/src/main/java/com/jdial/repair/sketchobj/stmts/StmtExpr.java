@@ -3,6 +3,7 @@ package sketchobj.stmts;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
@@ -97,6 +98,11 @@ public class StmtExpr extends Statement {
 	@Override
 	public StmtExpr clone() {
 		return new StmtExpr(this.expr.clone(), this.getLineNumber());
+	}
+
+	@Override
+	public Set<String> getVarNames(int sideFlag) {
+		return this.getExpr().getVarNames();
 	}
 
 

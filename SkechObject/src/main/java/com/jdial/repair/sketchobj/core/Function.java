@@ -88,7 +88,7 @@ public class Function extends SketchNode {
 		return this.returnType;
 	}
 	
-	public List<Parameter> getParames(){
+	public List<Parameter> getParams(){
 		return this.params;
 	}
 

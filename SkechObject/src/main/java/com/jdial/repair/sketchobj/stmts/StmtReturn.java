@@ -1,8 +1,10 @@
 package sketchobj.stmts;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
@@ -32,8 +34,7 @@ public class StmtReturn extends Statement
 
     /** Creates a new return statement, with the specified return value
      * (or null). */
-    public StmtReturn(Expression value, int line)
-    {
+    public StmtReturn(Expression value, int line) {
 //        if (value instanceof ExprConstUnit) {
 //            value = null;
 //        }
@@ -41,8 +42,8 @@ public class StmtReturn extends Statement
         value.setParent(this);
         this.setLineNumber(line);
     }
-    public StmtReturn(Expression value)
-    {
+    
+    public StmtReturn(Expression value) {
     	this(value, 0);
     }
 
@@ -50,8 +51,8 @@ public class StmtReturn extends Statement
 	public StmtReturn clone() {
 		return new StmtReturn(value.clone(),this.getLineNumber());
 	}
-    public StmtReturn( int line)
-    {
+	
+    public StmtReturn( int line) {
 //        if (value instanceof ExprConstUnit) {
 //            value = null;
 //        }
@@ -61,25 +62,21 @@ public class StmtReturn extends Statement
 
     /** Returns the return value of this, or null if there is no return
      * value. */
-    public Expression getValue()
-    {
+    public Expression getValue() {
         return value;
     }
 
-    public void setValue(Expression e)
-    {
+    public void setValue(Expression e) {
         this.value = e;
     }
     
-    public String toString(){
-        if(value != null){
+    public String toString() {
+        if(value != null) {
             return "return " + value + ";";
-        }else{
+        } else {
             return "return;";
         }
     }
-
-
 
 	@Override
 	public ConstData replaceConst(int index) {
@@ -111,8 +108,6 @@ public class StmtReturn extends Statement
 		return prectx;
 	}
 
-
-
 	@Override
 	public Map<String, Type> addRecordStmt(StmtBlock parent, int index, Map<String, Type> m) {
 //		StmtBlock tmpSB = new StmtBlock(ConstraintFactory.recordState(this.getPrectx().getLinenumber(), this.getPrectx().getAllVars()),this);
@@ -129,29 +124,31 @@ public class StmtReturn extends Statement
 
 	}
 
-
-
-
-
 	@Override
 	public ConstData replaceLinearCombination(int index){
 		return new ConstData(null, new ArrayList<SketchObject>(), index, 0, null,this.getLineNumber());
 	}
 
-
-
 	@Override
 	public boolean isBasic() {
 		return true;
 	}
+	
 	@Override
 	public List<ExternalFunction> extractExternalFuncs(List<ExternalFunction> externalFuncNames) {
 		return value.extractExternalFuncs(externalFuncNames);
 	}
+	
 	@Override
 	public Map<Integer, String> ConstructLineToString(Map<Integer, String> line_to_string) {
 		String result = "return "+ value;
 		line_to_string.put(this.getLineNumber(), result);
 		return line_to_string;
+	}
+	
+	//TODO: unimplemented
+	@Override
+	public Set<String> getVarNames(int sideFlag) {
+		return this.getValue().getVarNames();
 	}
 }

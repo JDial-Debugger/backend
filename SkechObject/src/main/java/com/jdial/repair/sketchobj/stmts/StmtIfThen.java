@@ -3,8 +3,10 @@ package sketchobj.stmts;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
@@ -249,5 +251,10 @@ public class StmtIfThen extends Statement {
 		return line_to_string;
 	}
 
+	//TODO: unimplemented
+	@Override
+	public Set<String> getVarNames(int sideFlag) {
+		return new HashSet<String>();
+	}
 
 }

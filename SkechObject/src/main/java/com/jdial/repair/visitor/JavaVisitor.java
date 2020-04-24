@@ -17,9 +17,12 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	public static Queue<String> methodNames = new LinkedList<>();
 	//added 11/18
 	
+	public JavaVisitor() {}
+	
 	public JavaVisitor(String targetFunc) {
 		this.targetFunc = targetFunc;
 	}
+	
 	
 	/**
 	 * compilationUnit : packageDeclaration? importDeclaration* typeDeclaration*
@@ -36,8 +39,9 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	@Override
 	public SketchObject visitClassBody(simpleJavaParser.ClassBodyContext ctx) {
 		for (int i = 0; i < ctx.classBodyDeclaration().size(); i++) {
-			if (targetFunc == null || ctx.classBodyDeclaration().get(i).classMemberDeclaration().methodDeclaration().methodHeader()
-					.getChild(1).getChild(0).getText().equals(targetFunc)) {
+			if (targetFunc == null || targetFunc.equals(ctx.classBodyDeclaration()
+					.get(i).classMemberDeclaration().methodDeclaration().methodHeader()
+					.getChild(1).getChild(0).getText())) {
 				return visit(ctx.classBodyDeclaration().get(i).classMemberDeclaration().methodDeclaration());
 			}
 		}

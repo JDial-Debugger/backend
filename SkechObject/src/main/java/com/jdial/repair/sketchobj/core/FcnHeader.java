@@ -44,7 +44,7 @@ public class FcnHeader extends SketchObject {
     	return result;
     }
     
-    public List<Parameter> getPara(){
+    public List<Parameter> getParams(){
     	return this.params;
     }
 	@Override
