@@ -17,7 +17,7 @@ public abstract class Expression extends SketchNode{
 	private boolean isBoolean;
 	private boolean isAtom;
 	private Context ctx;
-	private Type t;
+	private Type type;
 	private boolean LCadded;
 	
 	
@@ -38,10 +38,10 @@ public abstract class Expression extends SketchNode{
 			return new ConstData(null, toAdd, index, 0, null,this.lineNumber);
 	}
 	@Override
-	public abstract ConstData  replaceLinearCombination(int index);
+	public abstract ConstData  insertCoeffs(int index);
 	
 	@Override
-	public ConstData replaceLinearCombination(int index, List<Integer> allowRange){
+	public ConstData insertCoeffs(int index, List<Integer> allowRange){
 		return this.replaceConst(index);
 	}
 	public abstract boolean equals(Expression other);
@@ -72,12 +72,12 @@ public abstract class Expression extends SketchNode{
 		this.ctx = ctx;
 	}
 
-	public Type getT() {
-		return t;
+	public Type getType() {
+		return this.type;
 	}
 
-	public void setT(Type t) {
-		this.t = t;
+	public void setType(Type t) {
+		this.type = t;
 	}
 
 	public boolean isLCadded() {

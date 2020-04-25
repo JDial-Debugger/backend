@@ -63,7 +63,7 @@ public class ExternalFunction {
 			Statement res = new StmtReturn(safeTable.get(pl));
 			stmts.add(new StmtIfThen(cond,res,null));
 		}
-		stmts.add(new StmtReturn(new ExprStar()));
+		stmts.add(new StmtReturn(new ExprSketchHole()));
 		List<Parameter> intpars = new ArrayList<>();
 		for(int i = 0; i < length; i++){
 			intpars.add(new Parameter(new TypePrimitive(4),"p"+i,0,false));

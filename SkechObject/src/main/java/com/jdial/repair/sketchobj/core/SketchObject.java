@@ -3,6 +3,7 @@ package sketchobj.core;
 import java.util.List;
 
 import constraintfactory.ConstData;
+import sketch_input.Coefficient;
 
 public abstract class SketchObject {
 	protected int indentation;	// for toString
@@ -25,9 +26,6 @@ public abstract class SketchObject {
 		return null;
 	}
 
-	public ConstData replaceLinearCombination(int index, List<Integer> allowRange) {
-		return null;
-	}
-	public abstract ConstData replaceLinearCombination(int index);
+	public abstract int insertCoeffs(List<Coefficient> coeffs, int idx);
 	
 }

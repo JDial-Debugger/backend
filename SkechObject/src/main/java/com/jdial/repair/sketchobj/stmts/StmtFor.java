@@ -13,7 +13,7 @@ import global.Global;
 import sketchobj.core.*;
 import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstant;
-import sketchobj.expr.ExprFunCall;
+import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.Expression;
 import cfg.CFG;
 
@@ -94,7 +94,7 @@ public class StmtFor extends Statement {
 		if (cond instanceof ExprConstant) {
 			int value = ((ExprConstant) cond).getVal();
 			Type t = ((ExprConstant) cond).getType();
-			cond = new ExprFunCall("Const" + index, new ArrayList<Expression>());
+			cond = new ExprFuncCall("Const" + index, new ArrayList<Expression>());
 			return new ConstData(t, toAdd, index + 1, value, null, this.getLineNumber());
 		}else
 			toAdd.add(cond);
@@ -166,14 +166,13 @@ public class StmtFor extends Statement {
 	}
 
 	@Override
-	public ConstData replaceLinearCombination(int index) {
+	public ConstData insertCoeffs(int index) {
 		this.cond.setBoolean(true);
 		List<SketchObject> toAdd = new ArrayList<SketchObject>();
 		toAdd.add(init);
 		toAdd.add(incr);
 		toAdd.add(body);
 		toAdd.add(cond);
-		//toAdd.add(cond);
 		return new ConstData(null, toAdd, index, 0, null,this.getLineNumber());
 	}
 

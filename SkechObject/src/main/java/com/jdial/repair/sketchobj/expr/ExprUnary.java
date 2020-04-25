@@ -142,7 +142,7 @@ public class ExprUnary extends Expression
 		if (expr.getClass().equals(ExprConstant.class)) {
 			int value = ((ExprConstant) expr).getVal();
 			Type t = ((ExprConstant) expr).getType();
-			expr = new ExprFunCall("Const" + index, new ArrayList<Expression>());
+			expr = new ExprFuncCall("Const" + index, new ArrayList<Expression>());
 			return new ConstData(t, toAdd, index + 1, value,null,this.line);
 		}
 		return new ConstData(null, toAdd, index, 0,null,this.line);
@@ -154,7 +154,7 @@ public class ExprUnary extends Expression
 		if (expr.getClass().equals(ExprConstant.class)) {
 			int value = ((ExprConstant) expr).getVal();
 			Type t = ((ExprConstant) expr).getType();
-			expr = new ExprFunCall("Const" + index, new ArrayList<Expression>());
+			expr = new ExprFuncCall("Const" + index, new ArrayList<Expression>());
 			return new ConstData(t, toAdd, index + 1, value,string,this.line);
 		}
 		return new ConstData(null, toAdd, index, 0,string,this.line);
@@ -179,7 +179,7 @@ public class ExprUnary extends Expression
 	}
 
 	@Override
-	public ConstData replaceLinearCombination(int index) {
+	public ConstData insertCoeffs(int index) {
 		return new ConstData(null, new ArrayList<>(), index, 0, null,0);
 	}
 	

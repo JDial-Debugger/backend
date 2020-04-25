@@ -7,8 +7,12 @@ import java.util.Set;
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
 
-public class ExprStar extends Expression {
-	public ExprStar() {
+/**
+ * Represents a sketch hole (???) aka an expression for sketch to insert a value
+ *
+ */
+public class ExprSketchHole extends Expression {
+	public ExprSketchHole() {
 
 	}
 
@@ -51,7 +55,7 @@ public class ExprStar extends Expression {
 	}
 
 	@Override
-	public ConstData replaceLinearCombination(int index) {
+	public ConstData insertCoeffs(int index) {
 		// TODO Auto-generated method stub
 		return null;
 	}

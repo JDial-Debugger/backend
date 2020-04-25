@@ -16,7 +16,7 @@ import sketchobj.core.Context;
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
 import sketchobj.expr.ExprConstant;
-import sketchobj.expr.ExprFunCall;
+import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.Expression;
 
 public class StmtIfThen extends Statement {
@@ -42,6 +42,11 @@ public class StmtIfThen extends Statement {
 		alt.setParent(this);
 		this.setLineNumber(i);
 	}
+	
+	public StmtIfThen(Expression cond, Statement cons) {
+		this(cond, cons, null);
+	}
+	
 	public StmtIfThen(Expression cond, Statement cons, Statement alt) {
 		this(cond,cons,alt,0);
 	}
@@ -140,7 +145,7 @@ public class StmtIfThen extends Statement {
 		if (cond instanceof ExprConstant) {
 			int value = ((ExprConstant) cond).getVal();
 			Type t = ((ExprConstant) cond).getType();
-			cond = new ExprFunCall("Const" + index, new ArrayList<Expression>());
+			cond = new ExprFuncCall("Const" + index, new ArrayList<Expression>());
 			return new ConstData(t, toAdd, index + 1, value,null,this.getLineNumber());
 		}
 		return new ConstData(null, toAdd, index, 0,null,this.getLineNumber());
@@ -164,9 +169,7 @@ public class StmtIfThen extends Statement {
 		this.setPostctx(prectx);
 		Context postctx = new Context(prectx);
 		
-		System.err.println("cond is " + cond);
 		if (Global.prime_mod && cond.toString().contains("ini")) {
-			System.err.println("build ");
 			postctx = cons.buildContext(postctx, sposition);
 		} else {
 			postctx.pushNewVars();
@@ -228,7 +231,7 @@ public class StmtIfThen extends Statement {
 	 * @param index the coeff # to start on
 	 */
 	@Override
-	public ConstData replaceLinearCombination(int index) {
+	public ConstData insertCoeffs(int index) {
 		List<SketchObject> toAdd = new ArrayList<SketchObject>();
 		cond.setCtx(this.getPostctx());
 		cond.setBoolean(true);

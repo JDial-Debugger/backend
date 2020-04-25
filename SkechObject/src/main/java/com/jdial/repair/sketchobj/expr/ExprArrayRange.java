@@ -236,7 +236,7 @@ public class ExprArrayRange extends Expression
 		if (cond instanceof ExprConstant) {
 			int value = ((ExprConstant) cond).getVal();
 			Type t = ((ExprConstant) cond).getType();
-			cond = new ExprFunCall("Const" + index, new ArrayList<Expression>());
+			cond = new ExprFuncCall("Const" + index, new ArrayList<Expression>());
 			return new ConstData(t, toAdd, index + 1, value,name,this.line);
 		}
 		return new ConstData(null, toAdd, index, 0,name,this.line);
@@ -266,7 +266,7 @@ public class ExprArrayRange extends Expression
 	}
 
 	@Override
-	public ConstData replaceLinearCombination(int index) {
+	public ConstData insertCoeffs(int index) {
 		return new ConstData(null, new ArrayList<>(), index, 0, null,0);
 	}
 

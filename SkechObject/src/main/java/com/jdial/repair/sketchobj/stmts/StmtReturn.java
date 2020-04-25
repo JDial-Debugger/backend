@@ -16,7 +16,7 @@ import sketchobj.core.Type;
 import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprConstant;
-import sketchobj.expr.ExprFunCall;
+import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.Expression;
 
 /**
@@ -85,7 +85,7 @@ public class StmtReturn extends Statement
 		{
 			int v = ((ExprConstant)value).getVal();
 			Type t = ((ExprConstant)value).getType();
-			value = new ExprFunCall("Const"+index,new ArrayList<Expression>());
+			value = new ExprFuncCall("Const"+index,new ArrayList<Expression>());
 			return new ConstData(t, toAdd, index+1, v,null,this.getLineNumber());
 		}
 		return value.replaceConst(index);
@@ -125,7 +125,7 @@ public class StmtReturn extends Statement
 	}
 
 	@Override
-	public ConstData replaceLinearCombination(int index){
+	public ConstData insertCoeffs(int index){
 		return new ConstData(null, new ArrayList<SketchObject>(), index, 0, null,this.getLineNumber());
 	}
 

@@ -7,8 +7,9 @@ import java.util.Map;
 import java.util.Stack;
 
 public class Context {
-	private Stack<Map<String,Type>> varStack;
-	private Map<String,Type> currentVars;
+	
+	private Stack<Map<String, Type>> varStack;
+	private Map<String, Type> currentVars;
 	private int linenumber;
 	private List<String> varsInScope;
 	
@@ -18,7 +19,7 @@ public class Context {
 		this.varStack.push(this.currentVars);
 		this.linenumber = 1;
 		this.varsInScope = new ArrayList<String>();
-		}
+	}
 
 	public Map<String,Type> getCurrentVars() {
 		return currentVars;
@@ -81,12 +82,17 @@ public class Context {
 		this.varStack = varStack;
 	}
 	
-	public Map<String, Type> getAllVars(){
-		List<Map<String, Type>> list = new ArrayList<Map<String, Type>>(this.getVarStack());
+	public Map<String, Type> getAllVars() {
+		
+		List<Map<String, Type>> vStackList
+				= new ArrayList<Map<String, Type>>(this.getVarStack());
+		
 		Map<String, Type> result = new HashMap<String, Type>();
-		for(Map<String, Type> m: list){
+		
+		for(Map<String, Type> m: vStackList){
 			result.putAll(m);
 		}
+		
 		result.putAll(currentVars);
 		return result;
 	}

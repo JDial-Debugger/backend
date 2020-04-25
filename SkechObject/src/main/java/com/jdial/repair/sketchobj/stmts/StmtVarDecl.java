@@ -23,8 +23,8 @@ import sketchobj.expr.ExprArrayRange;
 import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprConstant;
-import sketchobj.expr.ExprFunCall;
-import sketchobj.expr.ExprStar;
+import sketchobj.expr.ExprFuncCall;
+import sketchobj.expr.ExprSketchHole;
 import sketchobj.expr.ExprVar;
 import sketchobj.expr.Expression;
 //added
@@ -348,7 +348,7 @@ public class StmtVarDecl extends Statement {
 				if (inits.get(i) instanceof ExprConstant) {
 					int value = ((ExprConstant) inits.get(i)).getVal();
 					Type t = ((ExprConstant) inits.get(i)).getType();
-					inits.set(i, new ExprFunCall("Const" + index, new ArrayList<Expression>(), null));
+					inits.set(i, new ExprFuncCall("Const" + index, new ArrayList<Expression>(), null));
 
 					return new ConstData(t, toAdd, index + 1, value, names.get(i), this.getLineNumber());
 				} else {
@@ -411,7 +411,7 @@ public class StmtVarDecl extends Statement {
 	}
 
 	@Override
-	public ConstData replaceLinearCombination(int index) {
+	public ConstData insertCoeffs(int index) {
 		List<SketchObject> toAdd = new ArrayList<SketchObject>();
 		if (this.inits.size() != 0) {
 			for (int i = 0; i < inits.size(); i++) {
@@ -420,12 +420,12 @@ public class StmtVarDecl extends Statement {
 				inits.get(i).setLCadded(true);
 				Type t = this.getPostctx().getAllVars().get(this.names.get(i).toString());
 				if (inits.get(i).isAtom()) {
-					inits.set(i, new ExprBinary(new ExprFunCall("Coeff" + index, new ArrayList<Expression>()), "*",
+					inits.set(i, new ExprBinary(new ExprFuncCall("Coeff" + index, new ArrayList<Expression>()), "*",
 							inits.get(i), this.getLineNumber()));
 					primaryIndex = index;
 					index++;
 				} else {
-					inits.get(i).setT(t);
+					inits.get(i).setType(t);
 					inits.get(i).setCtx(this.getPrectx());
 					toAdd.add(inits.get(i));
 				}
@@ -473,8 +473,8 @@ public class StmtVarDecl extends Statement {
 					inits.set(i, new ExprBinary(inits.get(i), "+", new ExprBinary(new ExprFunCall("@2Coeff" + index), "*",
 						new ExprFunCall("Coeff" + (index + 1), new ArrayList<Expression>()), this.getLineNumber()), this.getLineNumber()));
 				else*/
-					inits.set(i, new ExprBinary(inits.get(i), "+", new ExprBinary(new ExprFunCall("Coeff" + index), "*",
-							new ExprFunCall("Coeff" + (index + 1), new ArrayList<Expression>()), this.getLineNumber()), this.getLineNumber()));
+					inits.set(i, new ExprBinary(inits.get(i), "+", new ExprBinary(new ExprFuncCall("Coeff" + index), "*",
+							new ExprFuncCall("Coeff" + (index + 1), new ArrayList<Expression>()), this.getLineNumber()), this.getLineNumber()));
 				index += 2;
 				return new ConstData(t, toAdd, index, 0, null, this.getLineNumber(), liveVarsIndexSet, liveVarsNameSet,
 						primaryIndex);

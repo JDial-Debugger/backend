@@ -20,6 +20,7 @@ public class ConstData {
 	private List<Integer> liveVarsIndexSet;
 	private List<String> liveVarsNameSet;
 	private Integer primaryCoeffIndex;
+	//if binary expr
 	private boolean ifLC;
 	/** 
 	 * 
@@ -31,8 +32,13 @@ public class ConstData {
 	 * @param line the line number the parent of children is on
 	 * @param isc
 	 */
-	@SuppressWarnings("unchecked")
-	public ConstData(Type type, @SuppressWarnings("rawtypes") List children, int index, int value, String name, int line, boolean isc){
+	public ConstData(Type type, 
+			List<SketchObject> children, 
+			int index, 
+			int value, 
+			String name, 
+			int line, 
+			boolean isc){
 		this.setType(type);
 		this.setChildren(children);
 		this.setIndex(index);
@@ -41,15 +47,24 @@ public class ConstData {
 		this.oriline = line;
 		this.isCoeff = isc;
 	}
-	public ConstData(Type type, @SuppressWarnings("rawtypes") List children, int index, int value, String name, int line){
+	
+	public ConstData(Type type, 
+			List<SketchObject> children, 
+			int index, 
+			int value, 
+			String name, 
+			int line){
 		this(type,children,index,value,name,line,false);
 	}
+	
 	public ConstData(int index2,int line) {
-		this(null,new ArrayList<SketchObject>(),index2,0,null,line,false);}
+		this(null,new ArrayList<SketchObject>(),index2,0,null,line,false);
+	}
 
 	public ConstData(int index2, String string, int line) {
 		this(null,new ArrayList<SketchObject>(),index2,0,string,line,false);
 	}
+	
 	/** 
 	 * 
 	 * @param t TODO: not sure
@@ -63,8 +78,16 @@ public class ConstData {
 	 * @param primaryCoeffIndex
 	 * @param ifLC
 	 */
-	public ConstData(Type t, List<SketchObject> toAdd, int index2, int i, String name, int lineNumber,
-			List<Integer> liveVarsIndexSet2, List<String> liveVarsNameSet2, Integer primaryCoeffIndex, boolean ifLC) {
+	public ConstData(Type t, 
+			List<SketchObject> toAdd, 
+			int index2, 
+			int i, 
+			String name, 
+			int lineNumber,
+			List<Integer> liveVarsIndexSet2, 
+			List<String> liveVarsNameSet2, 
+			Integer primaryCoeffIndex, 
+			boolean ifLC) {
 		this.setType(t);
 		this.setChildren(toAdd);
 		this.setIndex(index2);
@@ -147,8 +170,5 @@ public class ConstData {
 	}
 	public boolean isIfLC() {
 		return ifLC;
-	}
-	public void setIfLC(boolean ifLC) {
-		this.ifLC = ifLC;
 	}
 }

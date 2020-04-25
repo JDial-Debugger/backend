@@ -234,10 +234,10 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 		Expression lhs = assertExpr.getLeft();
 		Expression rhs = assertExpr.getRight();
 		//check if function call in exactly one of lhs or rhs
-		if ( lhs instanceof ExprFunCall && !(rhs instanceof ExprFunCall)) {
-			return new StmtFuncAssert((ExprFunCall) lhs, rhs);
-		} else if (rhs instanceof ExprFunCall && !(lhs instanceof ExprFunCall)) {
-			return new StmtFuncAssert((ExprFunCall) rhs, lhs);
+		if ( lhs instanceof ExprFuncCall && !(rhs instanceof ExprFuncCall)) {
+			return new StmtFuncAssert((ExprFuncCall) lhs, rhs);
+		} else if (rhs instanceof ExprFuncCall && !(lhs instanceof ExprFuncCall)) {
+			return new StmtFuncAssert((ExprFuncCall) rhs, lhs);
 		} else {
 			return null;
 		}
@@ -712,10 +712,10 @@ public Expression visitExpandMulExpr(simpleJavaParser.ExpandMulExprContext ctx) 
 		else
 		{
 			//temp = new ExpressionList(new ArrayList<>());
-			return new ExprFunCall("External_" + methodName);
+			return new ExprFuncCall("External_" + methodName);
 		}
 
-		return new ExprFunCall("External_" + methodName, temp , methodNameJ);
+		return new ExprFuncCall("External_" + methodName, temp , methodNameJ);
 	}
 
 	@Override

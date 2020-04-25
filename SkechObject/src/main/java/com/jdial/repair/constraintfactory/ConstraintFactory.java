@@ -440,9 +440,9 @@ public class ConstraintFactory {
 			ConstData data = null;
 			//for our current expression/stmt held in target, get each variable/const in target
 			if (ConstraintFactory.sign_limited_range) {
-				data = target.replaceLinearCombination(coeffIndex, ConstraintFactory.repair_range);
+				data = target.insertCoeffs(coeffIndex, ConstraintFactory.repair_range);
 			} else {
-				data = target.replaceLinearCombination(coeffIndex);//@2-------added here
+				data = target.insertCoeffs(coeffIndex);//@2-------added here
 			}
 
 			if (data.getType() != null) {
@@ -463,7 +463,6 @@ public class ConstraintFactory {
 				}
 				coeffIndex = data.getIndex();
 				if (!data.isIfLC()) {
-					ConstraintFactory.noWeightCoeff.add(coeffIndex - 2);
 					list.add(coeffChangeDecl(coeffIndex - 2, new TypePrimitive(1)));//bit coeff0change = ??;
 					list.add(new StmtFunDecl(addCoeffFun(coeffIndex - 2, 0, data.getType())));//Coeff0()
 					list.add(coeffChangeDecl(coeffIndex - 1, new TypePrimitive(4)));
@@ -805,7 +804,7 @@ public class ConstraintFactory {
 			}
 			return modExpr(e, p);
 		}
-		if (e instanceof ExprFunCall) {
+		if (e instanceof ExprFuncCall) {
 			return modExpr(e, p);
 		}
 		if (e instanceof ExprConstInt) {
@@ -857,7 +856,7 @@ public class ConstraintFactory {
 	}
 
 	private static Function addLCConstFun(int i, Type type) {
-		Expression condition_2 = new ExprStar();
+		Expression condition_2 = new ExprSketchHole();
 		StmtReturn return_2 = new StmtReturn(new ExprConstInt(0), 0);
 		StmtReturn return_3 = new StmtReturn(new ExprVar("coeff" + i + "change"), 0);
 
@@ -871,7 +870,7 @@ public class ConstraintFactory {
 	private static Function addCoeffFun(int index, int value, Type type) {
 		Expression condition = new ExprBinary(new ExprVar("coeff" + index + "change"), "==", new ExprConstInt(0), 0);
 		StmtReturn return_1 = new StmtReturn(new ExprConstInt(value), 0); 
-		Expression condition_2 = new ExprStar();// ??
+		Expression condition_2 = new ExprSketchHole();// ??
 		StmtReturn return_2 = new StmtReturn(new ExprConstInt(1 - value), 0);
 		Statement ifst = new StmtIfThen(condition, return_1, null, 0);
 		Statement ifst_2 = new StmtIfThen(condition_2, return_2, null, 0);
@@ -884,7 +883,7 @@ public class ConstraintFactory {
 	}
 
 	private static Statement coeffChangeDecl(int index, TypePrimitive typePrimitive) {
-		return new StmtVarDecl(typePrimitive, "coeff" + index + "change", new ExprStar(), 0);
+		return new StmtVarDecl(typePrimitive, "coeff" + index + "change", new ExprSketchHole(), 0);
 	}
 
 	/*
@@ -914,13 +913,13 @@ public class ConstraintFactory {
 	// ------------ Auxiliary functions
 
 	static public Statement constChangeDecl(int index, Type t) {
-		return new StmtVarDecl(t, "const" + index + "change", new ExprStar(), 0);
+		return new StmtVarDecl(t, "const" + index + "change", new ExprSketchHole(), 0);
 	}
 
 	static public Statement constChangeDecls(int number, Type t) {
 		StmtBlock result = new StmtBlock();
 		for (int i = 0; i < number; i++) {
-			result.addStmt(new StmtVarDecl(t, "const" + i + "change", new ExprStar(), 0));
+			result.addStmt(new StmtVarDecl(t, "const" + i + "change", new ExprSketchHole(), 0));
 		}
 		return result;
 	}
@@ -1066,7 +1065,7 @@ public class ConstraintFactory {
 
 		// f(args)
 		if (Global.prime_mod) {
-			stmts.add(new StmtExpr(new ExprFunCall(fh.getName(), args, fh.getName()), 0));
+			stmts.add(new StmtExpr(new ExprFuncCall(fh.getName(), args, fh.getName()), 0));
 
 			for (int p : Global.primes) {
 				for (String v : finalState.getOrderedLocals()) {
@@ -1091,7 +1090,7 @@ public class ConstraintFactory {
 				//stmts.add(new StmtAssert(
 				//		new ExprBinary(new ExprVar(v + "final"), "==", new ExprVar("correctFinal_" + v), 0)));
 				stmts.add(new StmtAssert(
-								new ExprBinary(new ExprFunCall(fh.getName(), args, fh.getName()),
+								new ExprBinary(new ExprFuncCall(fh.getName(), args, fh.getName()),
 										"==", new ExprVar("correctFinal_" + v), 0)));
 		}
 
@@ -1160,7 +1159,7 @@ public class ConstraintFactory {
 
 		// f(args)
 		if (Global.prime_mod) {
-			stmts.add(new StmtExpr(new ExprFunCall(fh.getName(), args, fh.getName()), 0));
+			stmts.add(new StmtExpr(new ExprFuncCall(fh.getName(), args, fh.getName()), 0));
 
 			for (int p : Global.primes) {
 				for (String v : finalState.getOrderedLocals()) {
@@ -1185,7 +1184,7 @@ public class ConstraintFactory {
 				//stmts.add(new StmtAssert(
 				//		new ExprBinary(new ExprVar(v + "final"), "==", new ExprVar("correctFinal_" + v), 0)));
 				stmts.add(new StmtAssert(
-								new ExprBinary(new ExprFunCall(fh.getName(), args, fh.getName()),
+								new ExprBinary(new ExprFuncCall(fh.getName(), args, fh.getName()),
 										"==", new ExprVar("correctFinal_" + v), 0)));
 		}
 
@@ -1280,7 +1279,7 @@ public class ConstraintFactory {
 					stmts.add(new StmtVarDecl(new TypePrimitive(4), "correctFinal_" + v,
 							new ExprConstInt(finalState.getLocals().find(v).getValue()), 0));
 			}
-			stmts.add(new StmtExpr(new ExprFunCall(fh.getName(), args, fh.getName()), 0));
+			stmts.add(new StmtExpr(new ExprFuncCall(fh.getName(), args, fh.getName()), 0));
 		}
  		List<Statement> forBody = new ArrayList<Statement>();
 		for (Map.Entry<String, String> entry : varList.entrySet()) {
@@ -1351,7 +1350,7 @@ public class ConstraintFactory {
 						new ExprBinary(new ExprVar(v + "final"), "==", new ExprVar("correctFinal_" + v), 0)));
 				else
 					stmts.add(new StmtAssert(
-								new ExprBinary(new ExprFunCall(fh.getName(), args, fh.getName()),
+								new ExprBinary(new ExprFuncCall(fh.getName(), args, fh.getName()),
 										"==", new ExprVar("correctFinal_" + v), 0)));
 		}
 
@@ -1403,7 +1402,7 @@ public class ConstraintFactory {
 
 		// f(args)
 		if (Global.prime_mod) {
-			stmts.add(new StmtExpr(new ExprFunCall(fh.getName(), extra_args.get(extra_index++), fh.getName()), 0));
+			stmts.add(new StmtExpr(new ExprFuncCall(fh.getName(), extra_args.get(extra_index++), fh.getName()), 0));
 
 			for (int p : Global.primes) {
 				for (String v : finalState.getOrderedLocals()) {
@@ -1429,7 +1428,7 @@ public class ConstraintFactory {
 				//stmts.add(new StmtAssert(
 				//		new ExprBinary(new ExprVar(v + "final"), "==", new ExprVar("correctFinal_" + v), 0)));
 				stmts.add(new StmtAssert(
-								new ExprBinary(new ExprFunCall(fh.getName(), extra_args.get(extra_index++), fh.getName()),
+								new ExprBinary(new ExprFuncCall(fh.getName(), extra_args.get(extra_index++), fh.getName()),
 										"==", new ExprVar("correctFinal_" + v), 0)));
 		}
 
@@ -1478,7 +1477,7 @@ public class ConstraintFactory {
 		}
 
 		// f(args)
-		stmts.add(new StmtExpr(new ExprFunCall(fh.getName(), extra_args.get(extra_index++), fh.getName()), 0));
+		stmts.add(new StmtExpr(new ExprFuncCall(fh.getName(), extra_args.get(extra_index++), fh.getName()), 0));
  		List<Statement> forBody = new ArrayList<Statement>();
 		for (Map.Entry<String, String> entry : varList.entrySet()) {
 			String v = entry.getKey();
@@ -1520,7 +1519,7 @@ public class ConstraintFactory {
 		Statement forupdate = new StmtExpr(new ExprUnary(5, new ExprVar("i"), 0), 0);
 		stmts.add(new StmtFor(forinit, forcon, forupdate, new StmtBlock(forBody), false, 0));
 		if (Global.prime_mod) {
-			stmts.add(new StmtExpr(new ExprFunCall(fh.getName(), extra_args.get(extra_index++), fh.getName()), 0));
+			stmts.add(new StmtExpr(new ExprFuncCall(fh.getName(), extra_args.get(extra_index++), fh.getName()), 0));
 
 			for (int p : Global.primes) {
 				for (String v : finalState.getOrderedLocals()) {
@@ -1546,7 +1545,7 @@ public class ConstraintFactory {
 				//stmts.add(new StmtAssert(
 				//		new ExprBinary(new ExprVar(v + "final"), "==", new ExprVar("correctFinal_" + v), 0)));
 				stmts.add(new StmtAssert(
-								new ExprBinary(new ExprFunCall(fh.getName(), extra_args.get(extra_index++), fh.getName()),
+								new ExprBinary(new ExprFuncCall(fh.getName(), extra_args.get(extra_index++), fh.getName()),
 										"==", new ExprVar("correctFinal_" + v), 0)));
 		}
 
@@ -1610,7 +1609,7 @@ public class ConstraintFactory {
 
 	static public Function addConstFun(int index, int ori, Type t) {
 		Expression condition = new ExprBinary(new ExprVar("const" + index + "change"), "==", new ExprConstInt(1), 0);
-		StmtReturn return_1 = new StmtReturn(new ExprStar(), 0);
+		StmtReturn return_1 = new StmtReturn(new ExprSketchHole(), 0);
 		StmtReturn return_2 = new StmtReturn(new ExprConstInt(ori), 0);
 		Statement ifst = new StmtIfThen(condition, return_1, return_2, 0);
 

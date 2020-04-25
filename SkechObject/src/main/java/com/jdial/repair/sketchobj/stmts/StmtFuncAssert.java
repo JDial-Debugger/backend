@@ -9,7 +9,7 @@ import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
 import sketchobj.core.Context;
 import sketchobj.core.Type;
-import sketchobj.expr.ExprFunCall;
+import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.Expression;
 
 /**
@@ -19,7 +19,7 @@ import sketchobj.expr.Expression;
  *
  */
 public class StmtFuncAssert extends Statement {
-	private ExprFunCall exprFunCall;
+	private ExprFuncCall exprFunCall;
 	private Expression expression;
 
 	/**
@@ -28,7 +28,7 @@ public class StmtFuncAssert extends Statement {
 	 * @param expression - what expression the function should evaluate to
 	 * 					   this can be any non function call expression
 	 */
-	public StmtFuncAssert(ExprFunCall exprFunCall, Expression expression) {
+	public StmtFuncAssert(ExprFuncCall exprFunCall, Expression expression) {
 		this.exprFunCall = exprFunCall;
 		this.expression = expression;
 	}
@@ -55,7 +55,7 @@ public class StmtFuncAssert extends Statement {
 	}
 
 	@Override
-	public ConstData replaceLinearCombination(int index) {
+	public ConstData insertCoeffs(int index) {
 		// TODO Auto-generated method stub
 		return null;
 	}

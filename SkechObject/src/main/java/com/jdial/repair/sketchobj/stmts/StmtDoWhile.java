@@ -78,7 +78,7 @@ public class StmtDoWhile extends Statement {
 	}
 
 	@Override
-	public ConstData replaceLinearCombination(int index) {
+	public ConstData insertCoeffs(int index) {
 		// TODO Auto-generated method stub
 		return null;
 	}

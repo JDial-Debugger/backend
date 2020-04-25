@@ -14,7 +14,7 @@ import sketchobj.core.Context;
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
 import sketchobj.expr.ExprConstant;
-import sketchobj.expr.ExprFunCall;
+import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.Expression;
 
 public class StmtWhile extends Statement {
@@ -56,7 +56,7 @@ public class StmtWhile extends Statement {
 		if (cond instanceof ExprConstant) {
 			int value = ((ExprConstant) cond).getVal();
 			Type t = ((ExprConstant) cond).getType();
-			cond = new ExprFunCall("Const" + index, new ArrayList<Expression>());
+			cond = new ExprFuncCall("Const" + index, new ArrayList<Expression>());
 			toAdd.add(this.body);
 			return new ConstData(t, toAdd, index + 1, value, null,this.getLineNumber());
 		}
@@ -108,7 +108,7 @@ public class StmtWhile extends Statement {
 	}
 
 	@Override
-	public ConstData replaceLinearCombination(int index) {
+	public ConstData insertCoeffs(int index) {
 		List<SketchObject> toAdd = new ArrayList<SketchObject>();
 		toAdd.add(cond);
 		toAdd.add(body);

@@ -17,7 +17,7 @@ import sketchobj.core.TypePrimitive;
 import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprConstant;
-import sketchobj.expr.ExprFunCall;
+import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.ExprVar;
 import sketchobj.expr.Expression;
 //added
@@ -114,7 +114,7 @@ public class StmtAssign extends Statement {
 		if (rhs instanceof ExprConstant) {
 			int value = ((ExprConstant) rhs).getVal();
 			Type t = ((ExprConstant) rhs).getType();
-			rhs = new ExprFunCall("Const" + index, new ArrayList<Expression>());
+			rhs = new ExprFuncCall("Const" + index, new ArrayList<Expression>());
 			return new ConstData(t, new ArrayList(), index + 1, value, lhs.toString(), this.getLineNumber());
 		}
 		return rhs.replaceConst(index, lhs.toString());
@@ -127,10 +127,12 @@ public class StmtAssign extends Statement {
 
 	@Override
 	public Context buildContext(Context prectx, int position) {
+		
 		Context postctx = new Context(prectx);
 		prectx = new Context(prectx);
 		postctx.setLinenumber(this.getLineNumber());
 		prectx.setLinenumber(this.getLineNumber());
+		
 		if (lhs.toString().contains("ini")) {
 			this.setPostctx(new Context(postctx));
 			this.setPrectx(new Context(prectx));
@@ -138,15 +140,22 @@ public class StmtAssign extends Statement {
 		}
 		
 		List<String> tmp = postctx.getVarsInScope();
-		if (!tmp.contains(lhs.toString())&& (position > 0 || Global.dupFinals.contains(lhs.toString())
+		
+		if (!tmp.contains(lhs.toString())
+				&& (position > 0 || Global.dupFinals.contains(lhs.toString())
 				|| Global.params.contains(lhs.toString()))) {
+			
 			postctx.addVar(lhs.toString(), TypePrimitive.inttype);
+			
 		} else if (!postctx.getAllVars().containsKey(lhs.toString())) {
+			
 			postctx.addVar(lhs.toString(), TypePrimitive.inttype);
 		}
+		
 		if (!tmp.contains(lhs.toString()) && position > 0) {
 			tmp.add(lhs.toString());
 		}
+		
 		postctx.setVarsInScope(tmp);
 		this.setPostctx(new Context(postctx));
 		this.setPrectx(new Context(prectx));
@@ -179,37 +188,53 @@ public class StmtAssign extends Statement {
 	}
 
 	@Override
-	public ConstData replaceLinearCombination(int index) {
+	public ConstData insertCoeffs(int index) {
+		
 		Integer primaryIndex = -1;
 		List<SketchObject> toAdd = new ArrayList<SketchObject>();
+		
 		rhs.checkAtom();
 		rhs.setLCadded(true);
-		Type t = this.getPrectx().getAllVars().get(lhs.toString());
+		
+		Type lhsType = this.getPrectx().getAllVars().get(lhs.toString());
+		
+		//TODO get rid of this atom stuff, finds if the expr has had
+		//coeffs inserted yet AND if it its a single var or a binary
+		//multiplication expr
 		if (rhs.isAtom()) {
-			this.rhs = new ExprBinary(new ExprFunCall("Coeff" + index, new ArrayList<Expression>()), "*", this.rhs,
+			
+			this.rhs = new ExprBinary(
+					new ExprFuncCall("Coeff" + index, 
+							new ArrayList<Expression>()), 
+					"*", 
+					this.rhs,
 					this.getLineNumber());
+			
 			primaryIndex = index;
 			index++;
+			
 		} else {
-			rhs.setT(t);
+			rhs.setType(lhsType);
 			rhs.setCtx(this.getPrectx());
 			toAdd.add(rhs);
 		}
 		List<Integer> liveVarsIndexSet = new ArrayList<Integer>();
 		List<String> liveVarsNameSet = new ArrayList<String>();
-		if ((t instanceof TypePrimitive) && ((TypePrimitive) t).getType() == 1) {
+		
+		//if boolean or type array, don't insert any coefficients
+		if ((lhsType instanceof TypePrimitive) 
+				&& ((TypePrimitive) lhsType).getType() == TypePrimitive.TYPE_BIT) {
+			
 			rhs.setBoolean(true);
-			;
+			return new ConstData(null, new ArrayList<SketchObject>(), index, 0, null, this.getLineNumber());
+			
+		} else if (lhsType instanceof TypeArray) {
 			return new ConstData(null, new ArrayList<SketchObject>(), index, 0, null, this.getLineNumber());
 		}
-		if (t instanceof TypeArray) {
-			return new ConstData(null, new ArrayList<SketchObject>(), index, 0, null, this.getLineNumber());
-		}
-		List<String> vars = new ArrayList<String>(this.getPrectx().getAllVars().keySet());
-	/*	for (String v : vars) {
-			//System.err.println("stmt: " + this);
-			//System.err.println("available vars: " + vars);
-			//System.err.println("current var: " + v);
+		
+		//TODO figure out what this is from
+	/*	List<String> vars = new ArrayList<String>(this.getPrectx().getAllVars().keySet());
+		for (String v : vars) {
 			// all 1 dimension array
 
 			if (this.getPrectx().getAllVars().get(v) instanceof TypeArray) {
@@ -242,12 +267,31 @@ public class StmtAssign extends Statement {
 			index++;
 			liveVarsNameSet.add(v);
 		}*/
-		this.rhs = new ExprBinary(this.rhs, "+",
-				new ExprBinary(new ExprFunCall("Coeff" + index), "*",
-						new ExprFunCall("Coeff" + (index + 1), new ArrayList<Expression>()), this.getLineNumber()),
+		
+		
+		//x = 5; => x = 5 + coeff4() * coeff5()
+		this.rhs = new ExprBinary(
+				this.rhs, 
+				"+",
+				new ExprBinary(
+						new ExprFuncCall("Coeff" + index), 
+						"*",
+						new ExprFuncCall(
+								"Coeff" + (index + 1), 
+								new ArrayList<Expression>()), 
+						this.getLineNumber()),
 				this.getLineNumber());
-		index = index + 2;
-		return new ConstData(t, toAdd, index, 0, null, this.getLineNumber(), liveVarsIndexSet, liveVarsNameSet,
+		
+		index += 2;
+		return new ConstData(
+				lhsType, 
+				toAdd, 
+				index, 
+				0, 
+				null, 
+				this.getLineNumber(), 
+				liveVarsIndexSet, 
+				liveVarsNameSet,
 				primaryIndex);
 	}
 

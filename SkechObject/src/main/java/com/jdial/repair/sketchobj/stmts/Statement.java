@@ -9,6 +9,7 @@ import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
 import sketchobj.core.Context;
 import sketchobj.core.SketchNode;
+import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
 
 public abstract class Statement extends SketchNode {
@@ -40,8 +41,6 @@ public abstract class Statement extends SketchNode {
 
 	public abstract ConstData replaceConst(int index);
 
-	@Override
-	public abstract ConstData replaceLinearCombination(int index);
 
 	public Context getPostctx() {
 		return postctx;
@@ -63,13 +62,6 @@ public abstract class Statement extends SketchNode {
 
 	public void setPrectx(Context prectx) {
 		this.prectx = prectx;
-	}
-
-	@Override
-	public ConstData replaceLinearCombination(int index, List<Integer> allowRange) {
-		if (allowRange.contains(this.getLineNumber()))
-			return this.replaceLinearCombination(index);
-		return new ConstData(null, new ArrayList(), index, 0, null,this.lineNumber);
 	}
 
 	@Override

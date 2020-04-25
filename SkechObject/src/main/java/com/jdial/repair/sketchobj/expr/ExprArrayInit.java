@@ -159,7 +159,7 @@ public class ExprArrayInit extends Expression {
 	}
 
 	@Override
-	public ConstData replaceLinearCombination(int index) {
+	public ConstData insertCoeffs(int index) {
 		return new ConstData(null, new ArrayList<>(), index, 0, null, 0);
 	}
 

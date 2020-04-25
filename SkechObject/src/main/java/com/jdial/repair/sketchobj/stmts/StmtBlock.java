@@ -13,6 +13,7 @@ import constraintfactory.ConstraintFactory;
 import constraintfactory.ExternalFunction;
 import global.Global;
 import sketchobj.core.Context;
+import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
 
 public class StmtBlock extends Statement {
@@ -23,7 +24,7 @@ public class StmtBlock extends Statement {
 		for(Statement s:stmts)
 			s.setParent(this);
 
-		this.stmts = new ArrayList<>(stmts);
+		this.stmts = new ArrayList<Statement>(stmts);
 		//this.stmts = Collections.unmodifiableList(stmts);
 
 	}
@@ -89,12 +90,16 @@ public class StmtBlock extends Statement {
 
 	@Override
 	public ConstData replaceConst(int index) {
-		return new ConstData(null, stmts, index, 0,null, this.getLineNumber());
+		List<SketchObject> l = new ArrayList<SketchObject>();
+		l.addAll(stmts);
+		return new ConstData(null, l, index, 0,null, this.getLineNumber());
 	}
 	
 	@Override
 	public ConstData replaceConst_Exclude_This(int index,List<Integer> repair_range) {
-		return new ConstData(null, stmts, index, 0,null, this.getLineNumber());
+		List<SketchObject> l = new ArrayList<SketchObject>();
+		l.addAll(stmts);
+		return new ConstData(null, l, index, 0,null, this.getLineNumber());
 	}
 
 	@Override
@@ -131,8 +136,10 @@ public class StmtBlock extends Statement {
 	}
 
 	@Override
-	public ConstData replaceLinearCombination(int index){
-		return new ConstData(null,stmts,index,0,null,this.getLineNumber());
+	public ConstData insertCoeffs(int index){
+		List<SketchObject> l = new ArrayList<SketchObject>();
+		l.addAll(stmts);
+		return new ConstData(null,l,index,0,null,this.getLineNumber());
 	}
 
 	@Override
