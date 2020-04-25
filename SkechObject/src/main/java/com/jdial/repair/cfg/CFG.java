@@ -185,8 +185,8 @@ public class CFG {
     	}
 
         // it does not matter for intra-procedure case
-        if (stmt instanceof StmtFunDecl) {
-    		return buildStmt(((StmtFunDecl) stmt).getDecl().getBody());
+        if (stmt instanceof StmtFuncDecl) {
+    		return buildStmt(((StmtFuncDecl) stmt).getDecl().getBody());
     	}
 
         if (stmt instanceof StmtIfThen) {

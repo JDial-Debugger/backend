@@ -449,14 +449,14 @@ public class ConstraintFactory {
 				
 				while (coeffIndex <= data.getPrimaryCoeffIndex()) {
 					list.add(coeffChangeDecl(coeffIndex, new TypePrimitive(1)));
-					list.add(new StmtFunDecl(addCoeffFun(coeffIndex, 1, data.getType())));
+					list.add(new StmtFuncDecl(addCoeffFun(coeffIndex, 1, data.getType())));
 					coeffIndexToLine.put(coeffIndex, data.getOriline());
 					coeffIndex++;
 				}
 				if (data.getLiveVarsIndexSet() != null) {
 					for (int ii : data.getLiveVarsIndexSet()) {
 						list.add(coeffChangeDecl(ii, new TypePrimitive(1)));
-						list.add(new StmtFunDecl(addCoeffFun(ii, 0, data.getType())));
+						list.add(new StmtFuncDecl(addCoeffFun(ii, 0, data.getType())));
 						coeffIndexToLine.put(ii, data.getOriline());
 					}
 
@@ -464,9 +464,9 @@ public class ConstraintFactory {
 				coeffIndex = data.getIndex();
 				if (!data.isIfLC()) {
 					list.add(coeffChangeDecl(coeffIndex - 2, new TypePrimitive(1)));//bit coeff0change = ??;
-					list.add(new StmtFunDecl(addCoeffFun(coeffIndex - 2, 0, data.getType())));//Coeff0()
+					list.add(new StmtFuncDecl(addCoeffFun(coeffIndex - 2, 0, data.getType())));//Coeff0()
 					list.add(coeffChangeDecl(coeffIndex - 1, new TypePrimitive(4)));
-					list.add(new StmtFunDecl(addLCConstFun(coeffIndex - 1, data.getType())));
+					list.add(new StmtFuncDecl(addLCConstFun(coeffIndex - 1, data.getType())));
 					coeffIndexToLine.put(coeffIndex - 1, data.getOriline());
 					coeffIndexToLine.put(coeffIndex - 2, data.getOriline());
 				}
@@ -1740,7 +1740,7 @@ public class ConstraintFactory {
 				addToConstMap(data);
 				addToConstMapLine(data);
 				list.add(constChangeDecl(index, new TypePrimitive(1)));
-				list.add(new StmtFunDecl(addConstFun(index, data.getValue(), data.getType())));
+				list.add(new StmtFuncDecl(addConstFun(index, data.getValue(), data.getType())));
 			}
 			index = data.getIndex();
 			pushAll(stmtStack, data.getChildren());

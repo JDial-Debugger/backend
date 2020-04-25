@@ -1,6 +1,7 @@
 package sketch_input;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import sketchobj.core.Function;
@@ -14,8 +15,10 @@ import sketchobj.expr.ExprVar;
 import sketchobj.expr.Expression;
 import sketchobj.stmts.Statement;
 import sketchobj.stmts.StmtBlock;
+import sketchobj.stmts.StmtFuncDecl;
 import sketchobj.stmts.StmtIfThen;
 import sketchobj.stmts.StmtReturn;
+import sketchobj.stmts.StmtVarDecl;
 
 /*
 int coeff6change = ??;
@@ -42,7 +45,7 @@ public class VectorCoefficient extends Coefficient {
 	}
 
 	@Override
-	public Function getDeclFunc() {
+	public List<Statement> getDeclFunc() {
 		
 		Expression changeCond = new ExprSketchHole();
 		StmtReturn noChangeReturn = new StmtReturn(new ExprConstInt(0), 0);
@@ -53,12 +56,14 @@ public class VectorCoefficient extends Coefficient {
 		StmtBlock coeffFuncBody = new StmtBlock();
 		coeffFuncBody.addStmt(changeIf);
 		coeffFuncBody.addStmt(changeReturn);
-		return new Function(
+		return Arrays.asList(
+			new StmtVarDecl(super.type, this.name + Coefficient.CHANGE_SUFFIX, new ExprSketchHole(), 0),
+			new StmtFuncDecl(new Function(
 				super.name, 
 				super.type, 
 				new ArrayList<Parameter>(), 
 				coeffFuncBody, 
-				FcnType.Static);
+				FcnType.Static)));
 	}
 	
 	/**

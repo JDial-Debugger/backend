@@ -15,11 +15,11 @@ import sketchobj.core.Type;
 /**
  * This is used to define a function inside the scope of a function.
  */
-public class StmtFunDecl extends Statement {
+public class StmtFuncDecl extends Statement {
 
     Function decl;
 
-    public StmtFunDecl( Function decl) {
+    public StmtFuncDecl( Function decl) {
         this.decl = decl;
     }
 

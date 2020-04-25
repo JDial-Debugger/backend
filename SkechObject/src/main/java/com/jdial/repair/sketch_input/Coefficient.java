@@ -1,21 +1,10 @@
 package sketch_input;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import sketchobj.core.Function;
-import sketchobj.core.Function.FcnType;
-import sketchobj.core.Parameter;
 import sketchobj.core.Type;
-import sketchobj.expr.ExprBinary;
-import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprFuncCall;
-import sketchobj.expr.ExprSketchHole;
-import sketchobj.expr.ExprVar;
-import sketchobj.expr.Expression;
 import sketchobj.stmts.Statement;
-import sketchobj.stmts.StmtBlock;
-import sketchobj.stmts.StmtIfThen;
-import sketchobj.stmts.StmtReturn;
 
 /**
  * Represents possible places to insert values into the orignial
@@ -89,7 +78,7 @@ public abstract class Coefficient {
 	}
 	
 	
-	public abstract Function getDeclFunc();
+	public abstract List<Statement> getDeclFunc();
 	
 	public String getName() { return this.name; }
 	

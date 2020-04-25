@@ -1,11 +1,14 @@
 package sketch_input;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import sketchobj.core.Function;
 import sketchobj.core.Function.FcnType;
 import sketchobj.core.Parameter;
 import sketchobj.core.Type;
+import sketchobj.core.TypePrimitive;
 import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprSketchHole;
@@ -13,8 +16,10 @@ import sketchobj.expr.ExprVar;
 import sketchobj.expr.Expression;
 import sketchobj.stmts.Statement;
 import sketchobj.stmts.StmtBlock;
+import sketchobj.stmts.StmtFuncDecl;
 import sketchobj.stmts.StmtIfThen;
 import sketchobj.stmts.StmtReturn;
+import sketchobj.stmts.StmtVarDecl;
 
 /**
  * Represents a coeffecient that either inverts (-1 * x), negates (0 * x) or does
@@ -37,7 +42,7 @@ public class ScalarCoefficient extends Coefficient {
 	}
 
 	@Override
-	public Function getDeclFunc() {
+	public List<Statement> getDeclFunc() {
 		
 		//return if no change made to expr this coeff is attached to
 		Expression keepCond = new ExprSketchHole();// ??
@@ -58,13 +63,15 @@ public class ScalarCoefficient extends Coefficient {
 		coeffFuncBody.addStmt(keepIf);
 		coeffFuncBody.addStmt(removeIf);
 		coeffFuncBody.addStmt(invertReturn);
-		
-		return new Function(
-				super.name, 
-				type, 
-				new ArrayList<Parameter>(), 
-				coeffFuncBody, 
-				FcnType.Static);
+		return Arrays.asList(
+			new StmtVarDecl(TypePrimitive.bittype, this.name + Coefficient.CHANGE_SUFFIX, new ExprSketchHole(), 0),
+			new StmtFuncDecl(new Function(
+					super.name, 
+					type, 
+					new ArrayList<Parameter>(), 
+					coeffFuncBody, 
+					FcnType.Static))
+		);
 	}
 
 	/**

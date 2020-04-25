@@ -28,6 +28,7 @@ import javaparser.simpleJavaParser;
 import json_input.Correction;
 import json_input.Trace;
 import json_input.TracePoint;
+import sketch_input.SketchScript;
 import sketchobj.core.Function;
 import sketchobj.core.SketchObject;
 import visitor.JavaVisitor;
@@ -103,6 +104,11 @@ public class RepairEngine {
 		Set<String> relevantFuncNames = getRelevantFuncs(examples);
 		logger.debug("Functions found in Traces: " + relevantFuncNames);
 		Map<String, Function> relevantFuncs = parseJava(code, relevantFuncNames);
+		SketchScript script = new SketchScript(code, examples, relevantFuncs);
+		for (Function func : relevantFuncs.values()) {
+			logger.debug(func.toString());
+		}
+		logger.debug(script.getCoeffDecls().toString());
 	}
 	
 	private static Map<String, Function> parseJava(String source, Set<String> relevantFuncNames) {
@@ -120,10 +126,6 @@ public class RepairEngine {
 			
 		}
 		return relevantFuncs;
-	}
-	
-	private static void buildFuncContext(StmtBlock body, List<Parameter>) {
-		
 	}
 	
 	/**
