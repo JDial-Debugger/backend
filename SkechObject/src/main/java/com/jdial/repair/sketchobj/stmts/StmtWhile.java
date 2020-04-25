@@ -10,6 +10,7 @@ import java.util.Set;
 import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
 import constraintfactory.ExternalFunction;
+import sketch_input.Coefficient;
 import sketchobj.core.Context;
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
@@ -108,11 +109,9 @@ public class StmtWhile extends Statement {
 	}
 
 	@Override
-	public ConstData insertCoeffs(int index) {
-		List<SketchObject> toAdd = new ArrayList<SketchObject>();
-		toAdd.add(cond);
-		toAdd.add(body);
-		return new ConstData(null, toAdd, index, 0, null,this.getLineNumber());
+	public void insertCoeffs(List<Coefficient> coeffs) {
+		this.getCond().insertCoeffs(coeffs);
+		this.getBody().insertCoeffs(coeffs);
 	}
 
 	@Override

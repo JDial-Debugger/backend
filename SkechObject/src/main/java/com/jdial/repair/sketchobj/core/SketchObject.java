@@ -6,9 +6,10 @@ import constraintfactory.ConstData;
 import sketch_input.Coefficient;
 
 public abstract class SketchObject {
+	
 	protected int indentation;	// for toString
-
 	private int line;
+	
 	public int getIndentation() {
 		return indentation;
 	}
@@ -18,7 +19,6 @@ public abstract class SketchObject {
 	}
 
 	public ConstData replaceConst(int index) {
-		// TODO Auto-generated method stub
 		return new ConstData(index,this.line);
 	}
 
@@ -26,6 +26,5 @@ public abstract class SketchObject {
 		return null;
 	}
 
-	public abstract int insertCoeffs(List<Coefficient> coeffs, int idx);
-	
+	public abstract void insertCoeffs(List<Coefficient> coeffs);
 }

@@ -1,11 +1,13 @@
 package sketch_input;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import sketchobj.core.Function;
 import sketchobj.core.Function.FcnType;
 import sketchobj.core.Parameter;
 import sketchobj.core.Type;
+import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprSketchHole;
 import sketchobj.expr.ExprVar;
@@ -34,6 +36,10 @@ public class VectorCoefficient extends Coefficient {
 	public VectorCoefficient(int idx, Type type) {
 		super(idx, type);
 	}
+	
+	public VectorCoefficient(int idx, Type type, int lineNumber) {
+		super(idx, type, lineNumber);
+	}
 
 	@Override
 	public Function getDeclFunc() {
@@ -53,5 +59,35 @@ public class VectorCoefficient extends Coefficient {
 				new ArrayList<Parameter>(), 
 				coeffFuncBody, 
 				FcnType.Static);
+	}
+	
+	/**
+	 * Adds this times a scalar to the given expression
+	 * example: in: int a = 5; out: int a = 5 + coeff1() * this;
+	 * @param toModify - the expression to add the coefficient to
+	 * @param coeffs - will add any created coefficients to this list
+	 * @param type - the type of the expression to modify
+	 * @param lineNumber - the line number of toModify
+	 * @return - A new expression containing toModify added with this
+	 * times a scalar
+	 */
+	public ExprBinary addToExpr(
+			Expression toModify, 
+			List<Coefficient> coeffs, 
+			Type type) {
+		
+		ScalarCoefficient changeCoeff = 
+				new ScalarCoefficient(coeffs.size(), type, this.lineNumber);
+		coeffs.add(changeCoeff);
+		
+		ExprBinary coeffBinaryExpr = 
+				changeCoeff.modifyExpr(this.getFuncCall());
+		
+		return new ExprBinary(
+				toModify,
+				ExprBinary.BINOP_ADD, 
+				coeffBinaryExpr,
+				this.lineNumber);
+		
 	}
 }

@@ -4,13 +4,11 @@ import sketchobj.core.Type;
 
 abstract public class ExprConstant extends Expression
 {
-    // Go Java go!  If we don't have this, the compiler complains:
-    public ExprConstant()
-    {
-    }
+    public ExprConstant() {}
 
    
 
+	
     public boolean isConstant () {
     	return true;
     }

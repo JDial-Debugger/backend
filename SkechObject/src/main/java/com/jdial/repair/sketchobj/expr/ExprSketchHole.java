@@ -6,6 +6,7 @@ import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
+import sketch_input.Coefficient;
 
 /**
  * Represents a sketch hole (???) aka an expression for sketch to insert a value
@@ -55,10 +56,7 @@ public class ExprSketchHole extends Expression {
 	}
 
 	@Override
-	public ConstData insertCoeffs(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public void insertCoeffs(List<Coefficient> coeffs) {}
 	
 	//TODO unimplemented
 	@Override

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
+import sketch_input.Coefficient;
 
 /**
  * An array initializer. This is an expression like the right hand side of
@@ -158,15 +159,14 @@ public class ExprArrayInit extends Expression {
 
 	}
 
-	@Override
-	public ConstData insertCoeffs(int index) {
-		return new ConstData(null, new ArrayList<>(), index, 0, null, 0);
-	}
-
 	// TODO: unimplemented
 	@Override
 	public Set<String> getVarNames() {
 		return new HashSet<String>();
 	}
+	
+	@Override
+	public void insertCoeffs(List<Coefficient> coeffs) {}
+	
 
 }

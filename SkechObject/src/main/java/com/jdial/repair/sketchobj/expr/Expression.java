@@ -6,6 +6,7 @@ import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
+import sketch_input.Coefficient;
 import sketchobj.core.Context;
 import sketchobj.core.SketchNode;
 import sketchobj.core.SketchObject;
@@ -13,21 +14,12 @@ import sketchobj.core.Type;
 
 public abstract class Expression extends SketchNode{
 
-	public int lineNumber;
+	protected int lineNumber;
 	private boolean isBoolean;
 	private boolean isAtom;
 	private Context ctx;
 	private Type type;
 	private boolean LCadded;
-	
-	
-	public Integer getIValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public abstract ConstData replaceConst(int index, String string);
-	public abstract void checkAtom();
 	
 	@Override
 	public ConstData replaceConst(int index, List<Integer> repair_range) {
@@ -37,17 +29,33 @@ public abstract class Expression extends SketchNode{
 			List<SketchObject> toAdd = new ArrayList<SketchObject>();
 			return new ConstData(null, toAdd, index, 0, null,this.lineNumber);
 	}
-	@Override
-	public abstract ConstData  insertCoeffs(int index);
 	
 	@Override
-	public ConstData insertCoeffs(int index, List<Integer> allowRange){
-		return this.replaceConst(index);
-	}
+	public abstract void insertCoeffs(List<Coefficient> coeffs);
+	
+	//TODO get rid of this
 	public abstract boolean equals(Expression other);
-
-	public abstract List<ExternalFunction> extractExternalFuncs(List<ExternalFunction> externalFuncNames);
-
+	
+	public abstract List<ExternalFunction> extractExternalFuncs(
+			List<ExternalFunction> externalFuncNames);
+	
+	public abstract Expression clone();
+	
+	public abstract Set<String> getVarNames();
+	
+	public abstract ConstData replaceConst(int index, String string);
+	
+	public abstract void checkAtom();
+	
+	public Integer getIValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public int getLineNumber() {
+		return this.lineNumber;
+	}
+	
 	public boolean isBoolean() {
 		return isBoolean;
 	}
@@ -87,9 +95,4 @@ public abstract class Expression extends SketchNode{
 	public void setLCadded(boolean lCadded) {
 		LCadded = lCadded;
 	}
-	
-	public abstract Expression clone();
-	
-	public abstract Set<String> getVarNames();
-
 }

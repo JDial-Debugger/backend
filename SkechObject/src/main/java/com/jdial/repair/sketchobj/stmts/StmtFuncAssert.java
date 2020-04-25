@@ -7,6 +7,7 @@ import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
+import sketch_input.Coefficient;
 import sketchobj.core.Context;
 import sketchobj.core.Type;
 import sketchobj.expr.ExprFuncCall;
@@ -55,12 +56,6 @@ public class StmtFuncAssert extends Statement {
 	}
 
 	@Override
-	public ConstData insertCoeffs(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Map<String, Type> addRecordStmt(StmtBlock parent, int index, Map<String, Type> m) {
 		// TODO Auto-generated method stub
 		return null;
@@ -95,5 +90,8 @@ public class StmtFuncAssert extends Statement {
 	public Set<String> getVarNames(int sideFlag) {
 		return new HashSet<String>();
 	}
+
+	@Override
+	public void insertCoeffs(List<Coefficient> coeffs) {}
 
 }

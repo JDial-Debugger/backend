@@ -3,7 +3,7 @@ package sketchobj.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import constraintfactory.ConstData;
+import sketch_input.Coefficient;
 
 public class ParametersList extends SketchObject{
 	List<Parameter> list;
@@ -19,10 +19,5 @@ public class ParametersList extends SketchObject{
 		return list;
 	}
 
-	@Override
-	public ConstData insertCoeffs(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	@Override public void insertCoeffs(List<Coefficient> coeffs) {}
 }

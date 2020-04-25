@@ -7,6 +7,7 @@ import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
+import sketch_input.Coefficient;
 import sketchobj.core.Context;
 import sketchobj.core.Type;
 import sketchobj.expr.Expression;
@@ -78,12 +79,6 @@ public class StmtDoWhile extends Statement {
 	}
 
 	@Override
-	public ConstData insertCoeffs(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Map<Integer, String> ConstructLineToString(Map<Integer, String> line_to_string) {
 		// TODO Auto-generated method stub
 		return null;
@@ -105,5 +100,11 @@ public class StmtDoWhile extends Statement {
 	@Override
 	public Set<String> getVarNames(int sideFlag) {
 		return new HashSet<String>();
+	}
+
+	@Override
+	public void insertCoeffs(List<Coefficient> coeffs) {
+		this.getBody().insertCoeffs(coeffs);
+		this.getCond().insertCoeffs(coeffs);
 	}
 }

@@ -3,16 +3,18 @@ package sketchobj.expr;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
+import sketch_input.Coefficient;
+import sketch_input.ScalarCoefficient;
+import sketch_input.VectorCoefficient;
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
 import sketchobj.core.TypeArray;
 import sketchobj.core.TypePrimitive;
-// added
-import constraintfactory.ConstraintFactory;
 
 public class ExprBinary extends Expression {
 	public static final int BINOP_ADD = 1;
@@ -71,6 +73,16 @@ public class ExprBinary extends Expression {
 	public ExprBinary clone() {
 		return new ExprBinary(this.op, this.left.clone(), this.right.clone(), this.lineNumber);
 	}
+	
+	public ExprBinary(Expression left, int op, Expression right, int line) {
+		this.left = left;
+		left.setParent(this);
+		this.right = right;
+		right.setParent(this);
+		this.lineNumber = line;
+		this.op = op;
+		this.alias = this;
+	}
 
 	/**
 	 * Create a new binary expression given the operation and the left and right
@@ -93,6 +105,7 @@ public class ExprBinary extends Expression {
 		int lop = -1;
 		this.lineNumber = line;
 
+		//TODO refractor this
 		if (sop.equals("+")) {
 			lop = BINOP_ADD;
 		} else if (sop.equals("-")) {
@@ -391,112 +404,81 @@ public class ExprBinary extends Expression {
 	 * Currently supports boolean, add, and subtract expressions
 	 **/
 	@Override
-	public ConstData insertCoeffs(int index) {
+	public void insertCoeffs(List<Coefficient> coeffs) {
 		
-		boolean isLogicalOp = this.op == BINOP_EQ 
+		boolean isNumericCompare = this.op == BINOP_EQ 
 				|| this.op == BINOP_NEQ 
 				|| this.op == BINOP_LT 
 				|| this.op == BINOP_LE 
 				|| this.op == BINOP_GT
 				|| this.op == BINOP_GE;
-		if (this.isBoolean() && isLogicalOp) {
-				
-			this.left = new ExprBinary(
-					this.left, 
-					"+", 
-					new ExprBinary(
-						new ExprFuncCall("Coeff" + index), 
-						"*",
-						new ExprFuncCall(
-							"Coeff" + (index + 1), 
-							new ArrayList<Expression>()), 
-						this.lineNumber), 
-					this.lineNumber);
+		
+		//inserts scalar and vector coeff on left side
+		if (this.isBoolean() && isNumericCompare) {
 			
-			index += 2;
+			VectorCoefficient valCoeff = new VectorCoefficient(
+					coeffs.size(), new TypePrimitive(TypePrimitive.TYPE_INT32), this.lineNumber);
+			coeffs.add(valCoeff);
+			
+			this.left = valCoeff.addToExpr(
+					this.left, 
+					coeffs, 
+					new TypePrimitive(TypePrimitive.TYPE_INT32));
+			
 			this.left.setCtx(this.getCtx());
 			this.left.setType(new TypePrimitive(4));
-			
-			return new ConstData(
-					new TypePrimitive(4), 
-					new ArrayList<SketchObject>(), 
-					index, 
-					0, 
-					null, 
-					this.lineNumber, 
-					null, 
-					null, 
-					-1);
+			return;
 			
 		//If this is part of a larger boolean expression, but itself not a 
-		//boolean expr, don't insert coeffecients into this expr but insert
-		//them lhs and rhs individually later
+		//numeric comparison, don't insert coeffecients into this expr but insert
+		//them lhs and rhs individually if applicable
 		} else if (this.isBoolean()){
 				
 				this.left.setBoolean(true);
 				this.right.setBoolean(true);
-				List<SketchObject> toAdd = new ArrayList<SketchObject>();
 				left.setCtx(this.getCtx());
-				toAdd.add(this.left);
 				right.setCtx(this.getCtx());
-				toAdd.add(this.right);
-				return new ConstData(null, toAdd, index, 0, null, -1);
+				left.insertCoeffs(coeffs);
+				right.insertCoeffs(coeffs);
+				return;
 		}
 		
 		if (this.op == BINOP_ADD || this.op == BINOP_SUB) {
 			
-			Integer primaryIndex = -1;
-			List<SketchObject> toAdd = new ArrayList<SketchObject>();
 			left.checkAtom();
 			right.checkAtom();
 			
 			if (right.isAtom()) {
 				
-				this.right = new ExprBinary(
-						new ExprFuncCall(
-							"Coeff" + index, 
-							new ArrayList<Expression>()),
-						"*",
-						this.right, 
-						this.lineNumber);
-				primaryIndex = index;
-				index++;
+				ScalarCoefficient changeCoeff = new ScalarCoefficient(
+						coeffs.size(), this.getType(), this.lineNumber);
+				coeffs.add(changeCoeff);
+				
+				this.right = changeCoeff.modifyExpr(this.right);
 			} else {
 				
 				right.setCtx(this.getCtx());
 				right.setType(this.getType());
-				toAdd.add(right);
+				right.insertCoeffs(coeffs);
 			}
 			
 			if (left.isAtom()) {
 				
-				this.left = new ExprBinary(
-						new ExprFuncCall(
-							"Coeff" + index, 
-							new ArrayList<Expression>()), 
-						"*",
-						this.left, 
-						this.lineNumber);
-				primaryIndex = index;
-				index++;
+				ScalarCoefficient changeCoeff = new ScalarCoefficient(
+						coeffs.size(), this.getType(), this.lineNumber);
+				coeffs.add(changeCoeff);
+				
+				this.left = changeCoeff.modifyExpr(this.left);
+				
 			} else {
 				
-				left.setCtx(this.getCtx());
-				left.setType(this.getType());
-				toAdd.add(left);
+				this.left.setCtx(this.getCtx());
+				this.left.setType(this.getType());
+				this.left.insertCoeffs(coeffs);
 			}
 			
-			List<Integer> liveVarsIndexSet = new ArrayList<Integer>();
-			List<String> liveVarsNameSet = new ArrayList<String>();
-			
 			if (this.getType() instanceof TypeArray) {
-				return new ConstData(
-						null, 
-						new ArrayList<SketchObject>(), 
-						index, 
-						0, 
-						null, 
-						0);
+				return;
 			}
 			
 			if (this.isLCadded()) {
@@ -505,48 +487,34 @@ public class ExprBinary extends Expression {
 				right.setLCadded(true);
 			} else {
 				
-				List<String> vars = new ArrayList<String>(
-						this.getCtx().getAllVars().keySet());
-				
-				//find live
-				for (String var : vars) {
+				//For each live variable of the same type of this, consider adding
+				//it to the expression
+				for (Map.Entry<String, Type> liveVar 
+						: this.getCtx().getAllVars().entrySet()) {
 					
-					TypePrimitive curVarType = (TypePrimitive) 
-							this.getCtx().getAllVars().get(var);
+					TypePrimitive curVarType = (TypePrimitive) liveVar.getValue();
 					
-					if (curVarType.getType() != 
+					if (curVarType.getType() == 
 							((TypePrimitive) this.getType()).getType()) {
-						continue;
+						
+						ScalarCoefficient changeCoeff = new ScalarCoefficient(
+								coeffs.size(), this.getType(), this.lineNumber);
+						coeffs.add(changeCoeff);
+						
+						Expression addLiveVar = 
+								changeCoeff.modifyExpr(
+									new ExprVar(liveVar.getKey(), this.getType()));
+						
+						this.right = new ExprBinary(right, BINOP_ADD, addLiveVar, this.lineNumber);
 					}
-				
-					Expression newTerm = new ExprBinary(
-							new ExprFuncCall(
-								"Coeff" + index, 
-								new ArrayList<Expression>()),
-							"*", 
-							new ExprVar(var, this.getType()), 
-							this.lineNumber);
-					
-					this.right = new ExprBinary(right, "+", newTerm, this.lineNumber);
-					liveVarsIndexSet.add(index++);
-					liveVarsNameSet.add(var);
 				}
-				this.right = new ExprBinary(this.right, "+",new ExprBinary(new ExprFuncCall("Coeff" + index), "*",
-						new ExprFuncCall("Coeff" + (index + 1), new ArrayList<Expression>()), this.lineNumber), this.lineNumber);
-				index++;
-				return new ConstData(this.getType(), toAdd, index + 1, 0, null, this.lineNumber, liveVarsIndexSet, liveVarsNameSet, primaryIndex);
+				
+				VectorCoefficient valCoeff = 
+						new VectorCoefficient(coeffs.size(), this.getType(), this.lineNumber);
+				coeffs.add(valCoeff);
+				this.right = valCoeff.addToExpr(this.right, coeffs, this.getType());
 			}
-			
-			return new ConstData(this.getType(), toAdd, index , 0, null, this.lineNumber, liveVarsIndexSet, liveVarsNameSet, primaryIndex, true);
 		}
-		
-		return new ConstData(
-				null, 
-				new ArrayList<SketchObject>(), 
-				index, 
-				0, 
-				null, 
-				0);
 	}
 
 	@Override

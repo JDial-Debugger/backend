@@ -6,6 +6,7 @@ import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
+import sketch_input.Coefficient;
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
 
@@ -178,14 +179,12 @@ public class ExprUnary extends Expression
 		
 	}
 
-	@Override
-	public ConstData insertCoeffs(int index) {
-		return new ConstData(null, new ArrayList<>(), index, 0, null,0);
-	}
-	
 	//TODO unimplemented
 	@Override
 	public Set<String> getVarNames() {
 		return this.getExpr().getVarNames();
 	}
+
+	@Override
+	public void insertCoeffs(List<Coefficient> coeffs) {}
 }

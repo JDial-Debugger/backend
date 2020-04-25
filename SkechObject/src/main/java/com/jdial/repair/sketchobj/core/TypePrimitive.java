@@ -1,6 +1,8 @@
 package sketchobj.core;
 
-import constraintfactory.ConstData;
+import java.util.List;
+
+import sketch_input.Coefficient;
 
 public class TypePrimitive extends Type {
 	/** Type constant for bit types. */
@@ -110,9 +112,5 @@ public class TypePrimitive extends Type {
 	}
 
 	@Override
-	public ConstData insertCoeffs(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	public void insertCoeffs(List<Coefficient> coeffs) {}
 }

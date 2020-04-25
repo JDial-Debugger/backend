@@ -2,7 +2,7 @@ package sketchobj.core;
 
 import java.util.List;
 
-import constraintfactory.ConstData;
+import sketch_input.Coefficient;
 import sketchobj.expr.Expression;
 
 public class ExpressionList extends SketchObject{
@@ -21,8 +21,5 @@ public class ExpressionList extends SketchObject{
 	}
 
 	@Override
-	public ConstData insertCoeffs(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public void insertCoeffs(List<Coefficient> coeffs) {}
 }

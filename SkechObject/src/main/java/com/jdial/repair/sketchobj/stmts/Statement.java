@@ -1,6 +1,5 @@
 package sketchobj.stmts;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,8 +8,8 @@ import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
 import sketchobj.core.Context;
 import sketchobj.core.SketchNode;
-import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
+import sketch_input.Coefficient;
 
 public abstract class Statement extends SketchNode {
 
@@ -40,7 +39,9 @@ public abstract class Statement extends SketchNode {
 	}
 
 	public abstract ConstData replaceConst(int index);
-
+	
+	@Override
+	public abstract void insertCoeffs(List<Coefficient> coeffs);
 
 	public Context getPostctx() {
 		return postctx;
@@ -83,6 +84,7 @@ public abstract class Statement extends SketchNode {
 	public abstract Map<Integer,String> ConstructLineToString(
 			Map<Integer, String> line_to_string);
 	
+	//TODO get rid of this
 	public abstract Statement clone();
 
 	/**

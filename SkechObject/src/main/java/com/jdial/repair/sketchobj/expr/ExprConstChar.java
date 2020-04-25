@@ -1,12 +1,12 @@
 package sketchobj.expr;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
+import sketch_input.Coefficient;
 import sketchobj.core.Type;
 import sketchobj.core.TypePrimitive;
 
@@ -63,11 +63,6 @@ public class ExprConstChar extends ExprConstant{
 		this.setAtom(false);
 		
 	}
-
-	@Override
-	public ConstData insertCoeffs(int index) {
-		return new ConstData(null, new ArrayList<>(), index, 0, null,0);
-	}
 	
 	//TODO unimplemented
 	@Override
@@ -75,6 +70,6 @@ public class ExprConstChar extends ExprConstant{
 		return new HashSet<String>();
 	}
 
-
-
+	@Override
+	public void insertCoeffs(List<Coefficient> coeffs) {}
 }

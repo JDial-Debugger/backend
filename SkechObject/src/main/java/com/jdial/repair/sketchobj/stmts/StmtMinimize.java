@@ -1,12 +1,12 @@
 package sketchobj.stmts;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
+import sketch_input.Coefficient;
 import sketchobj.core.Context;
 import sketchobj.core.Type;
 import sketchobj.expr.Expression;
@@ -71,10 +71,7 @@ public class StmtMinimize extends Statement {
 	}
 
 	@Override
-	public ConstData insertCoeffs(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public void insertCoeffs(List<Coefficient> coeffs) {}
 
 	@Override
 	public Map<Integer, String> ConstructLineToString(Map<Integer, String> line_to_string) {

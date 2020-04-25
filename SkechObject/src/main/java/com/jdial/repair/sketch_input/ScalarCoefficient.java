@@ -31,6 +31,10 @@ public class ScalarCoefficient extends Coefficient {
 	public ScalarCoefficient(int idx, Type type) {
 		super(idx, type);
 	}
+	
+	public ScalarCoefficient(int idx, Type type, int lineNumber) {
+		super(idx, type, lineNumber);
+	}
 
 	@Override
 	public Function getDeclFunc() {
@@ -61,5 +65,18 @@ public class ScalarCoefficient extends Coefficient {
 				new ArrayList<Parameter>(), 
 				coeffFuncBody, 
 				FcnType.Static);
+	}
+
+	/**
+	 * Multiples this coeff by the given expression
+	 * @param toModify - the expression to multiply
+	 * @return
+	 */
+	public ExprBinary modifyExpr(Expression toModify) {
+		return new ExprBinary(
+				this.getFuncCall(),
+				ExprBinary.BINOP_MUL,
+				toModify,
+				this.lineNumber);
 	}
 }

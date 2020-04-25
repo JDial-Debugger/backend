@@ -1,6 +1,5 @@
 package sketchobj.stmts;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -8,6 +7,7 @@ import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
+import sketch_input.Coefficient;
 import sketchobj.core.Context;
 import sketchobj.core.Type;
 import sketchobj.expr.Expression;
@@ -208,12 +208,6 @@ public class StmtAssert extends Statement {
 		}
 
 		@Override
-		public ConstData insertCoeffs(int index) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
 		public Map<Integer, String> ConstructLineToString(Map<Integer, String> line_to_string) {
 			// TODO Auto-generated method stub
 			return null;
@@ -235,4 +229,7 @@ public class StmtAssert extends Statement {
 		public Set<String> getVarNames(int sideFlag) {
 			return this.getCond().getVarNames();
 		}
+
+		@Override
+		public void insertCoeffs(List<Coefficient> coeffs) {}
 }

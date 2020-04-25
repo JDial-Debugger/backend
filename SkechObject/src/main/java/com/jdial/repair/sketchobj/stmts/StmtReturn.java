@@ -1,7 +1,6 @@
 package sketchobj.stmts;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,11 +9,10 @@ import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
 import constraintfactory.ExternalFunction;
 import global.Global;
+import sketch_input.Coefficient;
 import sketchobj.core.Context;
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
-import sketchobj.expr.ExprBinary;
-import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprConstant;
 import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.Expression;
@@ -125,11 +123,6 @@ public class StmtReturn extends Statement
 	}
 
 	@Override
-	public ConstData insertCoeffs(int index){
-		return new ConstData(null, new ArrayList<SketchObject>(), index, 0, null,this.getLineNumber());
-	}
-
-	@Override
 	public boolean isBasic() {
 		return true;
 	}
@@ -151,4 +144,7 @@ public class StmtReturn extends Statement
 	public Set<String> getVarNames(int sideFlag) {
 		return this.getValue().getVarNames();
 	}
+	
+	@Override
+	public void insertCoeffs(List<Coefficient> coeffs) {}
 }

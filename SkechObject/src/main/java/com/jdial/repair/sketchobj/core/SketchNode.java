@@ -2,13 +2,12 @@ package sketchobj.core;
 
 import java.util.List;
 
-import constraintfactory.ConstData;
+import sketch_input.Coefficient;
 
 public class SketchNode extends SketchObject{
 
 	private SketchNode parent;
 	
-	private List<ConstData> ConstInfos;
 	
 	public SketchNode getParent() {
 		return parent;
@@ -19,9 +18,7 @@ public class SketchNode extends SketchObject{
 	}
 
 	@Override
-	public ConstData insertCoeffs(int index) {
-		// TODO Auto-generated method stub
-		return null;
+	public void insertCoeffs(List<Coefficient> coeffs) {
 	}
 	
 }

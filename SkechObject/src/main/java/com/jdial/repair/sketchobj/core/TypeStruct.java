@@ -1,6 +1,8 @@
 package sketchobj.core;
 
-import constraintfactory.ConstData;
+import java.util.List;
+
+import sketch_input.Coefficient;
 
 public class TypeStruct extends Type {
 	private String name;
@@ -152,9 +154,6 @@ public class TypeStruct extends Type {
 	}
 
 	@Override
-	public ConstData insertCoeffs(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public void insertCoeffs(List<Coefficient> coeffs) {}
 
 }

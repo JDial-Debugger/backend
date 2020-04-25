@@ -10,12 +10,11 @@ import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
 import constraintfactory.ExternalFunction;
 import global.Global;
+import sketch_input.Coefficient;
 import sketchobj.core.*;
-import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstant;
 import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.Expression;
-import cfg.CFG;
 
 public class StmtFor extends Statement {
 	private Expression cond;
@@ -166,14 +165,12 @@ public class StmtFor extends Statement {
 	}
 
 	@Override
-	public ConstData insertCoeffs(int index) {
+	public void insertCoeffs(List<Coefficient> coeffs) {
 		this.cond.setBoolean(true);
-		List<SketchObject> toAdd = new ArrayList<SketchObject>();
-		toAdd.add(init);
-		toAdd.add(incr);
-		toAdd.add(body);
-		toAdd.add(cond);
-		return new ConstData(null, toAdd, index, 0, null,this.getLineNumber());
+		init.insertCoeffs(coeffs);
+		incr.insertCoeffs(coeffs);
+		body.insertCoeffs(coeffs);
+		cond.insertCoeffs(coeffs);
 	}
 
 	@Override

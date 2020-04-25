@@ -79,19 +79,28 @@ public abstract class Coefficient {
 	public static final String CHANGE_SUFFIX = "Change";
 
 	public Coefficient(int idx, Type type) {
+		this(idx, type, -1);
+	}
+	
+	public Coefficient(int idx, Type type, int lineNumber) {
 		this.name = PREFIX + idx;
 		this.type = type;
+		this.lineNumber = lineNumber;
 	}
+	
 	
 	public abstract Function getDeclFunc();
 	
 	public String getName() { return this.name; }
 	
 	public int getLineNumber() { return this.lineNumber; }
-	public void setLineNumber(int lineNumber) { this.lineNumber = lineNumber; }
 	
 	@Override
 	public String toString() {
-		return new ExprFuncCall(this.name).toString();
+		return this.name;
+	}
+	
+	public ExprFuncCall getFuncCall() {
+		return new ExprFuncCall(this.name);
 	}
 }

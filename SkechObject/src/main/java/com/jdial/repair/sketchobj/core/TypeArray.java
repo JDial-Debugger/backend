@@ -1,6 +1,8 @@
 package sketchobj.core;
 
-import constraintfactory.ConstData;
+import java.util.List;
+
+import sketch_input.Coefficient;
 import sketchobj.expr.Expression;
 
 public class TypeArray extends Type {
@@ -30,8 +32,5 @@ public class TypeArray extends Type {
 	}
 
 	@Override
-	public ConstData insertCoeffs(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public void insertCoeffs(List<Coefficient> coeffs) {}
 }

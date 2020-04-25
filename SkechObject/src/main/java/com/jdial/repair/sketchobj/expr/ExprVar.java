@@ -1,12 +1,12 @@
 package sketchobj.expr;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
+import sketch_input.Coefficient;
 import sketchobj.core.Type;
 
 public class ExprVar extends Expression
@@ -49,23 +49,15 @@ public class ExprVar extends Expression
      *
      * @return always true
      */
-    public boolean isLValue()
-    {
+    public boolean isLValue() {
         return true;
     }
 
-    public String toString()
-    {
+    public String toString() {
         return name;
     }
 
-    public int hashCode()
-    {
-        return name.hashCode();
-    }
-
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         if (!(o instanceof ExprVar))
             return false;
         return name.equals(((ExprVar)o).name);
@@ -82,13 +74,6 @@ public class ExprVar extends Expression
 	}
 
 	@Override
-	public boolean equals(Expression other) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	@Override
 	public List<ExternalFunction> extractExternalFuncs(List<ExternalFunction> externalFuncNames) {
 		return externalFuncNames;
 	}
@@ -99,14 +84,17 @@ public class ExprVar extends Expression
 	}
 	
 	@Override
-	public ConstData insertCoeffs(int index) {
-		return new ConstData(null, new ArrayList<>(), index, 0, null,0);
-	}
-	
-	@Override
 	public Set<String> getVarNames() {
 		Set<String> names = new HashSet<String>();
 		names.add(this.getName());
 		return names;
+	}
+	
+	@Override
+	public void insertCoeffs(List<Coefficient> coeffs) {}
+	@Override
+	public boolean equals(Expression other) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

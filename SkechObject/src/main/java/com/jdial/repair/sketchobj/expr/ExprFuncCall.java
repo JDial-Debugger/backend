@@ -9,8 +9,8 @@ import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
+import sketch_input.Coefficient;
 import sketchobj.core.ExpressionList;
-import sketchobj.core.ExpressionTuple;
 
 public class ExprFuncCall extends Expression
 {
@@ -145,15 +145,12 @@ public class ExprFuncCall extends Expression
 		
 	}
 
-	@Override
-	public ConstData insertCoeffs(int index) {
-		return new ConstData(null, new ArrayList<>(), index, 0, null,0);
-	}
-
 	//TODO unimplemented
 	@Override
 	public Set<String> getVarNames() {
 		return new HashSet<String>();
 	}
-
+	
+	@Override
+	public void insertCoeffs(List<Coefficient> coeffs) {}
 }

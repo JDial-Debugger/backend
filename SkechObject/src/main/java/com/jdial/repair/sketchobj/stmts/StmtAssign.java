@@ -9,19 +9,18 @@ import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
 import constraintfactory.ExternalFunction;
 import global.Global;
+import sketch_input.Coefficient;
+import sketch_input.ScalarCoefficient;
+import sketch_input.VectorCoefficient;
 import sketchobj.core.Context;
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
 import sketchobj.core.TypeArray;
 import sketchobj.core.TypePrimitive;
 import sketchobj.expr.ExprBinary;
-import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprConstant;
 import sketchobj.expr.ExprFuncCall;
-import sketchobj.expr.ExprVar;
 import sketchobj.expr.Expression;
-//added
-import constraintfactory.ConstraintFactory;
 
 public class StmtAssign extends Statement {
 	
@@ -108,14 +107,13 @@ public class StmtAssign extends Statement {
 		return lhs + " " + theOp + " " + rhs + ";";
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public ConstData replaceConst(int index) {
 		if (rhs instanceof ExprConstant) {
 			int value = ((ExprConstant) rhs).getVal();
 			Type t = ((ExprConstant) rhs).getType();
 			rhs = new ExprFuncCall("Const" + index, new ArrayList<Expression>());
-			return new ConstData(t, new ArrayList(), index + 1, value, lhs.toString(), this.getLineNumber());
+			return new ConstData(t, new ArrayList<SketchObject>(), index + 1, value, lhs.toString(), this.getLineNumber());
 		}
 		return rhs.replaceConst(index, lhs.toString());
 	}
@@ -188,9 +186,8 @@ public class StmtAssign extends Statement {
 	}
 
 	@Override
-	public ConstData insertCoeffs(int index) {
+	public void insertCoeffs(List<Coefficient> coeffs) {
 		
-		Integer primaryIndex = -1;
 		List<SketchObject> toAdd = new ArrayList<SketchObject>();
 		
 		rhs.checkAtom();
@@ -203,33 +200,30 @@ public class StmtAssign extends Statement {
 		//multiplication expr
 		if (rhs.isAtom()) {
 			
-			this.rhs = new ExprBinary(
-					new ExprFuncCall("Coeff" + index, 
-							new ArrayList<Expression>()), 
-					"*", 
-					this.rhs,
+			ScalarCoefficient changeCoeff = new ScalarCoefficient(
+					coeffs.size(), 
+					this.rhs.getType(), 
 					this.getLineNumber());
-			
-			primaryIndex = index;
-			index++;
+			coeffs.add(changeCoeff);
+			this.rhs = changeCoeff.modifyExpr(this.rhs);
 			
 		} else {
+			
 			rhs.setType(lhsType);
 			rhs.setCtx(this.getPrectx());
 			toAdd.add(rhs);
+			rhs.insertCoeffs(coeffs);
 		}
-		List<Integer> liveVarsIndexSet = new ArrayList<Integer>();
-		List<String> liveVarsNameSet = new ArrayList<String>();
 		
 		//if boolean or type array, don't insert any coefficients
 		if ((lhsType instanceof TypePrimitive) 
 				&& ((TypePrimitive) lhsType).getType() == TypePrimitive.TYPE_BIT) {
 			
 			rhs.setBoolean(true);
-			return new ConstData(null, new ArrayList<SketchObject>(), index, 0, null, this.getLineNumber());
+			return;
 			
 		} else if (lhsType instanceof TypeArray) {
-			return new ConstData(null, new ArrayList<SketchObject>(), index, 0, null, this.getLineNumber());
+			return;
 		}
 		
 		//TODO figure out what this is from
@@ -270,29 +264,10 @@ public class StmtAssign extends Statement {
 		
 		
 		//x = 5; => x = 5 + coeff4() * coeff5()
-		this.rhs = new ExprBinary(
-				this.rhs, 
-				"+",
-				new ExprBinary(
-						new ExprFuncCall("Coeff" + index), 
-						"*",
-						new ExprFuncCall(
-								"Coeff" + (index + 1), 
-								new ArrayList<Expression>()), 
-						this.getLineNumber()),
-				this.getLineNumber());
-		
-		index += 2;
-		return new ConstData(
-				lhsType, 
-				toAdd, 
-				index, 
-				0, 
-				null, 
-				this.getLineNumber(), 
-				liveVarsIndexSet, 
-				liveVarsNameSet,
-				primaryIndex);
+		VectorCoefficient valCoeff = new VectorCoefficient(
+				coeffs.size(), this.rhs.getType(), this.getLineNumber());
+		coeffs.add(valCoeff);
+		this.rhs = valCoeff.addToExpr(this.rhs, coeffs, this.rhs.getType());
 	}
 
 	@Override
@@ -318,5 +293,4 @@ public class StmtAssign extends Statement {
 			return rhsVars;
 		}
 	}
-
 }

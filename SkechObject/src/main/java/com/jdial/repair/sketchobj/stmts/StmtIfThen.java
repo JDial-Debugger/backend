@@ -1,8 +1,6 @@
 package sketchobj.stmts;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +10,7 @@ import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
 import constraintfactory.ExternalFunction;
 import global.Global;
+import sketch_input.Coefficient;
 import sketchobj.core.Context;
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
@@ -187,7 +186,7 @@ public class StmtIfThen extends Statement {
 
 	@Override
 	public Map<String, Type> addRecordStmt(StmtBlock parent, int index, Map<String, Type> m) {
-		List stmts = new ArrayList(parent.stmts);
+		List<Statement> stmts = new ArrayList<Statement>(parent.stmts);
 		parent.stmts = stmts;
 		if (!ConstraintFactory.dupStmt.contains(this))
 			parent.stmts.set(index,
@@ -227,22 +226,19 @@ public class StmtIfThen extends Statement {
 			externalFuncNames = alt.extractExternalFuncs(externalFuncNames);
 		return externalFuncNames ;
 	}
-	/**
-	 * @param index the coeff # to start on
-	 */
+	
 	@Override
-	public ConstData insertCoeffs(int index) {
-		List<SketchObject> toAdd = new ArrayList<SketchObject>();
+	public void insertCoeffs(List<Coefficient> coeffs) {
 		cond.setCtx(this.getPostctx());
 		cond.setBoolean(true);
-		toAdd.add(cond);
+		cond.insertCoeffs(coeffs);
+		cons.insertCoeffs(coeffs);
 		
-		toAdd.add(cons);
 		if (alt != null){
-			toAdd.add(alt);
+			alt.insertCoeffs(coeffs);
 		}
-		return new ConstData(null, toAdd, index, 0,null,this.getLineNumber());
 	}
+	
 	@Override
 	public Map<Integer, String> ConstructLineToString(Map<Integer, String> line_to_string) {
 		String result = "if(" + this.cond + ")";
