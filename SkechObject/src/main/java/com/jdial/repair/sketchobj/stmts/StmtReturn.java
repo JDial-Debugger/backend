@@ -50,11 +50,12 @@ public class StmtReturn extends Statement
 		return new StmtReturn(value.clone(),this.getLineNumber());
 	}
 	
+	public StmtReturn() {}
+	
     public StmtReturn( int line) {
 //        if (value instanceof ExprConstUnit) {
 //            value = null;
 //        }
-    	this.value = null;
         this.setLineNumber(line);
     }
 
