@@ -211,6 +211,25 @@ public class StmtIfThen extends Statement {
 		}
 		return m;
 	}
+	
+	@Override
+	public Statement insertRecordStmt(
+			int invokeIdx, 
+			String funcName,
+			Type funcType,
+			int correctionLine,
+			Set<String> correctionVars) {
+		
+		this.cons = this.getCons().insertRecordStmt(
+				invokeIdx, funcName, funcType, correctionLine, correctionVars);
+		if(this.getAlt() != null) {
+			this.alt.insertRecordStmt(
+					invokeIdx, funcName, funcType, correctionLine, correctionVars);
+		}
+		return super.insertRecordStmt(
+				invokeIdx, funcName, funcType, correctionLine, correctionVars);
+				
+	}
 
 
 

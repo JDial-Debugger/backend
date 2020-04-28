@@ -139,13 +139,25 @@ public class StmtFor extends Statement {
 		m.putAll(body.getPostctx().getAllVars());
 		StmtBlock sb = new StmtBlock(ConstraintFactory.recordState(this.getPrectx().getLinenumber(), this.getPrectx().getAllVars()),this);
 		sb = new StmtBlock(sb, ConstraintFactory.recordState(this.getPostctx().getLinenumber(), this.getPostctx().getAllVars()));
-		parent.stmts.set(index, sb
-				);
+		parent.stmts.set(index, sb);
 		body = new StmtBlock(ConstraintFactory.recordState(this.getPostctx().getLinenumber(),
 				init.getPostctx().getAllVars()), body);
 		body =  new StmtBlock(body,ConstraintFactory.recordState(this.getPostctx().getLinenumber(),
 				init.getPostctx().getAllVars()));
 		return ((StmtBlock)((StmtBlock) body).stmts.get(0)).stmts.get(((StmtBlock)((StmtBlock) body).stmts.get(0)).stmts.size()-1).addRecordStmt((StmtBlock) body, 1, m);
+	}
+	
+	public Statement insertRecordStmt(
+			int invokeIdx, 
+			String funcName,
+			Type funcType,
+			int correctionLine,
+			Set<String> correctionVars) {
+		
+		this.body = this.getBody().insertRecordStmt(
+				invokeIdx, funcName, funcType, correctionLine, correctionVars);
+		return super.insertRecordStmt(
+				invokeIdx, funcName, funcType, correctionLine, correctionVars);
 	}
 
 

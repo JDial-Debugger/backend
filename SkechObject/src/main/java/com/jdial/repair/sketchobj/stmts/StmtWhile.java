@@ -95,6 +95,19 @@ public class StmtWhile extends Statement {
 		m.putAll(this.getPostctx().getAllVars());
 		return ((StmtBlock)body).stmts.get(0).addRecordStmt((StmtBlock) body,0,m);
 	}
+	
+	@Override
+	public Statement insertRecordStmt(
+			int invokeIdx, 
+			String funcName,
+			Type funcType,
+			int correctionLine,
+			Set<String> correctionVars) {
+		
+		this.body = this.getBody().insertRecordStmt(
+				invokeIdx, funcName, funcType, correctionLine, correctionVars);
+		return super.insertRecordStmt(invokeIdx, funcName, funcType, correctionLine, correctionVars);
+	}
 
 	@Override
 	public boolean isBasic() {

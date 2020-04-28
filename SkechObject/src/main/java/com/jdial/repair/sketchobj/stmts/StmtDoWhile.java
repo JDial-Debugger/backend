@@ -29,6 +29,19 @@ public class StmtDoWhile extends Statement {
 	public int size() {
 		return body == null ? 0 : body.size();
 	}
+	
+	@Override
+	public Statement insertRecordStmt(
+			int invokeIdx, 
+			String funcName,
+			Type funcType,
+			int correctionLine,
+			Set<String> correctionVars) {
+		this.body = this.getBody().insertRecordStmt(
+				invokeIdx, funcName, funcType, correctionLine, correctionVars);
+		return super.insertRecordStmt(
+				invokeIdx, funcName, funcType, correctionLine, correctionVars);
+	}
 
 	/** Returns the loop body. */
 	public Statement getBody() {

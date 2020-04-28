@@ -114,11 +114,30 @@ public class StmtBlock extends Statement {
 		this.setPrectx(prectx);
 		return postctx;
 	}
+	
+	@Override
+	public Statement insertRecordStmt(
+			int invokeIdx, 
+			String funcName,
+			Type funcType,
+			int correctionLine,
+			Set<String> correctionVars) {
+		
+		for(int i = 0; i < this.getStmts().size(); ++i) {
+			this.getStmts().set(i, this.getStmts().get(i)
+					.insertRecordStmt(
+							invokeIdx, 
+							funcName, 
+							funcType, 
+							correctionLine, 
+							correctionVars));
+		}
+		return this;
+	}
 
 	@Override
 	public Map<String, Type> addRecordStmt(StmtBlock parent, int index, Map<String, Type> m) {
 		for (int i = 0; i < stmts.size(); i++) {
-			//System.err.println("add stmt is: " + stmts.get(i));
 			/*if (Global.prime_mod) {
 				if (ConstraintFactory.dupStmt.contains(stmts.get(i))) {
 					//System.err.println("dup");

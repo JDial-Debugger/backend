@@ -70,12 +70,15 @@ public abstract class Statement extends SketchNode {
 	 * starting at the given trace point index. It records the state of the
 	 * program by inserting array updates for each live variable at all trace
 	 * points and returns back all live variables it inserts recording arrays for
-	 * @param parent
-	 * @param index
-	 * @param m
-	 * @return
+	 * @param invokeIdx - Which function invokation to record the state of
+	 * @param funcName - The name of the function that contains this statement
+	 * @param funcType - The return type of the function that contains this statement
+	 * @param correctionLine - The line number of the correction
+	 * @param correctionVars - The names of the variables that must be corrected
+	 * @return - A new statement containing this statement and all statements to
+	 * record the state of the program at the current statement
 	 */
-	public StmtBlock getRecordStmt(
+	public Statement insertRecordStmt(
 			int invokeIdx, 
 			String funcName,
 			Type funcType,
@@ -171,6 +174,7 @@ public abstract class Statement extends SketchNode {
 			result.addStmt(ifLineHit);
 			
 		}
+		result.addStmt(this);
 		return result;
 		
 	}

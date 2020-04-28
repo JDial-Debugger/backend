@@ -21,49 +21,46 @@ import sketchobj.core.Type;
 public class ExprArrayRange extends Expression
 {
 
-	private int line;
     /**
      * Represents the indices in {@link ExprArrayRange}. Includes the start index and the
      * length of the desired sub-array.
      */
-	public static class RangeLen
-	{
+	public static class RangeLen {
 		private final Expression start;		
 		private final Expression lenExpr;		
-		public RangeLen(Expression start)
-		{
+		
+		public RangeLen(Expression start) {
 			this(start, null);
 		}
-		public RangeLen(Expression start, int len)
-		{
-			this.start=start;			
-			this.lenExpr= ExprConstInt.createConstant(len);
+		
+		public RangeLen(Expression start, int len) {
+			this.start = start;			
+			this.lenExpr = ExprConstInt.createConstant(len);
 		}
-		public RangeLen(Expression start, Expression len)
-		{
+		
+		public RangeLen(Expression start, Expression len) {
 			this.start=start;			
 			this.lenExpr=len;			
 		}
-		public Expression start() {return start;}		
-		public Expression getLenExpression() {
-			return lenExpr;
-		}
+		
+		public Expression start() {return this.start;}		
+		public Expression getLenExpression() { return this.lenExpr; }
 		public boolean hasLen() {return lenExpr!=null;}
-		public String toString()
-		{			
-			if(lenExpr != null) return start+"::"+lenExpr; 
+		
+		public String toString() {			
+			if (lenExpr != null)  {
+				return start + "::" + lenExpr; 
+			}
 			return start.toString();
 		}
 	}
 
-	@Override
-	public ExprArrayRange clone() {
-		return new ExprArrayRange(this.base.clone(),this.index, this.unchecked,this.line);
-	}
 	
 	private Expression base;
 	private RangeLen index;
-	 private boolean unchecked=false;
+	private int line;
+	private boolean unchecked=false;
+	
 	/**
 	 * @param unchecked The unchecked to set.
 	 */
@@ -77,33 +74,42 @@ public class ExprArrayRange extends Expression
 	public boolean isUnchecked() {
 		return unchecked;
 	}
+	
+	//TODO replace with copy constructor
+	@Override
+	public ExprArrayRange clone() {
+		return new ExprArrayRange(
+				this.base.clone(), 
+				this.index, 
+				this.unchecked,
+				this.line);
+	}
 
 
-    public ExprArrayRange( Expression base, List<RangeLen> rl,int i)
-	{
+    public ExprArrayRange(Expression base, List<RangeLen> rl, int i) {
 		this( base, rl, false,i);
 	}
     
-    public ExprArrayRange( String s, int i, int line)
-	{
+    public ExprArrayRange( String s, int i, int line) {
 		this( new ExprVar(s), new RangeLen(new ExprConstInt(i),null), false, line);
 	}
     
-    
-    public ExprArrayRange( String s, Expression i, int line)
-	{
-		this( new ExprVar(s), new RangeLen(i,null), false, line);
+    public ExprArrayRange( String s, Expression i, int line) {
+		this(new ExprVar(s), new RangeLen(i, null), false, line);
 	}
-    public ExprArrayRange( String s, String i, int line)
-	{
-		this( new ExprVar(s), new RangeLen(new ExprVar(i),null), false, line);
+    
+    public ExprArrayRange( String s, String i, int line) {
+		this(new ExprVar(s), new RangeLen(new ExprVar(i), null), false, line);
 	}
     /**
      * NOTE -- vector of array ranges for comma arrays. Since arr[x, y] = (arr[x])[y], we
      * want to set (arr[x]) as the new base, and y as the index.
      */
-    public ExprArrayRange( Expression base, List<RangeLen> rl,
-            boolean unchecked, int line)
+    public ExprArrayRange( 
+    		Expression base, 
+    		List<RangeLen> rl,
+            boolean unchecked, 
+            int line)
     {
         if (rl.size() == 1) {
             this.base = base;
@@ -118,15 +124,17 @@ public class ExprArrayRange extends Expression
 	}
 
 	
-	public ExprArrayRange( Expression base, Expression offset, boolean unchecked, int line)
-	{
-        this( base, Collections.singletonList(new RangeLen(offset)), unchecked, line);
+	public ExprArrayRange(
+			Expression base, 
+			Expression offset, 
+			boolean unchecked, 
+			int line) {
+        this(base, Collections.singletonList(new RangeLen(offset)), unchecked, line);
 	}
 
     public ExprArrayRange( Expression nbase, RangeLen rangeLen,
-            boolean unchecked2, int line)
-    {
-        this( nbase, Collections.singletonList(rangeLen), unchecked2, line);
+            boolean unchecked2, int line) {
+        this(nbase, Collections.singletonList(rangeLen), unchecked2, line);
     }
 
     public ExprArrayRange( Expression base2, RangeLen flatRl, int line) {
@@ -143,10 +151,7 @@ public class ExprArrayRange extends Expression
 	    return index;
 	}
 
-	
-
-	public String toString()
-	{
+	public String toString() {
 		StringBuffer ret=new StringBuffer();
 		ret.append(base);
 		ret.append('[');
@@ -276,6 +281,4 @@ public class ExprArrayRange extends Expression
 		names.addAll(this.getOffset().getVarNames());
 		return names;
 	}
-
-
 }
