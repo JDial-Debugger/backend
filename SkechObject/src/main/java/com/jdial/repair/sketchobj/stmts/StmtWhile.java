@@ -98,15 +98,14 @@ public class StmtWhile extends Statement {
 	
 	@Override
 	public Statement insertRecordStmt(
-			int invokeIdx, 
 			String funcName,
 			Type funcType,
 			int correctionLine,
 			Set<String> correctionVars) {
 		
 		this.body = this.getBody().insertRecordStmt(
-				invokeIdx, funcName, funcType, correctionLine, correctionVars);
-		return super.insertRecordStmt(invokeIdx, funcName, funcType, correctionLine, correctionVars);
+				funcName, funcType, correctionLine, correctionVars);
+		return super.insertRecordStmt(funcName, funcType, correctionLine, correctionVars);
 	}
 
 	@Override

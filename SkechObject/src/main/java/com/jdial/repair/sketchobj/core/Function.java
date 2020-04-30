@@ -136,13 +136,20 @@ public class Function extends SketchNode {
 		return tmp1 + tmp2;
 		//added 11/26
 	}
-	
+
+	/**
+	 * Inserts statements to record the state of execution of the function
+	 * @param funcName
+	 * @param funcType
+	 * @param correctionLine
+	 * @param correctionVars
+	 */
 	public void insertRecordStmt(
-			int invokeIdx, 
 			String funcName,
 			Type funcType,
 			int correctionLine,
 			Set<String> correctionVars) {
+		
 		StmtBlock stateInits = new StmtBlock();
 		//int __jdial_state_idx = -1
 		stateInits.addStmt(new StmtVarDecl(
@@ -158,10 +165,10 @@ public class Function extends SketchNode {
 		stateInits.addStmt(new StmtExpr(new ExprUnary(
 				ExprUnary.UNOP_PREINC, 
 				new ExprVar(SketchScript.FUNC_INVOKE_COUNT))));
+		//recursively record the body
 		stateInits.addStmt(this.getBody().insertRecordStmt(
-				invokeIdx, funcName, funcType, correctionLine, correctionVars));
+				funcName, funcType, correctionLine, correctionVars));
 		
 		this.body = stateInits;
 	}
-
 }

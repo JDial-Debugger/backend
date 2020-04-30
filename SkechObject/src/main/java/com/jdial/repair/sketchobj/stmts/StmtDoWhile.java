@@ -32,15 +32,14 @@ public class StmtDoWhile extends Statement {
 	
 	@Override
 	public Statement insertRecordStmt(
-			int invokeIdx, 
 			String funcName,
 			Type funcType,
 			int correctionLine,
 			Set<String> correctionVars) {
 		this.body = this.getBody().insertRecordStmt(
-				invokeIdx, funcName, funcType, correctionLine, correctionVars);
+				funcName, funcType, correctionLine, correctionVars);
 		return super.insertRecordStmt(
-				invokeIdx, funcName, funcType, correctionLine, correctionVars);
+				funcName, funcType, correctionLine, correctionVars);
 	}
 
 	/** Returns the loop body. */
@@ -119,5 +118,14 @@ public class StmtDoWhile extends Statement {
 	public void insertCoeffs(List<Coefficient> coeffs) {
 		this.getBody().insertCoeffs(coeffs);
 		this.getCond().insertCoeffs(coeffs);
+	}
+	
+	@Override
+	public Set<String> getActiveVarNames(Set<Type> types) {
+		Set<String> result = new HashSet<String>();
+		result.addAll(this.getPrectx().getAllVarsFromTypes(types));
+		result.addAll(this.getPostctx().getAllVarsFromTypes(types));
+		result.addAll(this.getBody().getActiveVarNames(types));
+		return result;
 	}
 }

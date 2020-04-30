@@ -2,9 +2,12 @@ package sketchobj.stmts;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
@@ -70,7 +73,6 @@ public abstract class Statement extends SketchNode {
 	 * starting at the given trace point index. It records the state of the
 	 * program by inserting array updates for each live variable at all trace
 	 * points and returns back all live variables it inserts recording arrays for
-	 * @param invokeIdx - Which function invokation to record the state of
 	 * @param funcName - The name of the function that contains this statement
 	 * @param funcType - The return type of the function that contains this statement
 	 * @param correctionLine - The line number of the correction
@@ -79,7 +81,6 @@ public abstract class Statement extends SketchNode {
 	 * record the state of the program at the current statement
 	 */
 	public Statement insertRecordStmt(
-			int invokeIdx, 
 			String funcName,
 			Type funcType,
 			int correctionLine,
@@ -91,18 +92,6 @@ public abstract class Statement extends SketchNode {
 		//increment trace point counter
 		result.addStmt(new StmtExpr(new ExprUnary(
 				5, new ExprVar(SketchScript.STATE_IDX), 0), 0));
-		
-		//Of the form: lineArray[count] = 3
-		result.addStmt(
-			new StmtAssign(
-				new ExprArrayRange(
-					new ExprVar(SketchScript.LINE_ARRAY),
-					new ExprArrayRange.RangeLen(
-						new ExprVar(SketchScript.STATE_IDX),
-						null), 
-					0),
-				new ExprConstInt(this.getLineNumber()), 
-			0));
 		
 		for (String liveVar : allVars.keySet()) {
 			if (!(allVars.get(liveVar) instanceof TypeArray)) {
@@ -223,6 +212,27 @@ public abstract class Statement extends SketchNode {
 	 * @return - all variable names contained in the statement
 	 */
 	public abstract Set<String> getVarNames(int sideFlag);
+	
+	/**
+	 * Returns all live variables of the given types in the current statement
+	 * If this statement contains other statements, will return an variable
+	 * that is live at any point during those sub-statements
+	 * @param types - 
+	 * TODO figure out scoping of same var names
+	 * @return
+	 */
+	public Set<String> getActiveVarNames(Set<Type> types) {
+		Set<String> result = new HashSet<String>();
+		
+		if (this.getPrectx() != null) {
+			result.addAll(this.getPrectx().getAllVarsFromTypes(types));
+		}
+		if (this.getPostctx() != null) {
+			result.addAll(this.getPostctx().getAllVarsFromTypes(types));
+		}
+		
+		return result;
+	}
 	
 	public String toString_Context(){
 		return this.toString()+": "+this.postctx.toString();

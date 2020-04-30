@@ -1,27 +1,42 @@
 package repair;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import json_input.Trace;
 import json_input.TracePoint;
+import sketchobj.expr.ExprConstInt;
+import sketchobj.expr.ExprConstant;
 
 public class CorrectionExample {
 	
 	private Trace programTrace;
-	private Map<String, Integer> correctVarValues;
-	
+	private Map<String, ExprConstant> correctVarValues;
+
+	/**
+	 * Creates an input/output example where the input is the trace of a 
+	 * program and the output is a collection of variables and what their
+	 * desired value is. This constructor creates the example when all the
+	 * correction variables are of type Integer
+	 * @param programTrace
+	 * @param correctVarVals
+	 */
 	public CorrectionExample(Trace programTrace, 
 							Map<String, Integer> correctVarVals) {
 		this.programTrace = programTrace;
-		this.correctVarValues = correctVarVals;
+		this.correctVarValues = new HashMap<String, ExprConstant>();
+		for (Map.Entry<String, Integer> entry : correctVarVals.entrySet()) {
+			this.correctVarValues.put(
+					entry.getKey(), new ExprConstInt(entry.getValue()));
+		}
 	}
 
 	public Trace getProgramTrace() {
 		return this.programTrace;
 	}
 
-	public Map<String, Integer> getCorrectVarValues() {
+	public Map<String, ExprConstant> getCorrectVarValues() {
 		return this.correctVarValues;
 	}
 	

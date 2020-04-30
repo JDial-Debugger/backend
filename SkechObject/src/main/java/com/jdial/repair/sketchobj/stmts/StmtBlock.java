@@ -115,7 +115,6 @@ public class StmtBlock extends Statement {
 	
 	@Override
 	public Statement insertRecordStmt(
-			int invokeIdx, 
 			String funcName,
 			Type funcType,
 			int correctionLine,
@@ -124,7 +123,6 @@ public class StmtBlock extends Statement {
 		for(int i = 0; i < this.getStmts().size(); ++i) {
 			this.getStmts().set(i, this.getStmts().get(i)
 					.insertRecordStmt(
-							invokeIdx, 
 							funcName, 
 							funcType, 
 							correctionLine, 
@@ -197,5 +195,24 @@ public class StmtBlock extends Statement {
 		}
 		return result;
 	}
-
+	
+	@Override
+	public Set<String> getActiveVarNames(Set<Type> types) {
+		
+		Set<String> result = new HashSet<String>();
+		
+		if (this.getPrectx() != null) {
+			result.addAll(this.getPrectx().getAllVarsFromTypes(types));
+		}
+		
+		if (this.getPostctx() != null) {
+			result.addAll(this.getPostctx().getAllVarsFromTypes(types));
+		}
+		
+		for (Statement stmt : this.getStmts()) {
+			result.addAll(stmt.getActiveVarNames(types));
+		}
+		
+		return result;
+	}
 }

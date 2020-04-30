@@ -75,15 +75,13 @@ public class StmtVarDecl extends Statement {
 			List<Expression> inits) {
 		this(types, names, inits, 0);
 	}
-
-	@Override
-	public StmtVarDecl clone() {
-		List<Expression> exprs = new ArrayList<>();
-		for (Expression e : this.inits) {
-			exprs.add(e.clone());
-		}
-		return new StmtVarDecl(this.types, this.names, exprs, this.getLineNumber());
+	
+	public StmtVarDecl(
+			List<Type> types, 
+			List<String> names) {
+		this(types, names, null, 0);
 	}
+
 
 	/**
 	 * Create a new variable declaration with exactly one variable in it. If the
@@ -101,9 +99,31 @@ public class StmtVarDecl extends Statement {
 	 *            the variable is uninitialized
 	 */
 	public StmtVarDecl(Type type, String name, Expression init, int i) {
-		this(Collections.singletonList(type), Collections.singletonList(name), Collections.singletonList(init), i);
+		this(Collections.singletonList(type), 
+				Collections.singletonList(name), 
+				Collections.singletonList(init), i);
+	}
+	
+	public StmtVarDecl(Type type, String name, Expression init) {
+		this(Collections.singletonList(type), 
+				Collections.singletonList(name), 
+				Collections.singletonList(init), 0);
+	}
+	
+	public StmtVarDecl(Type type, String name) {
+		this(Collections.singletonList(type), 
+				Collections.singletonList(name), null, 0);
 	}
 
+	@Override
+	public StmtVarDecl clone() {
+		List<Expression> exprs = new ArrayList<>();
+		for (Expression e : this.inits) {
+			exprs.add(e.clone());
+		}
+		return new StmtVarDecl(this.types, this.names, exprs, this.getLineNumber());
+	}
+	
 	/*
 	 * public StmtVarDecl(Vector<VarDeclEntry> next) { this.types = new
 	 * Vector<Type>(next.size()); this.names = new Vector<String>(next.size());

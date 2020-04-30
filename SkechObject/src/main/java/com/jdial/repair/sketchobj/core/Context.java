@@ -2,8 +2,10 @@ package sketchobj.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 public class Context {
@@ -80,6 +82,22 @@ public class Context {
 
 	public void setVarStack(Stack<Map<String,Type>> varStack) {
 		this.varStack = varStack;
+	}
+	
+	/**
+	 * Returns live variables that are from any given type
+	 * @param types - the different types to get variables
+	 * @return - the variable names
+	 */
+	public Set<String> getAllVarsFromTypes(Set<Type> types) {
+		Map<String, Type> allVars = this.getAllVars();
+		Set<String> result = new HashSet<String>();
+		for (Map.Entry<String, Type> varEntry : allVars.entrySet()) {
+			if (types.contains(varEntry.getValue())) {
+				result.add(varEntry.getKey());
+			}
+		}
+		return result;
 	}
 	
 	public Map<String, Type> getAllVars() {

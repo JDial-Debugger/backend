@@ -113,4 +113,27 @@ public class TypePrimitive extends Type {
 
 	@Override
 	public void insertCoeffs(List<Coefficient> coeffs) {}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + type;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TypePrimitive other = (TypePrimitive) obj;
+		if (type != other.type)
+			return false;
+		return true;
+	}
+	
 }

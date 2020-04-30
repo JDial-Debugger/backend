@@ -214,20 +214,19 @@ public class StmtIfThen extends Statement {
 	
 	@Override
 	public Statement insertRecordStmt(
-			int invokeIdx, 
 			String funcName,
 			Type funcType,
 			int correctionLine,
 			Set<String> correctionVars) {
 		
 		this.cons = this.getCons().insertRecordStmt(
-				invokeIdx, funcName, funcType, correctionLine, correctionVars);
+				funcName, funcType, correctionLine, correctionVars);
 		if(this.getAlt() != null) {
 			this.alt.insertRecordStmt(
-					invokeIdx, funcName, funcType, correctionLine, correctionVars);
+					funcName, funcType, correctionLine, correctionVars);
 		}
 		return super.insertRecordStmt(
-				invokeIdx, funcName, funcType, correctionLine, correctionVars);
+				funcName, funcType, correctionLine, correctionVars);
 				
 	}
 
@@ -274,5 +273,22 @@ public class StmtIfThen extends Statement {
 	public Set<String> getVarNames(int sideFlag) {
 		return new HashSet<String>();
 	}
-
+	
+	@Override
+	public Set<String> getActiveVarNames(Set<Type> types) {
+		Set<String> result = new HashSet<String>();
+		
+		if (this.getPrectx() != null) {
+			result.addAll(this.getPrectx().getAllVarsFromTypes(types));
+		}
+		if (this.getPostctx() != null) {
+			result.addAll(this.getPostctx().getAllVarsFromTypes(types));
+		}
+		
+		result.addAll(this.getCons().getActiveVarNames(types));
+		if (this.getAlt() != null) {
+			result.addAll(this.getAlt().getActiveVarNames(types));
+		}
+		return result;
+	}
 }

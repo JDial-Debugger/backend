@@ -42,8 +42,13 @@ public class TypeStruct extends Type {
 	// return ExprNullPtr.nullPtr;
 	// }
 
+	@Override
 	public int hashCode() {
-		return name.hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (isUnboxed ? 1231 : 1237);
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
 	}
 
 	// public String toString()
@@ -147,6 +152,25 @@ public class TypeStruct extends Type {
 
 	public String cleanName() {
 		return this.toString().replace('@', '_');
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TypeStruct other = (TypeStruct) obj;
+		if (isUnboxed != other.isUnboxed)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
 
 	public boolean isUnboxed() {
