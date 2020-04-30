@@ -52,17 +52,28 @@ public class StmtVarDecl extends Statement {
 	 *            containing initializers of the variables declared here
 	 * @param i
 	 */
-	public StmtVarDecl(List<? extends Type> types, List<String> names, List<? extends Expression> inits, int i) {
+	public StmtVarDecl(
+			List<Type> types, 
+			List<String> names, 
+			List<Expression> inits, 
+			int lineNumber) {
 		// TODO: check for validity, including types of object
 		// in the lists and that all three are the same length.
-		this.types = new java.util.ArrayList<Type>(types);
-		this.names = new java.util.ArrayList<String>(names);
-		this.inits = new java.util.ArrayList<Expression>(inits);
+		this.types = new ArrayList<Type>(types);
+		this.names = new ArrayList<String>(names);
+		this.inits = new ArrayList<Expression>(inits);
 		for (Expression e : inits) {
 			if (e != null)
 				e.setParent(this);
 		}
-		this.setLineNumber(i);
+		this.setLineNumber(lineNumber);
+	}
+	
+	public StmtVarDecl(
+			List<Type> types, 
+			List<String> names, 
+			List<Expression> inits) {
+		this(types, names, inits, 0);
 	}
 
 	@Override

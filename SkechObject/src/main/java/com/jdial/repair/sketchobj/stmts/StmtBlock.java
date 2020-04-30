@@ -19,13 +19,11 @@ public class StmtBlock extends Statement {
 
 	public List<Statement> stmts;
 
-	public StmtBlock(List<? extends Statement> stmts) {
+	public StmtBlock(List<Statement> stmts) {
 		for(Statement s:stmts)
 			s.setParent(this);
 
 		this.stmts = new ArrayList<Statement>(stmts);
-		//this.stmts = Collections.unmodifiableList(stmts);
-
 	}
 
 	public StmtBlock() {

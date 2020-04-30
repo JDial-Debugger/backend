@@ -17,8 +17,19 @@ import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.Expression;
 
 public class StmtExpr extends Statement {
+	
 	private Expression expr;
 
+	public StmtExpr(Expression expr, int lineNumber) {
+		this.expr = expr;
+		expr.setParent(this);
+		this.setLineNumber(lineNumber);
+	}
+	
+	public StmtExpr(Expression expr) {
+		this(expr, 0);
+	}
+	
 	// rp added auto-gen
 	public Expression getExpr() {
 		return expr;
@@ -28,11 +39,6 @@ public class StmtExpr extends Statement {
 		this.expr = expr;
 	}
 
-	public StmtExpr(Expression expr, int i) {
-		this.expr = expr;
-		expr.setParent(this);
-		this.setLineNumber(i);;
-	}
 
 	public String toString() {
 		return expr.toString() + ";";

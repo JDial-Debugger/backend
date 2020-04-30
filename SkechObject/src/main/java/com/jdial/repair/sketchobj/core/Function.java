@@ -2,7 +2,14 @@ package sketchobj.core;
 
 import java.util.*;
 
+import sketch_input.SketchScript;
+import sketchobj.expr.ExprConstInt;
+import sketchobj.expr.ExprUnary;
+import sketchobj.expr.ExprVar;
 import sketchobj.stmts.Statement;
+import sketchobj.stmts.StmtBlock;
+import sketchobj.stmts.StmtExpr;
+import sketchobj.stmts.StmtVarDecl;
 
 public class Function extends SketchNode {
 	public static enum FcnType {
@@ -128,6 +135,33 @@ public class Function extends SketchNode {
 		
 		return tmp1 + tmp2;
 		//added 11/26
+	}
+	
+	public void insertRecordStmt(
+			int invokeIdx, 
+			String funcName,
+			Type funcType,
+			int correctionLine,
+			Set<String> correctionVars) {
+		StmtBlock stateInits = new StmtBlock();
+		//int __jdial_state_idx = -1
+		stateInits.addStmt(new StmtVarDecl(
+				Arrays.asList(new TypePrimitive(TypePrimitive.TYPE_INT32)),
+				Arrays.asList(SketchScript.STATE_IDX),
+				Arrays.asList(new ExprConstInt(-1))));
+		//int __jdial_line_hit = 0
+		stateInits.addStmt(new StmtVarDecl(
+				Arrays.asList(new TypePrimitive(TypePrimitive.TYPE_INT32)),
+				Arrays.asList(SketchScript.LINE_HIT),
+				Arrays.asList(new ExprConstInt(0))));
+		//++__jdial_invoke_count
+		stateInits.addStmt(new StmtExpr(new ExprUnary(
+				ExprUnary.UNOP_PREINC, 
+				new ExprVar(SketchScript.FUNC_INVOKE_COUNT))));
+		stateInits.addStmt(this.getBody().insertRecordStmt(
+				invokeIdx, funcName, funcType, correctionLine, correctionVars));
+		
+		this.body = stateInits;
 	}
 
 }

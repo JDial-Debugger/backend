@@ -36,8 +36,22 @@ public class ExprUnary extends Expression
 
     private int op;
     private Expression expr;
-
 	private int line;
+
+    /** Creates a new ExprUnary applying the specified operator to the
+     * specified expression. */
+    public ExprUnary(int op, Expression expr, int line) {
+        this.op = op;
+        this.expr = expr;
+        expr.setParent(this);
+        this.line = line;
+    }
+    
+    public ExprUnary(int op, Expression expr) {
+    	this(op, expr, 0);
+    }
+    
+    
     public Integer getIValue(){
     	Integer iVal = expr.getIValue();
     	if(iVal != null){
@@ -55,16 +69,6 @@ public class ExprUnary extends Expression
     	}
     	return null;
 
-    }
-
-    /** Creates a new ExprUnary applying the specified operator to the
-     * specified expression. */
-    public ExprUnary( int op, Expression expr, int line)
-    {
-        this.op = op;
-        this.expr = expr;
-        expr.setParent(this);
-        this.line = line;
     }
 	@Override
 	public ExprUnary clone() {

@@ -42,10 +42,19 @@ public class SketchScript {
 		
 		List<Coefficient> coeffs = new ArrayList<Coefficient>();
 		//Insert coefficients
+		int i = 0;
 		for (Map.Entry<String, Function> entry : relevantFuncs.entrySet()) {
 			this.addContext(entry.getValue());
 			entry.getValue().getBody().insertCoeffs(coeffs);
+			entry.getValue().insertRecordStmt(
+					i, 
+					entry.getKey(), 
+					entry.getValue().getReturnType(), 
+					examples.get(0).getCorrectionLine(), 
+					examples.get(0).getCorrectVarValues().keySet());
+			++i;
 		}
+		
 		List<Statement> coeffDecls = coeffs.stream()
 				.map(Coefficient::getDeclFunc)
 				.collect(ArrayList<Statement>::new, 
