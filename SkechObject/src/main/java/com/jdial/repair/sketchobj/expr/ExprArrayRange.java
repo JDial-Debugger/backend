@@ -61,31 +61,6 @@ public class ExprArrayRange extends Expression
 	private int line;
 	private boolean unchecked=false;
 	
-	/**
-	 * @param unchecked The unchecked to set.
-	 */
-	public void setUnchecked(boolean unchecked) {
-		this.unchecked = unchecked;
-	}
-
-	/**
-	 * @return Returns the unchecked.
-	 */
-	public boolean isUnchecked() {
-		return unchecked;
-	}
-	
-	//TODO replace with copy constructor
-	@Override
-	public ExprArrayRange clone() {
-		return new ExprArrayRange(
-				this.base.clone(), 
-				this.index, 
-				this.unchecked,
-				this.line);
-	}
-
-
     public ExprArrayRange(Expression base, List<RangeLen> rl, int i) {
 		this( base, rl, false,i);
 	}
@@ -122,8 +97,11 @@ public class ExprArrayRange extends Expression
         this.line = line;
         setUnchecked(unchecked);
 	}
+    
+    public ExprArrayRange(Expression base, List<RangeLen> rl) {
+    	this(base, rl, false, 0);
+    }
 
-	
 	public ExprArrayRange(
 			Expression base, 
 			Expression offset, 
@@ -140,6 +118,30 @@ public class ExprArrayRange extends Expression
     public ExprArrayRange( Expression base2, RangeLen flatRl, int line) {
         this(base2, Collections.singletonList(flatRl), line);
     }
+    
+	/**
+	 * @param unchecked The unchecked to set.
+	 */
+	public void setUnchecked(boolean unchecked) {
+		this.unchecked = unchecked;
+	}
+
+	/**
+	 * @return Returns the unchecked.
+	 */
+	public boolean isUnchecked() {
+		return unchecked;
+	}
+	
+	//TODO replace with copy constructor
+	@Override
+	public ExprArrayRange clone() {
+		return new ExprArrayRange(
+				this.base.clone(), 
+				this.index, 
+				this.unchecked,
+				this.line);
+	}
 
     public Expression getOffset() {
 		RangeLen rl = index;
@@ -152,6 +154,7 @@ public class ExprArrayRange extends Expression
 	}
 
 	public String toString() {
+		
 		StringBuffer ret=new StringBuffer();
 		ret.append(base);
 		ret.append('[');
@@ -161,6 +164,7 @@ public class ExprArrayRange extends Expression
 	}
 
 	public List<RangeLen> getArraySelections () {
+		
 		List<RangeLen> sels = new ArrayList<RangeLen> ();
 		
 		Expression base = getBase ();
@@ -174,6 +178,7 @@ public class ExprArrayRange extends Expression
 	}
 
 	public List<Expression> getArrayIndices() {
+		
         List<Expression> indices = new ArrayList<Expression>();
         Expression base= getBase();
         if(base instanceof ExprArrayRange) {
@@ -194,9 +199,10 @@ public class ExprArrayRange extends Expression
 	 *   "x.f[2][2]".getAbsoluteBaseExpr () --> "x.f"
 	 */
 	public Expression getAbsoluteBaseExpr () {
-		return (getBase () instanceof ExprArrayRange) ?
-					((ExprArrayRange)getBase ()).getAbsoluteBaseExpr ()
-					: getBase ();
+		
+		return (getBase() instanceof ExprArrayRange) ?
+					((ExprArrayRange)getBase()).getAbsoluteBaseExpr()
+					: getBase();
 	}
 
 	public Expression getBase() {
@@ -207,7 +213,8 @@ public class ExprArrayRange extends Expression
 		this.base = expr;
 	}
 
-	public Expression getSingleIndex() {		
+	public Expression getSingleIndex() {	
+		
 		RangeLen r=index;
 		if(r.hasLen()) return null;
 		return r.start;
@@ -224,6 +231,7 @@ public class ExprArrayRange extends Expression
     }
 
     public Expression getBaseAndIndices(List<RangeLen> indices) {
+    	
         Expression base = this.base;
         indices.add(this.index);
         while (base instanceof ExprArrayRange) {
@@ -237,6 +245,7 @@ public class ExprArrayRange extends Expression
 
 	@Override
 	public ConstData replaceConst(int index,String name) {
+		
 		List<SketchObject> toAdd = new ArrayList<SketchObject>();
 		Expression cond = this.index.start;
 		if (cond instanceof ExprConstant) {
@@ -276,6 +285,7 @@ public class ExprArrayRange extends Expression
 
 	@Override
 	public Set<String> getVarNames() {
+		
 		Set<String> names = new HashSet<String>();
 		names.addAll(this.getBase().getVarNames());
 		names.addAll(this.getOffset().getVarNames());

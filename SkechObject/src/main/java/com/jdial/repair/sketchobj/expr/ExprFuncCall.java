@@ -17,18 +17,17 @@ public class ExprFuncCall extends Expression
     private final String name;
     private String name_Java;
     private static int NEXT_UID=0;
-
 	private int line;
     private int clusterId; // Used to identify the cluster to combine funCalls.
-    private int callid;
+    private int callId;
     private final List<Expression> params;
 
     public void resetCallid(){
-    	this.callid = NEXT_UID++;
+    	this.callId = NEXT_UID++;
     }
 
-    public int getCallid(){
-    	return callid;
+    public int getCallId(){
+    	return callId;
     }
     
     /** Creates a new function call with the specified name and

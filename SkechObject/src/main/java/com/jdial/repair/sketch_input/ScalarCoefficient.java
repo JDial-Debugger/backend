@@ -64,20 +64,33 @@ public class ScalarCoefficient extends Coefficient {
 		coeffFuncBody.addStmt(removeIf);
 		coeffFuncBody.addStmt(invertReturn);
 		return Arrays.asList(
-			new StmtVarDecl(TypePrimitive.bittype, this.name + Coefficient.CHANGE_SUFFIX, new ExprSketchHole(), 0),
+			this.getChangeDecl(),
 			new StmtFuncDecl(new Function(
-					super.name, 
-					type, 
-					new ArrayList<Parameter>(), 
-					coeffFuncBody, 
-					FcnType.Static))
+				super.name, 
+				type, 
+				new ArrayList<Parameter>(), 
+				coeffFuncBody, 
+				FcnType.Static))
 		);
+	}
+	
+	/**
+	 * @return example: bit jdial_coeff4_change = ??
+	 */
+	@Override
+	public Statement getChangeDecl() {
+		return new StmtVarDecl( 
+				TypePrimitive.bittype, 
+				this.getChangeName(), 
+				new ExprSketchHole(), 
+				0);
 	}
 
 	/**
 	 * Multiples this coeff by the given expression
 	 * @param toModify - the expression to multiply
-	 * @return
+	 * @return - the resulting expression after toModify is multiplied by this
+	 * coefficient
 	 */
 	public ExprBinary modifyExpr(Expression toModify) {
 		return new ExprBinary(

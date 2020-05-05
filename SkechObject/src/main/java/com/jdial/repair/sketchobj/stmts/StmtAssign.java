@@ -30,8 +30,6 @@ public class StmtAssign extends Statement {
 	/**
 	 * Creates a new assignment statement with the specified left- and
 	 * right-hand sides and no operation (i.e., 'lhs=rhs;').
-	 * 
-	 * @param i
 	 */
 	public StmtAssign(Expression lhs, Expression rhs, int op, int line) {
 		this.lhs = lhs;
@@ -43,17 +41,21 @@ public class StmtAssign extends Statement {
 
 	}
 
-	@Override
-	public StmtAssign clone() {
-		return new StmtAssign(lhs.clone(), rhs.clone(), op, this.getLineNumber());
-	}
-
 	/**
 	 * Creates a new assignment statement with the specified left- and
 	 * right-hand sides and no operation (i.e., 'lhs=rhs;').
 	 */
 	public StmtAssign(Expression lhs, Expression rhs, int line) {
 		this(lhs, rhs, 0, line);
+	}
+	
+	public StmtAssign(Expression lhs, Expression rhs) {
+		this(lhs, rhs, 0, 0);
+	}
+
+	@Override
+	public StmtAssign clone() {
+		return new StmtAssign(lhs.clone(), rhs.clone(), op, this.getLineNumber());
 	}
 
 	/** Returns the left-hand side of this. */

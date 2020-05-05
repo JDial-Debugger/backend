@@ -1,9 +1,11 @@
 package json_input;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import constants.Errors;
 import jsonparser.jsonParser.TraceContext;
+import sketchobj.expr.ExprConstant;
 
 public class Trace implements Frameable {
 
@@ -138,6 +141,26 @@ public class Trace implements Frameable {
 		
 		this.tracePoints = this.getTracePoints().subList(bounds[0], bounds[1] + 1);
 	}
+
+	/**
+	 * For the first call of the given function in this trace, find the param
+	 * values it is called with and returns them in the param list of the function
+	 * definition
+	 * @param targetFunc - the name of the function call to get params from
+	 * @return maps each param name to it's value 
+	 * TODO: add support for other types than ints
+	 */
+	public List<Integer> getParamVals(String targetFunc) {
+		
+		for (TracePoint tracePoint : this.getTracePoints()) {
+			//finds first call
+			if (tracePoint.getFuncName().equals(targetFunc)) {
+				//assumes trace points save func params in correct order
+				return new ArrayList<Integer>(tracePoint.getLocals().values());
+			}
+		}
+		return new ArrayList<Integer>();
+	}
 	
 	/**
 	 * Uses function at bound for target function
@@ -245,5 +268,4 @@ public class Trace implements Frameable {
 		}
 		return bounds;
 	}
-	
 }

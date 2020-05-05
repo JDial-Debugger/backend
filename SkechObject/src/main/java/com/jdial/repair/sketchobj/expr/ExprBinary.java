@@ -71,17 +71,22 @@ public class ExprBinary extends Expression {
 
 	@Override
 	public ExprBinary clone() {
-		return new ExprBinary(this.op, this.left.clone(), this.right.clone(), this.lineNumber);
+		return new ExprBinary(
+				this.op, this.left.clone(), this.right.clone(), this.lineNumber);
 	}
 	
 	public ExprBinary(Expression left, int op, Expression right, int line) {
 		this.left = left;
-		left.setParent(this);
+		this.left.setParent(this);
 		this.right = right;
-		right.setParent(this);
+		this.right.setParent(this);
 		this.lineNumber = line;
 		this.op = op;
 		this.alias = this;
+	}
+	
+	public ExprBinary(Expression left, int op, Expression right) {
+		this(left, op, right, 0);
 	}
 
 	/**

@@ -17,8 +17,36 @@ import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.Expression;
 
 public class StmtFor extends Statement {
+	
 	private Expression cond;
 	private Statement init, incr, body;
+
+	public StmtFor(
+			Statement init, 
+			Expression cond, 
+			Statement incr, 
+			Statement body, 
+			boolean isCanonical, 
+			int lineNumber) {
+		
+		this.init = init;
+		init.setParent(this);
+		this.cond = cond;
+		cond.setParent(this);
+		this.incr = incr;
+		incr.setParent(this);
+		this.body = body;
+		body.setParent(this);
+		this.setLineNumber(lineNumber);
+	}
+	
+	public StmtFor(
+			Statement init, 
+			Expression cond, 
+			Statement incr, 
+			Statement body) {
+		this(init, cond, incr, body, false, 0);
+	}
 
 	// rp added
 	public Expression getCond() {
@@ -53,23 +81,12 @@ public class StmtFor extends Statement {
 		this.body = body;
 	}
 
-	public StmtFor(Statement init, Expression cond, Statement incr, Statement body, boolean isCanonical, int i) {
-		this.init = init;
-		init.setParent(this);
-		this.cond = cond;
-		cond.setParent(this);
-		this.incr = incr;
-		incr.setParent(this);
-		this.body = body;
-		body.setParent(this);
-		this.setLineNumber(i);
-	}
-
 	@Override
 	public StmtFor clone() {
 		
 		return new StmtFor(init.clone(), cond.clone(), incr.clone(), body.clone(), false, this.getLineNumber());
 	}
+	
 	public String toString() {
 		String result = null;
 		if (incr.toString().endsWith(";"))
@@ -94,15 +111,16 @@ public class StmtFor extends Statement {
 			int value = ((ExprConstant) cond).getVal();
 			Type t = ((ExprConstant) cond).getType();
 			cond = new ExprFuncCall("Const" + index, new ArrayList<Expression>());
-			return new ConstData(t, toAdd, index + 1, value, null, this.getLineNumber());
+			return new ConstData(
+					t, toAdd, index + 1, value, null, this.getLineNumber());
 		}else
 			toAdd.add(cond);
 		return new ConstData(null, toAdd, index, 0, null,this.getLineNumber());
 	}
 	
-
 	@Override
-	public ConstData replaceConst_Exclude_This(int index, List<Integer> repair_range) {
+	public ConstData replaceConst_Exclude_This(
+			int index, List<Integer> repair_range) {
 		List<SketchObject> toAdd = new ArrayList<SketchObject>();
 		toAdd.add(init);
 		toAdd.add(incr);
@@ -112,6 +130,7 @@ public class StmtFor extends Statement {
 
 	@Override
 	public Context buildContext(Context prectx, int position) {
+		
 		Global.nestedVars.addAll(init.getVarNames(-1));
 		
 		prectx = new Context(prectx);
@@ -136,6 +155,7 @@ public class StmtFor extends Statement {
 
 	@Override
 	public Map<String, Type> addRecordStmt(StmtBlock parent, int index, Map<String, Type> m) {
+		
 		m.putAll(body.getPostctx().getAllVars());
 		StmtBlock sb = new StmtBlock(ConstraintFactory.recordState(this.getPrectx().getLinenumber(), this.getPrectx().getAllVars()),this);
 		sb = new StmtBlock(sb, ConstraintFactory.recordState(this.getPostctx().getLinenumber(), this.getPostctx().getAllVars()));
@@ -226,6 +246,4 @@ public class StmtFor extends Statement {
 		result.addAll(this.getBody().getActiveVarNames(types));
 		return result;
 	}
-
-
 }

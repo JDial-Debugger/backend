@@ -129,7 +129,7 @@ public abstract class Statement extends SketchNode {
 				if (!(allVars.get(finalVar) instanceof TypeArray)) {
 					//Of the form finalVarName = varName
 					finalStates.add(new StmtAssign(
-									new ExprVar(finalVar + SketchScript.VAR_FINAL_SUFFIX), 
+									new ExprVar(SketchScript.getFinalName(funcName, finalVar)), 
 									new ExprVar(finalVar), 
 									0));
 				}
@@ -167,6 +167,7 @@ public abstract class Statement extends SketchNode {
 		return result;
 		
 	}
+	
 	public abstract Map<String, Type> addRecordStmt(
 			StmtBlock parent, 
 			int index, 

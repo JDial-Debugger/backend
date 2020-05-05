@@ -6,12 +6,19 @@ import java.util.Map;
 
 import json_input.Trace;
 import json_input.TracePoint;
+import sketch_input.SketchScript;
+import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprConstant;
+import sketchobj.expr.ExprVar;
+import sketchobj.stmts.StmtAssert;
+import sketchobj.stmts.StmtBlock;
 
 public class CorrectionExample {
 	
 	private Trace programTrace;
+	//Maps a variable to what it's value should be after the repair
+	//if this is a return value of a function, the name is __return__
 	private Map<String, ExprConstant> correctVarValues;
 
 	/**
@@ -32,6 +39,28 @@ public class CorrectionExample {
 		}
 	}
 
+	/**
+	 * For each corrected variable, constructs a statement that asserts
+	 * its final variable in the sketch script is equal to its corrected value
+	 * @param targetFunc - the target function of the repair
+	 * @return - a statement for each corrected variable to compare it to its
+	 * actual value
+	 */
+	public StmtBlock getFinalAssertions(String targetFunc) {
+		
+		StmtBlock asserts = new StmtBlock();
+		for (Map.Entry<String, ExprConstant> correction : 
+			this.correctVarValues.entrySet()) {
+			
+			ExprBinary equals = new ExprBinary(
+					new ExprVar(SketchScript.getFinalName(targetFunc, correction.getKey())),
+					ExprBinary.BINOP_EQ,
+					correction.getValue());
+			asserts.addStmt(new StmtAssert(equals));
+		}
+		return asserts;
+	}
+	
 	public Trace getProgramTrace() {
 		return this.programTrace;
 	}

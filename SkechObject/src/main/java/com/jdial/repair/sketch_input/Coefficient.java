@@ -60,12 +60,13 @@ x = Coeff8() * a + Coeff7() * b + Coeff5() * Coeff6()
  *
  */
 public abstract class Coefficient {
+	
 	protected String name;
 	protected int lineNumber;
 	protected Type type;
 	
-	public static final String PREFIX = "Coeff";
-	public static final String CHANGE_SUFFIX = "Change";
+	public static final String PREFIX = SketchScript.VAR_PREFIX + "coeff_";
+	public static final String CHANGE_SUFFIX = "_change";
 
 	public Coefficient(int idx, Type type) {
 		this(idx, type, -1);
@@ -77,6 +78,20 @@ public abstract class Coefficient {
 		this.lineNumber = lineNumber;
 	}
 	
+	/**
+	 * Name for the variable that keeps track of whether this
+	 * coefficient is added to the sketch repair
+	 * @return
+	 */
+	public String getChangeName() {
+		return this.name + Coefficient.CHANGE_SUFFIX;
+	}
+
+	/**
+	 * Returns a declaration a boolean that holds whether this
+	 * coeff will be included in the sketch result
+	 */
+	public abstract Statement getChangeDecl();
 	
 	public abstract List<Statement> getDeclFunc();
 	

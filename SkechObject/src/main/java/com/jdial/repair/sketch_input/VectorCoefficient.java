@@ -57,13 +57,25 @@ public class VectorCoefficient extends Coefficient {
 		coeffFuncBody.addStmt(changeIf);
 		coeffFuncBody.addStmt(changeReturn);
 		return Arrays.asList(
-			new StmtVarDecl(super.type, this.name + Coefficient.CHANGE_SUFFIX, new ExprSketchHole(), 0),
+			this.getChangeDecl(),
 			new StmtFuncDecl(new Function(
 				super.name, 
 				super.type, 
 				new ArrayList<Parameter>(), 
 				coeffFuncBody, 
 				FcnType.Static)));
+	}
+	
+	/**
+	 * @return example: bit jdial_coeff4_change = ??
+	 */
+	@Override
+	public Statement getChangeDecl() {
+		return new StmtVarDecl(
+				super.type, 
+				this.getChangeName(),
+				new ExprSketchHole(), 
+				0);
 	}
 	
 	/**
