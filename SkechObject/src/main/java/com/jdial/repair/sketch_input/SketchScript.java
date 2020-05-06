@@ -19,6 +19,7 @@ import sketchobj.core.Parameter;
 import sketchobj.core.Type;
 import sketchobj.core.TypeArray;
 import sketchobj.core.TypePrimitive;
+import sketchobj.core.TypeVoid;
 import sketchobj.expr.ExprArrayInit;
 import sketchobj.expr.ExprArrayRange;
 import sketchobj.expr.ExprBinary;
@@ -69,11 +70,13 @@ public class SketchScript {
 	public static final String LINE_ARRAY = VAR_PREFIX + "line_array";
 	public static final String VAR_STATE_SUFFIX = "_state";
 	//	Constraint Function Variable Names
-	public static final String CONSTRAINT_FUNC = VAR_PREFIX + "constraint";
 	public static final String SEM_DISTANCE = VAR_PREFIX + "semantic_distance";
 	public static final String SYN_DISTANCE = VAR_PREFIX + "syntactic_distance";
 	public static final String ORIG_PREFIX = VAR_PREFIX + "original_";
 	public static final String FINAL_PREFIX = VAR_PREFIX + "final_";
+	public static final String MINIMIZE_FUNC = "minimize";
+	//TODO add jdial prefix
+	public static final String CONSTRAINT_FUNC = "Constraint";
 	
 	private static final Logger logger = LoggerFactory.getLogger(SketchScript.class);
 	
@@ -131,11 +134,34 @@ public class SketchScript {
 						List<Statement>::addAll, 
 						List<Statement>::addAll);
 		this.coeffDecls = new StmtBlock(coeffDecls);
+		this.addSyntacticCompares(coeffs);
 		
 		logger.debug("Constructing record state declarations...");
 		this.setStateDecls();
 		logger.debug("Record State Declarations created:\n" + this.stateDecls);
 		logger.debug("Constructing constraint function...");
+	}
+
+	/**
+	 * Generates a script to input into Sketch based on the current
+	 * examples and code in this script
+	 * @return - A string containing the entire script to input to Sketch
+	 */
+	@Override
+	public String toString() {
+		
+		StringBuilder scriptBuilder = new StringBuilder();
+		
+		scriptBuilder.append(this.coeffDecls);
+		scriptBuilder.append(this.stateDecls);
+		
+		for (Function relevantFunc : this.relevantFuncs.values()) {
+			scriptBuilder.append(relevantFunc);
+		}
+		
+		scriptBuilder.append(this.getConstraintFunc());
+		
+		return scriptBuilder.toString();
 	}
 	
 	/**
@@ -143,17 +169,20 @@ public class SketchScript {
 	 * coefficients have changed
 	 * @param coeffDecls
 	 */
-	private void addSyntacticCompares(List<Statement> coeffDecls) {
+	private void addSyntacticCompares(List<Coefficient> coeffs) {
 		
 		if (this.synDistanceCompares == null) {
 			this.synDistanceCompares = new StmtBlock();
-			this.synDistanceCompares.addStmt(new StmtVarDecl(TypePrimitive.int32type, SYN_DISTANCE, new ExprConstInt(0)));
+			this.synDistanceCompares.addStmt(new StmtVarDecl(
+					TypePrimitive.int32type, SYN_DISTANCE, new ExprConstInt(0)));
 		}
 		
-		for (Statement decl : coeffDecls) {
-			if (decl instanceof StmtVarDecl) {
-				this.synDistanceCompares.addStmt(new StmtAssign);
-			}
+		for (Coefficient coeff: coeffs) {
+			this.synDistanceCompares.addStmt(new StmtAssign(
+				new ExprVar(SYN_DISTANCE),
+				coeff.getChangeVar(),
+				ExprBinary.BINOP_ADD,
+				0));
 		}
 	}
 	
@@ -206,11 +235,14 @@ public class SketchScript {
 					invokeInits.add(new ExprArrayInit(stateInits));
 				}
 				
+				//WARNING: sketch has a bug where 2d array lengths are flipped 
+				//for the declaration type. 
+				//Example: int[4][2] = { {5, 4, 1, 9}, {2, 3, 2, 0} };
 				Type varStateType = new TypeArray(
 						new TypeArray(
 							TypePrimitive.int32type, 
-							new ExprConstInt(this.examples.size())),
-						new ExprConstInt(arrayLengths));
+							new ExprConstInt(arrayLengths)),
+						new ExprConstInt(this.examples.size()));
 				this.stateDecls.addStmt(new StmtVarDecl(varStateType, 
 						getVarStateName(func.getName(), varName),
 						new ExprArrayInit(invokeInits)));
@@ -235,18 +267,19 @@ public class SketchScript {
 		for (CorrectionExample example : this.examples) {
 			for (String varName : example.getCorrectVarValues().keySet()) {
 				
-				result.add(getFinalName(varName, this.targetFunc));
+				result.add(getFinalName(this.targetFunc, varName));
 			}
 		}
 		return result;
 	}
+	
 	/**
 	 * Sketch requires a 'constraint' function that specifies any constraints
 	 * that must be followed when filling in the sketch holes. This function
 	 * creates that function and places constraints for each example and 
 	 * minimizes the semantic and syntactic distance.
 	 */
-	private void setConstraintFunc() {
+	private Function getConstraintFunc() {
 		
 		List<Statement> body = new ArrayList<Statement>();
 		//variables to keep track of each variables original state to compare
@@ -262,34 +295,21 @@ public class SketchScript {
 			body.add(new StmtExpr(new ExprFuncCall(this.targetFunc, paramVals)));
 			body.add(example.getFinalAssertions(this.targetFunc));
 		}
-	}
-
-	/**
-	 * Generates statements to calculate the semantic distance based on how
-	 * variable values compare to their original values in the trace
-	 * @return
-	 */
-	private StmtBlock getSemDistanceCalcStmts() {
-		StmtBlock stmts = new StmtBlock();
-		stmts.addStmt(new StmtVarDecl(
-				new TypePrimitive(4), SEM_DISTANCE, new ExprConstInt(0), 0));
 		
-		for (CorrectionExample example : this.examples) {
-			
-		}
-		return stmts;
-	}
-	
-	/**
-	 * Generates statements to calculate the syntactic distance based on how
-	 * many coefficients change
-	 * @return
-	 */
-	private StmtBlock getSynDistanceCalcStmts() {
-		StmtBlock stmts = new StmtBlock();
-		stmts.addStmt(new StmtVarDecl(
-				new TypePrimitive(4), SYN_DISTANCE, new ExprConstInt(0), 0));
-		return stmts;
+		body.add(this.semDistanceCompares);
+		body.add(this.synDistanceCompares);
+		body.add(new StmtExpr(new ExprFuncCall(MINIMIZE_FUNC, Arrays.asList(new ExprBinary(
+				new ExprVar(SEM_DISTANCE),
+				ExprBinary.BINOP_ADD,
+				new ExprVar(SYN_DISTANCE))))));
+		
+		return new Function(
+				CONSTRAINT_FUNC, 
+				new TypeVoid(), 
+				null, 
+				new StmtBlock(body), 
+				Function.FcnType.Harness);
+		
 	}
 	
 	/**
@@ -339,13 +359,15 @@ public class SketchScript {
 			arrayInits.add(new ExprArrayInit(stateInits));
 		}
 		
+		//WARNING: sketch has a bug where 2d array lengths are flipped 
+		//for the declaration type. Example: int[4][2] = { {5, 4, 1, 9}, {2, 3, 2, 0} };
 		Type varStateType = new TypeArray(
 				new TypeArray(
 					TypePrimitive.int32type, 
-					new ExprConstInt(this.examples.size())),
-				new ExprConstInt(this.getMaxTraceSize()));
+					new ExprConstInt(this.getMaxTraceSize())),
+				new ExprConstInt(this.examples.size()));
 		this.originalStateDecls.addStmt(new StmtVarDecl(varStateType, 
-				getVarStateName(funcName, varName),
+				getOriginalStateName(funcName, varName),
 				new ExprArrayInit(arrayInits)));
 		//add in statements to compare this original array with the values
 		//created in the sketch script
@@ -362,6 +384,12 @@ public class SketchScript {
 	 */
 	private void addSemanticCompares(
 			String varName, String funcName, int origLength) {
+		
+		if (this.semDistanceCompares == null) {
+			this.semDistanceCompares = new StmtBlock();
+			this.semDistanceCompares.addStmt(new StmtVarDecl(
+					TypePrimitive.int32type, SEM_DISTANCE, new ExprConstInt(0)));
+		}
 		
 		String exampleCount = "i";
 		String tracepointCount = "j";
@@ -386,21 +414,35 @@ public class SketchScript {
 							new ExprArrayRange.RangeLen(
 								new ExprVar(tracepointCount))))
 					),
-				ExprBinary.BINOP_ADD); //	+=
+				ExprBinary.BINOP_ADD, //	+=
+				0); 
 		//Loop through every example and trace point and compare the variable's
 		//state with it's original state from the trace
 		StmtFor comparesLoop = new StmtFor(
-				new StmtVarDecl(TypePrimitive.int32type, tracepointCount, new ExprConstInt(0)),
-				new ExprBinary(new ExprVar(tracepointCount), ExprBinary.BINOP_LE, new ExprConstInt(origLength)),
-				new StmtExpr(new ExprUnary(ExprUnary.UNOP_PREINC, new ExprVar(tracepointCount))),
+				new StmtVarDecl(
+						TypePrimitive.int32type, 
+						tracepointCount, 
+						new ExprConstInt(0)),
+				new ExprBinary(
+						new ExprVar(tracepointCount), 
+						ExprBinary.BINOP_LT, 
+						new ExprConstInt(origLength)),
+				new StmtExpr(new ExprUnary(
+						ExprUnary.UNOP_PREINC, new ExprVar(tracepointCount))),
 				compare
 				);
 		StmtFor exampleLoop = new StmtFor(
-				new StmtVarDecl(TypePrimitive.int32type, exampleCount, new ExprConstInt(0)),
-				new ExprBinary(new ExprVar(exampleCount), ExprBinary.BINOP_LE, new ExprConstInt(origLength)),
-				new StmtExpr(new ExprUnary(ExprUnary.UNOP_PREINC, new ExprVar(exampleCount))),
-				comparesLoop
-				);
+				new StmtVarDecl(
+						TypePrimitive.int32type, 
+						exampleCount, 
+						new ExprConstInt(0)),
+				new ExprBinary(
+						new ExprVar(exampleCount), 
+						ExprBinary.BINOP_LT, 
+						new ExprConstInt(this.examples.size())),
+				new StmtExpr(new ExprUnary(
+						ExprUnary.UNOP_PREINC, new ExprVar(exampleCount))),
+				comparesLoop);
 		
 		//TODO: put all compares in one double loop, currently each compare
 		//has its own double loop

@@ -94,7 +94,7 @@ public class VectorCoefficient extends Coefficient {
 			Type type) {
 		
 		ScalarCoefficient changeCoeff = 
-				new ScalarCoefficient(coeffs.size(), type, this.lineNumber);
+				new ScalarCoefficient(coeffs.size(), type, this.lineNumber, true);
 		coeffs.add(changeCoeff);
 		
 		ExprBinary coeffBinaryExpr = 

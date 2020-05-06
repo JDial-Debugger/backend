@@ -12,6 +12,8 @@ import sketchobj.stmts.StmtExpr;
 import sketchobj.stmts.StmtVarDecl;
 
 public class Function extends SketchNode {
+	
+	//used for special sketch functions (read sketch docs)
 	public static enum FcnType {
 		// Uninterpreted Function
 		Uninterp("uninterp"),
@@ -50,7 +52,13 @@ public class Function extends SketchNode {
 	private Statement body;
 	private FcnType fcnType;
 
-	public Function(String name, Type returnType, List<Parameter> params, Statement body, FcnType fcnType) {
+	public Function(
+			String name, 
+			Type returnType, 
+			List<Parameter> params, 
+			Statement body, 
+			FcnType fcnType) {
+		
 		this.name = name;
 		this.returnType = returnType;
 		this.params = params;
@@ -59,7 +67,11 @@ public class Function extends SketchNode {
 		body.setParent(this);
 		this.setParent(null);
 	}
-	public Function(String name, Type returnType, List<Parameter> params, Statement body) {
+	public Function(
+			String name, 
+			Type returnType, 
+			List<Parameter> params, 
+			Statement body) {
 		this(name, returnType,params,body,FcnType.Static);
 	}
 
@@ -102,6 +114,9 @@ public class Function extends SketchNode {
 	public String printParams() {
 		String s = "";
 		boolean notf = false;
+		if (params == null || params.isEmpty()) {
+			return "";
+		}
 		for (Parameter p : params) {
 			if (notf) {
 				s += ", ";

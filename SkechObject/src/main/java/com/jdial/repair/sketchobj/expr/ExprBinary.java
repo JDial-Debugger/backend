@@ -456,7 +456,7 @@ public class ExprBinary extends Expression {
 			if (right.isAtom()) {
 				
 				ScalarCoefficient changeCoeff = new ScalarCoefficient(
-						coeffs.size(), this.getType(), this.lineNumber);
+						coeffs.size(), this.getType(), this.lineNumber, false);
 				coeffs.add(changeCoeff);
 				
 				this.right = changeCoeff.modifyExpr(this.right);
@@ -470,7 +470,7 @@ public class ExprBinary extends Expression {
 			if (left.isAtom()) {
 				
 				ScalarCoefficient changeCoeff = new ScalarCoefficient(
-						coeffs.size(), this.getType(), this.lineNumber);
+						coeffs.size(), this.getType(), this.lineNumber, false);
 				coeffs.add(changeCoeff);
 				
 				this.left = changeCoeff.modifyExpr(this.left);
@@ -503,7 +503,7 @@ public class ExprBinary extends Expression {
 							((TypePrimitive) this.getType()).getType()) {
 						
 						ScalarCoefficient changeCoeff = new ScalarCoefficient(
-								coeffs.size(), this.getType(), this.lineNumber);
+								coeffs.size(), this.getType(), this.lineNumber, true);
 						coeffs.add(changeCoeff);
 						
 						Expression addLiveVar = 

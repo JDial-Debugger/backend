@@ -205,7 +205,8 @@ public class StmtAssign extends Statement {
 			ScalarCoefficient changeCoeff = new ScalarCoefficient(
 					coeffs.size(), 
 					this.rhs.getType(), 
-					this.getLineNumber());
+					this.getLineNumber(),
+					false);
 			coeffs.add(changeCoeff);
 			this.rhs = changeCoeff.modifyExpr(this.rhs);
 			

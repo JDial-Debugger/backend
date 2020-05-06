@@ -452,7 +452,7 @@ public class StmtVarDecl extends Statement {
 			if (curInit.isAtom()) {
 				
 				ScalarCoefficient coeff = new ScalarCoefficient(
-						coeffs.size(), initType, curInit.getLineNumber());
+						coeffs.size(), initType, curInit.getLineNumber(), false);
 				coeffs.add(coeff);
 				inits.set(i, coeff.modifyExpr(curInit));
 				

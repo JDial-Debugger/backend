@@ -174,11 +174,14 @@ public class CallSketch {
 	}
 
 	static List<Integer> extractInt(String str) {
+		
 		if (str.length() < 3)
 			return new ArrayList<>();
+		
 		str = str.replaceAll("[^-?0-9]+", " ");
 		List<String> lstr = Arrays.asList(str.trim().split(" "));
 		List<Integer> lint = new ArrayList<Integer>();
+		
 		if (lstr.size() == 0)
 			return lint;
 		for (String s : lstr) {

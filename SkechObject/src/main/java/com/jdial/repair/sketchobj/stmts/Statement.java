@@ -134,12 +134,6 @@ public abstract class Statement extends SketchNode {
 									0));
 				}
 			}
-			//Of the form finalcount = count;
-			finalStates.add(new StmtAssign(
-							new ExprVar(SketchScript.STATE_IDX + 
-									SketchScript.VAR_FINAL_SUFFIX), 
-							new ExprVar(SketchScript.STATE_IDX), 
-							0));
 			
 			if (funcType instanceof TypeVoid) {
 				//of the form: return;

@@ -4,6 +4,7 @@ import java.util.List;
 
 import sketchobj.core.Type;
 import sketchobj.expr.ExprFuncCall;
+import sketchobj.expr.ExprVar;
 import sketchobj.stmts.Statement;
 
 /**
@@ -81,10 +82,19 @@ public abstract class Coefficient {
 	/**
 	 * Name for the variable that keeps track of whether this
 	 * coefficient is added to the sketch repair
-	 * @return
+	 * @return - The name of the change variable in the sketch script
 	 */
 	public String getChangeName() {
 		return this.name + Coefficient.CHANGE_SUFFIX;
+	}
+
+	/**
+	 * Expression for the variable that keeps track of whether this
+	 * coefficient is added to the sketch repair
+	 * @return
+	 */
+	public ExprVar getChangeVar() {
+		return new ExprVar(this.getChangeName());
 	}
 
 	/**

@@ -20,23 +20,15 @@ public class StmtBlock extends Statement {
 	public List<Statement> stmts;
 
 	public StmtBlock(List<Statement> stmts) {
-		for(Statement s:stmts)
+		
+		for(Statement s : stmts) {
 			s.setParent(this);
-
+		}
 		this.stmts = new ArrayList<Statement>(stmts);
 	}
 
 	public StmtBlock() {
 		this.stmts = new ArrayList<Statement>();
-	}
-	
-	@Override
-	public StmtBlock clone(){
-		List<Statement> newStmts = new ArrayList<Statement>();
-		for(Statement s: stmts){
-			newStmts.add(s.clone());
-		}
-		return new StmtBlock(newStmts);
 	}
 
 	/** Create a new StmtBlock for a pair of statements. */
@@ -214,5 +206,15 @@ public class StmtBlock extends Statement {
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public StmtBlock clone(){
+		
+		List<Statement> newStmts = new ArrayList<Statement>();
+		for(Statement s: stmts){
+			newStmts.add(s.clone());
+		}
+		return new StmtBlock(newStmts);
 	}
 }

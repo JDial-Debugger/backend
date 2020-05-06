@@ -84,6 +84,7 @@ public class RepairEngine {
 		
 		JsonObject repairJson = JsonParser.parseString(json).getAsJsonObject();
 		String code = repairJson.get("code").getAsString();
+		String targetFunc = repairJson.get("targetFunc").getAsString();
 		
 		List<CorrectionExample> examples = new ArrayList<CorrectionExample>();
 		
@@ -104,11 +105,8 @@ public class RepairEngine {
 		Set<String> relevantFuncNames = getRelevantFuncs(examples);
 		logger.debug("Functions found in Traces: " + relevantFuncNames);
 		Map<String, Function> relevantFuncs = parseJava(code, relevantFuncNames);
-		SketchScript script = new SketchScript(code, examples, relevantFuncs);
-		for (Function func : relevantFuncs.values()) {
-			logger.debug(func.toString());
-		}
-		logger.debug(script.getCoeffDecls().toString());
+		SketchScript script = new SketchScript(code, targetFunc, examples, relevantFuncs);
+		logger.debug(script.toString());
 	}
 	
 	private static Map<String, Function> parseJava(String source, Set<String> relevantFuncNames) {

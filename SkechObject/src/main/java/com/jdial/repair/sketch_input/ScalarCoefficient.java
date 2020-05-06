@@ -28,40 +28,55 @@ import sketchobj.stmts.StmtVarDecl;
  */
 public class ScalarCoefficient extends Coefficient {
 
+	//true if this coefficient being 1 or -1 adds a new expression to the code
+	//false if this coefficient being 1 or -1 removes an expression from the code
+	private boolean isAdditive;
 	/**
 	 * Creates a scalar coefficient with the given unique index and type
 	 * @param idx - an index to uniquely identify the coefficient
 	 * @param type - the type of the coefficient
 	 */
-	public ScalarCoefficient(int idx, Type type) {
+	public ScalarCoefficient(int idx, Type type, boolean isAdditive) {
 		super(idx, type);
+		this.isAdditive = isAdditive;
 	}
 	
-	public ScalarCoefficient(int idx, Type type, int lineNumber) {
+	public ScalarCoefficient(int idx, Type type, int lineNumber, boolean isAdditive) {
 		super(idx, type, lineNumber);
+		this.isAdditive = isAdditive;
 	}
 
 	@Override
 	public List<Statement> getDeclFunc() {
 		
-		//return if no change made to expr this coeff is attached to
-		Expression keepCond = new ExprSketchHole();// ??
-		StmtReturn keepReturn = new StmtReturn(new ExprConstInt(1));
-		Statement keepIf = new StmtIfThen(keepCond, keepReturn);
-		
-		//remove the expr this coeff is attached to
-		Expression removeCond = new ExprBinary(
+		Expression changeCond = new ExprBinary(
 				new ExprVar(super.name + Coefficient.CHANGE_SUFFIX), 
 				"==", 
 				new ExprConstInt(0), 0);
-		StmtReturn removeReturn = new StmtReturn(new ExprConstInt(0));
-		Statement removeIf = new StmtIfThen(removeCond, removeReturn);
+		StmtReturn changeReturn = null;
+		if (this.isAdditive) {
+			changeReturn = new StmtReturn(new ExprConstInt(0));
+		} else {
+			changeReturn = new StmtReturn(new ExprConstInt(1));
+		}
+		Statement changeIf = new StmtIfThen(changeCond, changeReturn);
+		
+		//return if no change made to expr this coeff is attached to
+		Expression holeCond = new ExprSketchHole();
+		StmtReturn holeReturn = null;
+		if (this.isAdditive) {
+			holeReturn = new StmtReturn(new ExprConstInt(1));
+		} else {
+			holeReturn = new StmtReturn(new ExprConstInt(0));
+		}
+		Statement holeIf = new StmtIfThen(holeCond, holeReturn);
+		
 		//return to invert the expr this coeff is attached to
 		StmtReturn invertReturn = new StmtReturn(new ExprConstInt(-1));
 		
 		StmtBlock coeffFuncBody = new StmtBlock();
-		coeffFuncBody.addStmt(keepIf);
-		coeffFuncBody.addStmt(removeIf);
+		coeffFuncBody.addStmt(changeIf);
+		coeffFuncBody.addStmt(holeIf);
 		coeffFuncBody.addStmt(invertReturn);
 		return Arrays.asList(
 			this.getChangeDecl(),

@@ -4,6 +4,7 @@
 	"expectedVars": {
 		"b": 6
 	},
+	"targetFunc": "SimpleJava",
 	"trace":[
 		{
 		  "stdout":"",

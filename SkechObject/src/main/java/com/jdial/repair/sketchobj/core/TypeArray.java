@@ -14,6 +14,10 @@ public class TypeArray extends Type {
 		this.base = base;
 		this.length = length;
 	}
+	
+	public TypeArray(Type base) { 
+		this(base, null);
+	}
 
 	public void setLenghth(Expression length){
 		this.length = length;
