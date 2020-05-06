@@ -36,12 +36,12 @@ public class ScalarCoefficient extends Coefficient {
 	 * @param idx - an index to uniquely identify the coefficient
 	 * @param type - the type of the coefficient
 	 */
-	public ScalarCoefficient(int idx, Type type, boolean isAdditive) {
+	public ScalarCoefficient(int idx, TypePrimitive type, boolean isAdditive) {
 		super(idx, type);
 		this.isAdditive = isAdditive;
 	}
 	
-	public ScalarCoefficient(int idx, Type type, int lineNumber, boolean isAdditive) {
+	public ScalarCoefficient(int idx, TypePrimitive type, int lineNumber, boolean isAdditive) {
 		super(idx, type, lineNumber);
 		this.isAdditive = isAdditive;
 	}

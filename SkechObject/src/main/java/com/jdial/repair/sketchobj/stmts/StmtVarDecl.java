@@ -446,7 +446,7 @@ public class StmtVarDecl extends Statement {
 			curInit.checkAtom();
 			curInit.setLCadded(true);
 			
-			Type initType = this.getPostctx().getAllVars()
+			TypePrimitive initType = (TypePrimitive) this.getPostctx().getAllVars()
 					.get(this.names.get(i).toString());
 			
 			if (curInit.isAtom()) {
@@ -466,9 +466,6 @@ public class StmtVarDecl extends Statement {
 			if ((initType instanceof TypePrimitive) && 
 					((TypePrimitive) initType).getType() == TypePrimitive.TYPE_BIT) {
 				inits.get(i).setBoolean(true);
-				return;
-			}
-			if (initType instanceof TypeArray) {
 				return;
 			}
 			//TODO figure out where this came from

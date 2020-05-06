@@ -3,6 +3,9 @@ package sketch_input;
 import java.util.List;
 
 import sketchobj.core.Type;
+import sketchobj.core.TypePrimitive;
+import sketchobj.expr.ExprConstInt;
+import sketchobj.expr.ExprConstant;
 import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.ExprVar;
 import sketchobj.stmts.Statement;
@@ -64,19 +67,34 @@ public abstract class Coefficient {
 	
 	protected String name;
 	protected int lineNumber;
-	protected Type type;
+	protected TypePrimitive type;
+	//Keeps track of what this coefficient is repaired to (if any at all)
+	protected ExprConstant repairValue;
 	
 	public static final String PREFIX = SketchScript.VAR_PREFIX + "coeff_";
 	public static final String CHANGE_SUFFIX = "_change";
 
-	public Coefficient(int idx, Type type) {
+	public Coefficient(int idx, TypePrimitive type) {
 		this(idx, type, -1);
 	}
 	
-	public Coefficient(int idx, Type type, int lineNumber) {
+	public Coefficient(int idx, TypePrimitive type, int lineNumber) {
 		this.name = PREFIX + idx;
 		this.type = type;
 		this.lineNumber = lineNumber;
+	}
+	
+	/**
+	 * Sets the value for this coefficient to be added to the original source
+	 * code
+	 * @param value - the value to go into the source code
+	 */
+	public void setRepairValue(int value) {
+		if (this.type.getType() != TypePrimitive.TYPE_INT32) {
+			throw new IllegalArgumentException("Wrong repair value type: " + 
+					value + " for coefficient of type: " + this.type);
+		}
+		this.repairValue = new ExprConstInt(value);
 	}
 	
 	/**

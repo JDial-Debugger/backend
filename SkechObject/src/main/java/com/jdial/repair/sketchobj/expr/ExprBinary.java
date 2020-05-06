@@ -454,9 +454,8 @@ public class ExprBinary extends Expression {
 			right.checkAtom();
 			
 			if (right.isAtom()) {
-				
 				ScalarCoefficient changeCoeff = new ScalarCoefficient(
-						coeffs.size(), this.getType(), this.lineNumber, false);
+						coeffs.size(), (TypePrimitive) this.getType(), this.lineNumber, false);
 				coeffs.add(changeCoeff);
 				
 				this.right = changeCoeff.modifyExpr(this.right);
@@ -470,7 +469,7 @@ public class ExprBinary extends Expression {
 			if (left.isAtom()) {
 				
 				ScalarCoefficient changeCoeff = new ScalarCoefficient(
-						coeffs.size(), this.getType(), this.lineNumber, false);
+						coeffs.size(), (TypePrimitive) this.getType(), this.lineNumber, false);
 				coeffs.add(changeCoeff);
 				
 				this.left = changeCoeff.modifyExpr(this.left);
@@ -503,21 +502,27 @@ public class ExprBinary extends Expression {
 							((TypePrimitive) this.getType()).getType()) {
 						
 						ScalarCoefficient changeCoeff = new ScalarCoefficient(
-								coeffs.size(), this.getType(), this.lineNumber, true);
+								coeffs.size(), 
+								(TypePrimitive) this.getType(), 
+								this.lineNumber, true);
 						coeffs.add(changeCoeff);
 						
 						Expression addLiveVar = 
 								changeCoeff.modifyExpr(
 									new ExprVar(liveVar.getKey(), this.getType()));
 						
-						this.right = new ExprBinary(right, BINOP_ADD, addLiveVar, this.lineNumber);
+						this.right = new ExprBinary(
+								right, BINOP_ADD, addLiveVar, this.lineNumber);
 					}
 				}
 				
-				VectorCoefficient valCoeff = 
-						new VectorCoefficient(coeffs.size(), this.getType(), this.lineNumber);
+				VectorCoefficient valCoeff = new VectorCoefficient(
+						coeffs.size(), 
+						(TypePrimitive) this.getType(), 
+						this.lineNumber);
 				coeffs.add(valCoeff);
-				this.right = valCoeff.addToExpr(this.right, coeffs, this.getType());
+				this.right = valCoeff.addToExpr(
+						this.right, coeffs, (TypePrimitive) this.getType());
 			}
 		}
 	}

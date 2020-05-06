@@ -8,6 +8,7 @@ import sketchobj.core.Function;
 import sketchobj.core.Function.FcnType;
 import sketchobj.core.Parameter;
 import sketchobj.core.Type;
+import sketchobj.core.TypePrimitive;
 import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprSketchHole;
@@ -36,11 +37,11 @@ return coeff6change;
  */
 public class VectorCoefficient extends Coefficient {
 
-	public VectorCoefficient(int idx, Type type) {
+	public VectorCoefficient(int idx, TypePrimitive type) {
 		super(idx, type);
 	}
 	
-	public VectorCoefficient(int idx, Type type, int lineNumber) {
+	public VectorCoefficient(int idx, TypePrimitive type, int lineNumber) {
 		super(idx, type, lineNumber);
 	}
 
@@ -91,7 +92,7 @@ public class VectorCoefficient extends Coefficient {
 	public ExprBinary addToExpr(
 			Expression toModify, 
 			List<Coefficient> coeffs, 
-			Type type) {
+			TypePrimitive type) {
 		
 		ScalarCoefficient changeCoeff = 
 				new ScalarCoefficient(coeffs.size(), type, this.lineNumber, true);

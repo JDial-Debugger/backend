@@ -43,6 +43,7 @@ public class SketchScript {
 	private List<CorrectionExample> examples;
 	private Set<Type> correctVarTypes;
 	private Map<String, Function> relevantFuncs;
+	private List<Coefficient> coeffs;
 	//statements that compare every active variable's values with the original
 	//values in the trace to compute the semantic distance
 	private StmtBlock semDistanceCompares;
@@ -106,12 +107,12 @@ public class SketchScript {
 		this.examples = examples;
 		this.relevantFuncs = relevantFuncs;
 		
-		List<Coefficient> coeffs = new ArrayList<Coefficient>();
+		this.coeffs = new ArrayList<Coefficient>();
 		//Insert coefficients
 		for (Map.Entry<String, Function> entry : relevantFuncs.entrySet()) {
 			
 			this.addContext(entry.getValue());
-			entry.getValue().getBody().insertCoeffs(coeffs);
+			entry.getValue().getBody().insertCoeffs(this.coeffs);
 			entry.getValue().insertRecordStmt(
 					entry.getKey(), 
 					entry.getValue().getReturnType(), 
@@ -128,7 +129,7 @@ public class SketchScript {
 			}
 		}
 		
-		List<Statement> coeffDecls = coeffs.stream()
+		List<Statement> coeffDecls = this.coeffs.stream()
 				.map(Coefficient::getDeclFunc)
 				.collect(ArrayList<Statement>::new, 
 						List<Statement>::addAll, 
@@ -141,6 +142,8 @@ public class SketchScript {
 		logger.debug("Record State Declarations created:\n" + this.stateDecls);
 		logger.debug("Constructing constraint function...");
 	}
+	
+	public List<Coefficient> getCoefficients() { return this.coeffs; }
 
 	/**
 	 * Generates a script to input into Sketch based on the current

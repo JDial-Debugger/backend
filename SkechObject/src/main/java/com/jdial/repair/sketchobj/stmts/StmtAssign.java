@@ -204,7 +204,7 @@ public class StmtAssign extends Statement {
 			
 			ScalarCoefficient changeCoeff = new ScalarCoefficient(
 					coeffs.size(), 
-					this.rhs.getType(), 
+					(TypePrimitive) this.rhs.getType(), 
 					this.getLineNumber(),
 					false);
 			coeffs.add(changeCoeff);
@@ -268,9 +268,12 @@ public class StmtAssign extends Statement {
 		
 		//x = 5; => x = 5 + coeff4() * coeff5()
 		VectorCoefficient valCoeff = new VectorCoefficient(
-				coeffs.size(), this.rhs.getType(), this.getLineNumber());
+				coeffs.size(), 
+				(TypePrimitive) this.rhs.getType(), 
+				this.getLineNumber());
 		coeffs.add(valCoeff);
-		this.rhs = valCoeff.addToExpr(this.rhs, coeffs, this.rhs.getType());
+		this.rhs = valCoeff.addToExpr(
+				this.rhs, coeffs, (TypePrimitive) this.rhs.getType());
 	}
 
 	@Override

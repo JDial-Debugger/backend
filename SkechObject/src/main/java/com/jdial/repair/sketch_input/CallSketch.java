@@ -1,3 +1,4 @@
+package sketch_input;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,12 +11,10 @@ import java.util.Set;
 
 import constraintfactory.ConstraintFactory;
 
-public class CallSketch {
+public final class CallSketch {
+
+	public CallSketch() {}
 	
-
-	public CallSketch() {
-
-	}
 	/**
 	 * Calls Sketch executable on given input s and parses the output from sketch
 	 * Create hashmap of coefIdx -> boolean
@@ -24,33 +23,35 @@ public class CallSketch {
 	 * @throws InterruptedException
 	 * @throws SketchExecException - If the sketch executable has an error processing the input
 	 */
-	static public Map<Integer, Integer> CallByString(String sketchInput) 
+	public static Map<Integer, Integer> CallByString(SketchScript script) 
 			throws InterruptedException, SketchExecException {
 
+		//write the sketch script to a temporary file
 		String suggestDIR = System.getenv("SUGGEST_PATH");
+		String backendDIR = suggestDIR + "JDial-debugger/SkechObject/";
+		
+		//TODO find out what this does
+		String bitString = "--bnd-mbits 7 --bnd-cbits 5";
+			
 		File sketchIODir = new File(suggestDIR + "tmp");
 		sketchIODir.mkdirs();
 		File tmp = new File(sketchIODir, "tmp.txt");
-		
+		tmp.createNewFile();
+		WriteStringToFile(tmp, script.toString());
 		Runtime rt = Runtime.getRuntime();
-		Map<Integer, Integer> coefToVal = new HashMap<Integer, Integer>();
 		
+		String[] envp = new String[] {
+			"SKETCH_HOME=" + System.getenv("SKETCH_HOME"),
+		};
+		Process proc = rt.exec("sketch " 
+								+ suggestDIR 
+								+ "/tmp/tmp.txt",
+								null);
+		PrintWriter out = new PrintWriter(suggestDIR + "/tmp/tmpOutput.txt");
+		InputStream stderr = proc.getErrorStream();
 		try {
-			tmp.createNewFile();
-			WriteStringToFile(tmp, sketchInput);
 			
-			String backendDIR = suggestDIR + "JDial-debugger/SkechObject/";
-			String bitString = "--bnd-mbits 7 --bnd-cbits 5";
-			String[] envp = new String[] {
-				"SKETCH_HOME=" + System.getenv("SKETCH_HOME"),
-			};
 			
-			Process proc = rt.exec("sketch " 
-									+ suggestDIR 
-									+ "/tmp/tmp.txt",
-									null);
-			PrintWriter out = new PrintWriter(suggestDIR + "/tmp/tmpOutput.txt");
-			InputStream stderr = proc.getErrorStream();
 			
 			//TODO Add better error reporting
 			Scanner errScnr = new Scanner(stderr).useDelimiter("\\A");
@@ -167,9 +168,9 @@ public class CallSketch {
 		return coefToVal;
 	}
 
-	static void WriteStringToFile(File f, String s) throws IOException {
-		FileWriter fileWriter = new FileWriter(f);
-		fileWriter.write(s);
+	static void WriteStringToFile(File file, String contents) throws IOException {
+		FileWriter fileWriter = new FileWriter(file);
+		fileWriter.write(contents);
 		fileWriter.close();
 	}
 
