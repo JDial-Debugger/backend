@@ -17,6 +17,7 @@ import sketchobj.core.TypeArray;
 import sketchobj.core.TypePrimitive;
 
 public class ExprBinary extends Expression {
+	
 	public static final int BINOP_ADD = 1;
 	public static final int BINOP_SUB = 2;
 	public static final int BINOP_MUL = 3;
@@ -43,6 +44,9 @@ public class ExprBinary extends Expression {
 	private int op;
 	private Expression left, right;
 	private ExprBinary alias;
+	//	When removing unused coefficients from the AST, we ignore sides of
+	//binary expressions
+	private boolean ignoringLeft, ignoringRight;
 
 	/**
 	 * Create a new binary expression given the operation and the left and right
@@ -101,7 +105,6 @@ public class ExprBinary extends Expression {
 	 * @param right
 	 *            expression on the right of the operator
 	 */
-
 	public ExprBinary(Expression left, String sop, Expression right, int line) {
 		this.left = left;
 		left.setParent(this);
@@ -187,6 +190,25 @@ public class ExprBinary extends Expression {
 	 */
 	public Expression getLeft() {
 		return left;
+	}
+
+	
+	/**
+	 * Sets the left child expression of this.
+	 *
+	 * @param expression on the left-hand side of the operator
+	 */
+	public void setLeft(Expression left) {
+		this.left = left;
+	}
+	
+	/**
+	 * Sets the right child expression of this.
+	 *
+	 * @param expression on the right-hand side of the operator
+	 */
+	public void setRight(Expression right) {
+		this.right = right;
 	}
 
 	/**
@@ -279,20 +301,57 @@ public class ExprBinary extends Expression {
 	}
 
 	public String toString() {
+		
+		if (this.ignoringLeft && this.ignoringRight) {
+			return "";
+		} else if (this.ignoringLeft) {
+			return this.right.toString();
+		} else if (this.ignoringRight) {
+			return this.left.toString();
+		}
+		
 		String theOp = getOpString();
-		String lstr = null;
-		String rstr = null;
+		StringBuilder result = new StringBuilder();
+		
+		//merge ops on constants together
+		if (this.left instanceof ExprConstInt && this.right instanceof ExprConstInt) {
+			ExprConstInt leftInt = (ExprConstInt) this.left;
+			ExprConstInt rightInt = (ExprConstInt) this.right;
+			switch (this.op) {
+				case BINOP_ADD:
+					return leftInt.getVal() + rightInt.getVal() + "";
+				case BINOP_SUB:
+					return leftInt.getVal() - rightInt.getVal() + "";
+				case BINOP_MUL:
+					return leftInt.getVal() * rightInt.getVal() + "";
+				case BINOP_DIV:
+					return leftInt.getVal() / rightInt.getVal() + "";
+				case BINOP_MOD:
+					return leftInt.getVal() % rightInt.getVal() + "";
+				default:
+					break;
+			}
+		}
+			
 		if (left instanceof ExprConstInt || left instanceof ExprVar) {
-			lstr = left.toString();
+			result.append(this.left.toString() + " " + theOp + " ");
 		} else {
-			lstr = "(" + left.toString() + ")";
+			result.append("(" + this.left.toString() +")" + " " + theOp + " ");
 		}
 		if (right instanceof ExprConstInt || right instanceof ExprVar) {
-			rstr = right.toString();
+			result.append(this.right.toString());
 		} else {
-			rstr = "(" + right.toString() + ")";
+			result.append("(" + this.right.toString() + ")");
 		}
-		return lstr + " " + theOp + " " + rstr;
+		return result.toString();
+	}
+	
+	public void ignoreLeft() {
+		this.ignoringLeft = true;
+	}
+	
+	public void ignoreRight() {
+		this.ignoringLeft = true;
 	}
 
 	/** Return the precedence of OP (higher means evaluated sooner). */

@@ -105,11 +105,20 @@ public class VectorCoefficient extends Coefficient {
 		ExprBinary coeffBinaryExpr = 
 				changeCoeff.modifyExpr(this.getFuncCall());
 		
-		return new ExprBinary(
+		this.parentExpr = new ExprBinary(
 				toModify,
 				ExprBinary.BINOP_ADD, 
 				coeffBinaryExpr,
 				this.lineNumber);
 		
+		return this.parentExpr;
+		
+	}
+
+	@Override
+	public void removeFromSource() {
+		//since vectors are only added with a scalar, remove the scalar as well
+		this.parentExpr.ignoreLeft();
+		this.parentExpr.ignoreRight();
 	}
 }

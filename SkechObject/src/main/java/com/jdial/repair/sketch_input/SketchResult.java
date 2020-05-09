@@ -51,24 +51,29 @@ public class SketchResult {
 				if(assignMatch.find()) {
 					
 					String[] splitLine = line.split("= ");
-					int repairVal = Integer.parseInt(splitLine[1].substring(0, splitLine.length - 1));
+					int repairVal = Integer.parseInt(
+							splitLine[1].substring(0, splitLine.length - 1));
+					String coeffName = extractCoeffNameFromLine(line);
 					//sketch has found a value for this coefficient
-					if (repairVal != 0) {
-						logger.debug("Non zero coeff change value found on line:\n" + line);
-						String coeffName = extractCoeffNameFromLine(line);
-						if (coeffName != null) {
-							
+					if (coeffName != null) {
+						if (repairVal != 0) {
+								
 							logger.debug("Adding coefficient to repair list: " + coeffName);
 							Coefficient repairCoeff = coeffs.stream()
 									.filter(coeff -> coeff.getName().equals(coeffName))
 									.findFirst()
 									.orElse(null);
+							
 							if (repairCoeff != null) {
 								repairCoeff.setRepairValue(repairVal);
 								repairedCoeffs.add(repairCoeff);
 							} else {
 								logger.warn("Unknown coefficient name found: " + coeffName);
 							}
+						//if no change for the coefficient, effectively remove it from ast
+						} else {
+							logger.debug("Unchanged coeff change value found on line:\n" + line);
+							
 						}
 						
 					}

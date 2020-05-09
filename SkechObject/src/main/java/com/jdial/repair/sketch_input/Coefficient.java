@@ -4,6 +4,7 @@ import java.util.List;
 
 import sketchobj.core.Type;
 import sketchobj.core.TypePrimitive;
+import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprConstant;
 import sketchobj.expr.ExprFuncCall;
@@ -65,58 +66,18 @@ x = Coeff8() * a + Coeff7() * b + Coeff5() * Coeff6()
  */
 public abstract class Coefficient {
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + lineNumber;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((parent == null) ? 0 : parent.hashCode());
-		result = prime * result + ((repairValue == null) ? 0 : repairValue.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Coefficient other = (Coefficient) obj;
-		if (lineNumber != other.lineNumber)
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (parent == null) {
-			if (other.parent != null)
-				return false;
-		} else if (!parent.equals(other.parent))
-			return false;
-		if (repairValue == null) {
-			if (other.repairValue != null)
-				return false;
-		} else if (!repairValue.equals(other.repairValue))
-			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
-		return true;
-	}
-
 	protected String name;
 	protected int lineNumber;
 	protected TypePrimitive type;
+	
+	//Expression closest in the AST that contains the expression that this 
+	//coefficient is in
+	protected ExprBinary parentExpr;
+	//True if this coefficient should be added to the orginal source code
+	protected boolean repaired;
 	//Statement closest in the AST that contains the expression that this 
 	//coefficient is in
-	private Statement parent;
+	private Statement parentStmt;
 	//Keeps track of what this coefficient is repaired to (if any at all)
 	protected ExprConstant repairValue;
 	
@@ -136,15 +97,15 @@ public abstract class Coefficient {
 		this.name = PREFIX + idx;
 		this.type = type;
 		this.lineNumber = lineNumber;
-		this.parent = parent;
+		this.parentStmt = parent;
 	}
 	
-	public void setParent(Statement stmt) {
-		this.parent = stmt;
+	public void setParentStmt(Statement stmt) {
+		this.parentStmt = stmt;
 	}
 	
-	public Statement getParent() {
-		return this.parent;
+	public Statement getParentStmt() {
+		return this.parentStmt;
 	}
 	
 	/**
@@ -158,7 +119,13 @@ public abstract class Coefficient {
 					value + " for coefficient of type: " + this.type);
 		}
 		this.repairValue = new ExprConstInt(value);
+		this.repaired = true;
 	}
+	
+	/**
+	 * Marks this coefficient as not being added to the original source code
+	 */
+	public abstract void removeFromSource();
 	
 	/**
 	 * Name for the variable that keeps track of whether this
@@ -197,5 +164,51 @@ public abstract class Coefficient {
 	
 	public ExprFuncCall getFuncCall() {
 		return new ExprFuncCall(this.name);
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + lineNumber;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((parentStmt == null) ? 0 : parentStmt.hashCode());
+		result = prime * result + ((repairValue == null) ? 0 : repairValue.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Coefficient other = (Coefficient) obj;
+		if (lineNumber != other.lineNumber)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (parentStmt == null) {
+			if (other.parentStmt != null)
+				return false;
+		} else if (!parentStmt.equals(other.parentStmt))
+			return false;
+		if (repairValue == null) {
+			if (other.repairValue != null)
+				return false;
+		} else if (!repairValue.equals(other.repairValue))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		return true;
 	}
 }

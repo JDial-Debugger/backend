@@ -114,7 +114,7 @@ public class StmtExpr extends Statement {
 		this.getExpr().insertCoeffs(coeffs);
 		//add this statement as a parent to all added coeffs
 		for (int i = startingCoeffsSize; i < coeffs.size(); ++i) {
-			coeffs.get(i).setParent(this);
+			coeffs.get(i).setParentStmt(this);
 		}
 	}
 }

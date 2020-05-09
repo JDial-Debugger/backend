@@ -119,10 +119,16 @@ public class ScalarCoefficient extends Coefficient {
 	 * coefficient
 	 */
 	public ExprBinary modifyExpr(Expression toModify) {
-		return new ExprBinary(
+		this.parentExpr = new ExprBinary(
 				this.getFuncCall(),
 				ExprBinary.BINOP_MUL,
 				toModify,
 				this.lineNumber);
+		return this.parentExpr;
+	}
+
+	@Override
+	public void removeFromSource() {
+		this.parentExpr.ignoreLeft();
 	}
 }

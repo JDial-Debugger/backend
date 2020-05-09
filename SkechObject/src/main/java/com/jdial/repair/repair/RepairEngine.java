@@ -139,7 +139,7 @@ public class RepairEngine {
 		
 		Set<Statement> changeStmts = new HashSet<Statement>();
 		for (Coefficient coeff : coeffs) {
-			changeStmts.add(coeff.getParent());
+			changeStmts.add(coeff.getParentStmt());
 		}
 		return changeStmts;
 		
