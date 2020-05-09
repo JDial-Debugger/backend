@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
+import json_input.Trace;
 import sketchobj.core.Context;
 import sketchobj.core.SketchNode;
 import sketchobj.core.Type;
@@ -25,11 +29,11 @@ import sketch_input.SketchScript;
 
 public abstract class Statement extends SketchNode {
 
+	private static Logger logger = LoggerFactory.getLogger(Statement.class);
 	private int lineNumber;
 	private boolean sorceCode;
 	private Context postctx;
 	private Context prectx;
-	
 
 	public abstract boolean isBasic();
 	
@@ -123,8 +127,17 @@ public abstract class Statement extends SketchNode {
 			
 			for (String finalVar : correctionVars) {
 				
-				if (!(allVars.get(finalVar) instanceof TypeArray)) {
+				if (finalVar.equals(Trace.RETURN) && this instanceof StmtReturn) {
+					StmtReturn ret = (StmtReturn) this;
+					finalStates.add(new StmtAssign(
+									new ExprVar(SketchScript.getFinalName(funcName, finalVar)), 
+									ret.getValue(), 
+									0));
+				} else if (finalVar.equals(Trace.RETURN)) {
+					logger.error("Final return var found on statement that is not a return");
+				} else if (!(allVars.get(finalVar) instanceof TypeArray)) {
 					//Of the form finalVarName = varName
+					
 					finalStates.add(new StmtAssign(
 									new ExprVar(SketchScript.getFinalName(funcName, finalVar)), 
 									new ExprVar(finalVar), 

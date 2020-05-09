@@ -21,6 +21,7 @@ public class Trace implements Frameable {
 	
 	private static final int DEFAULT_BOUND = -1;
 	private static final Logger logger = LoggerFactory.getLogger(Trace.class);
+	public static final String RETURN = "__return__";
 
 	public Trace() {}
 	

@@ -131,4 +131,10 @@ public class ScalarCoefficient extends Coefficient {
 	public void removeFromSource() {
 		this.parentExpr.ignoreLeft();
 	}
+	
+	@Override
+	public void setRepairValue(int value) {
+		super.setRepairValue(value);
+		this.parentExpr.setLeft(this.repairValue);
+	}
 }

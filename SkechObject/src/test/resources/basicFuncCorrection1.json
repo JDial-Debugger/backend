@@ -1,0 +1,1270 @@
+{
+	"code": "public class Main {\n\t\n\tpublic static int foo(int a, int b) {\n\t\tint x = a + 3;\n\t\tint y = b;\n\t\treturn x + y;\n\t\t\n\t}\n\t\n\tpublic static void main(String[] args) {\n\t\tfoo(2, 5);\n\t}\n}\n",
+	"targetFunc": "foo",
+	"corrections": 
+	[
+		{
+			"returnVal": 12,
+			"callLine": 11,
+			"trace": 
+			[
+				{
+					"stdout": "",
+					"event": "call",
+					"line": 11,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "1",
+							"frame_id": 1
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "main",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "step_line",
+					"line": 11,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "2",
+							"frame_id": 2
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "main",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "call",
+					"line": 4,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "foo:4",
+							"encoded_locals": 
+							{
+								"a": 2,
+								"b": 5
+							},
+
+							"ordered_varnames": 
+							[
+								"a",
+								"b"
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "5",
+							"frame_id": 5
+						},
+
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": false,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "6",
+							"frame_id": 6
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "foo",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "step_line",
+					"line": 4,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "foo:4",
+							"encoded_locals": 
+							{
+								"a": 2,
+								"b": 5
+							},
+
+							"ordered_varnames": 
+							[
+								"a",
+								"b"
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "7",
+							"frame_id": 7
+						},
+
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": false,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "8",
+							"frame_id": 8
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "foo",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "step_line",
+					"line": 5,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "foo:5",
+							"encoded_locals": 
+							{
+								"a": 2,
+								"b": 5,
+								"x": 5
+							},
+
+							"ordered_varnames": 
+							[
+								"a",
+								"b",
+								"x"
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "17",
+							"frame_id": 17
+						},
+
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": false,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "18",
+							"frame_id": 18
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "foo",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "step_line",
+					"line": 6,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "foo:6",
+							"encoded_locals": 
+							{
+								"a": 2,
+								"b": 5,
+								"x": 5,
+								"y": 5
+							},
+
+							"ordered_varnames": 
+							[
+								"a",
+								"b",
+								"x",
+								"y"
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "23",
+							"frame_id": 23
+						},
+
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": false,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "24",
+							"frame_id": 24
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "foo",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "return",
+					"line": 6,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "foo:6",
+							"encoded_locals": 
+							{
+								"a": 2,
+								"b": 5,
+								"x": 5,
+								"y": 5,
+								"__return__": 10
+							},
+
+							"ordered_varnames": 
+							[
+								"a",
+								"b",
+								"x",
+								"y",
+								"__return__"
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "33",
+							"frame_id": 33
+						},
+
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": false,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "34",
+							"frame_id": 34
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "foo",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "step_line",
+					"line": 11,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "35",
+							"frame_id": 35
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "main",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "step_line",
+					"line": 12,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "main:12",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "36",
+							"frame_id": 36
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "main",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "return",
+					"line": 12,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "main:12",
+							"encoded_locals": 
+							{
+								"__return__": 
+								[
+									"VOID"
+								]
+							},
+
+							"ordered_varnames": 
+							[
+								"__return__"
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "38",
+							"frame_id": 38
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "main",
+					"heap": 
+					{
+						
+					}
+				}
+			]
+		},
+
+		{
+			"returnVal": 5,
+			"callLine": 11,
+			"trace": 
+			[
+				{
+					"stdout": "",
+					"event": "call",
+					"line": 11,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "1",
+							"frame_id": 1
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "main",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "step_line",
+					"line": 11,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "2",
+							"frame_id": 2
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "main",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "call",
+					"line": 4,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "foo:4",
+							"encoded_locals": 
+							{
+								"a": 0,
+								"b": 3
+							},
+
+							"ordered_varnames": 
+							[
+								"a",
+								"b"
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "5",
+							"frame_id": 5
+						},
+
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": false,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "6",
+							"frame_id": 6
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "foo",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "step_line",
+					"line": 4,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "foo:4",
+							"encoded_locals": 
+							{
+								"a": 0,
+								"b": 3
+							},
+
+							"ordered_varnames": 
+							[
+								"a",
+								"b"
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "7",
+							"frame_id": 7
+						},
+
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": false,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "8",
+							"frame_id": 8
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "foo",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "step_line",
+					"line": 5,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "foo:5",
+							"encoded_locals": 
+							{
+								"a": 0,
+								"b": 3,
+								"x": 3
+							},
+
+							"ordered_varnames": 
+							[
+								"a",
+								"b",
+								"x"
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "17",
+							"frame_id": 17
+						},
+
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": false,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "18",
+							"frame_id": 18
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "foo",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "step_line",
+					"line": 6,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "foo:6",
+							"encoded_locals": 
+							{
+								"a": 0,
+								"b": 3,
+								"x": 3,
+								"y": 3
+							},
+
+							"ordered_varnames": 
+							[
+								"a",
+								"b",
+								"x",
+								"y"
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "23",
+							"frame_id": 23
+						},
+
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": false,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "24",
+							"frame_id": 24
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "foo",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "return",
+					"line": 6,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "foo:6",
+							"encoded_locals": 
+							{
+								"a": 0,
+								"b": 3,
+								"x": 3,
+								"y": 3,
+								"__return__": 6
+							},
+
+							"ordered_varnames": 
+							[
+								"a",
+								"b",
+								"x",
+								"y",
+								"__return__"
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "33",
+							"frame_id": 33
+						},
+
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": false,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "34",
+							"frame_id": 34
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "foo",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "step_line",
+					"line": 11,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "main:11",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "35",
+							"frame_id": 35
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "main",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "step_line",
+					"line": 12,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "main:12",
+							"encoded_locals": 
+							{
+								
+							},
+
+							"ordered_varnames": 
+							[
+								
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "36",
+							"frame_id": 36
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "main",
+					"heap": 
+					{
+						
+					}
+				},
+
+				{
+					"stdout": "",
+					"event": "return",
+					"line": 12,
+					"stack_to_render": 
+					[
+						{
+							"func_name": "main:12",
+							"encoded_locals": 
+							{
+								"__return__": 
+								[
+									"VOID"
+								]
+							},
+
+							"ordered_varnames": 
+							[
+								"__return__"
+							],
+
+							"parent_frame_id_list": 
+							[
+								
+							],
+
+							"is_highlighted": true,
+							"is_zombie": false,
+							"is_parent": false,
+							"unique_hash": "38",
+							"frame_id": 38
+						}
+					],
+
+					"globals": 
+					{
+						
+					},
+
+					"ordered_globals": 
+					[
+						
+					],
+
+					"func_name": "main",
+					"heap": 
+					{
+						
+					}
+				}
+			]
+		}
+	]
+}

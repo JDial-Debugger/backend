@@ -1,5 +1,7 @@
 package json_input;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Used for function correction repairs, stores the trace
  * and the expected return value 
@@ -7,14 +9,15 @@ package json_input;
  */
 public class Correction {
 	//The trace of the program
-	private Trace trace;
+	@SerializedName(value = "trace")
+	private TracePoint[] points;
 	//What the function is expected to return but doesn't
 	private int returnVal;
 	//The line number the function is called on
 	private int callLine;
 	
 	public Correction() {}
-	public Trace getTrace() { return this.trace; }
+	public TracePoint[] getTracePoints() { return this.points; }
 	public int getReturnVal() { return this.returnVal; }
 	public int getCallLine() { return this.callLine; }
 }

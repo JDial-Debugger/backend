@@ -30,6 +30,15 @@ public class RepairEngineTest {
 	}
 	
 	@Test
+	public void testMainFuncC() throws Exception {
+		String repairType = "funcCorrection";
+		String json = Resources.toString(Resources.getResource("basicFuncCorrection1.json"), Charset.defaultCharset());
+		String[] args = new String[] { repairType, json };
+		// default test
+		RepairEngine.main(args);
+	}
+	
+	@Test
 	public void testRepairFuncCorrection() throws Exception {
 		Gson gson = new Gson();
 		String repairType = "tracePointCorrection";

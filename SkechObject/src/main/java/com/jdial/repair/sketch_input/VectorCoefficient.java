@@ -121,4 +121,10 @@ public class VectorCoefficient extends Coefficient {
 		this.parentExpr.ignoreLeft();
 		this.parentExpr.ignoreRight();
 	}
+	
+	@Override
+	public void setRepairValue(int value) {
+		super.setRepairValue(value);
+		this.parentExpr.setRight(this.repairValue);
+	}
 }

@@ -64,7 +64,7 @@ public class RepairEngine {
 	 * function to repair
 	 * param {Object[]} input.corrections - expected
 	 * input/output examples for the function
-	 * param {Object[]} input.corrections[].Trace - a trace
+	 * param {Object[]} input.corrections[].trace - a trace
 	 * of the function's execution given some parameters 
 	 * param {number} input.corrections[].returnVal - the
 	 * expected return value of the function
@@ -206,8 +206,8 @@ public class RepairEngine {
 		
 		Type correctionColType = 
 				new TypeToken<Collection<Correction>>() {}.getType();
-		Collection<Correction> corrections = gson.fromJson(correctionsJson, 
-														correctionColType);
+		Correction[] corrections = gson.fromJson(correctionsJson, 
+														Correction[].class);
 		for (Correction correction: corrections) {
 			
 			examples.add(getExample(correction, targetFunc));
@@ -223,7 +223,7 @@ public class RepairEngine {
 	 */
 	private static CorrectionExample getExample(Correction correction, String targetFunc) {
 		
-			Trace curTrace = correction.getTrace();
+			Trace curTrace = new Trace(Arrays.asList(correction.getTracePoints()));
 			int curReturnVal = correction.getReturnVal();
 			int curCallLine = correction.getCallLine();
 			
