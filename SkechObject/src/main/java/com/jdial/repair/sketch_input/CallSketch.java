@@ -1,196 +1,70 @@
 package sketch_input;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
-import constraintfactory.ConstraintFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class CallSketch {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CallSketch.class);
 
 	public CallSketch() {}
 	
 	/**
-	 * Calls Sketch executable on given input s and parses the output from sketch
-	 * Create hashmap of coefIdx -> boolean
+	 * Invokes the MIT Sketch Synthesizer process on a given sketch script
 	 * @param sketchInput the text input into sketch
-	 * @return Maps from a coefficient number to a value, should only contain non-zero coefficients
-	 * @throws InterruptedException
-	 * @throws SketchExecException - If the sketch executable has an error processing the input
+	 * @return The standard output stream of the sketch process
 	 */
-	public static Map<Integer, Integer> CallByString(SketchScript script) 
-			throws InterruptedException, SketchExecException {
+	public static InputStream getSketchProc(SketchScript script) {
 
 		//write the sketch script to a temporary file
 		String suggestDIR = System.getenv("SUGGEST_PATH");
-		String backendDIR = suggestDIR + "JDial-debugger/SkechObject/";
 		
 		//TODO find out what this does
-		String bitString = "--bnd-mbits 7 --bnd-cbits 5";
-			
+		
+		//Create a file to save the sketch script to
 		File sketchIODir = new File(suggestDIR + "tmp");
 		sketchIODir.mkdirs();
-		File tmp = new File(sketchIODir, "tmp.txt");
-		tmp.createNewFile();
-		WriteStringToFile(tmp, script.toString());
-		Runtime rt = Runtime.getRuntime();
+		File sketchInputFile = new File(sketchIODir, "tmp.txt");
 		
-		String[] envp = new String[] {
-			"SKETCH_HOME=" + System.getenv("SKETCH_HOME"),
-		};
-		Process proc = rt.exec("sketch " 
-								+ suggestDIR 
-								+ "/tmp/tmp.txt",
-								null);
-		PrintWriter out = new PrintWriter(suggestDIR + "/tmp/tmpOutput.txt");
-		InputStream stderr = proc.getErrorStream();
 		try {
-			
-			
-			
-			//TODO Add better error reporting
-			Scanner errScnr = new Scanner(stderr).useDelimiter("\\A");
-		    String errOutput = errScnr.hasNext() ? errScnr.next() : "";
-		    errScnr.close();
-			
-			InputStreamReader ir = new InputStreamReader(proc.getInputStream());
-			LineNumberReader input = new LineNumberReader(ir);
-			String line = null;
-			//write all of sketch output to a file cuz we need to do 2 passes through it
-			while ((line = input.readLine()) != null) {
-		         out.println(line);
-		    }
-			out.close();
-			Scanner scnr = new Scanner(new File(suggestDIR + "/tmp/tmpOutput.txt"));
-			//first pass we just search for all globalInit vals that are non zero
-			Map<Integer, Integer> coefToInitVal = new HashMap<Integer, Integer>();
-			int checkIndex = -1;
-			boolean checking = false;
-			while(scnr.hasNextLine()) {
-				
-				line = scnr.nextLine();
-				
-				//Check if sketch encountered an error
-				if (line.contains("ERROR] [SKETCH]")) {
-					throw new SketchExecException(line);
-				}
-				
-				if (line.length() > 25 && line.substring(5, 19).equals("glblInit_coeff")) {
-					checkIndex = extractInt(line).get(0); // get X
-					checking = true;
-					continue;
-				}
-				
-				//if we are looking for the coefficient value
-				if (checking && extractInt(line).size() > 0 && line.substring(2, 7).equals(("coeff"))) {
-					int initVal = extractInt(line).get(extractInt(line).size() - 1);
-					checking = false;
-					//if its 0, don't bother putting in entry, if we check a coef later
-					//and its not in the hashmap, then we know its 0
-					if(initVal == 0) {
-						continue;
-					} else {
-						coefToInitVal.put(checkIndex, initVal);
-					}
-				} 
-			}
-			
-			scnr.close();
-			scnr = new Scanner(new File(suggestDIR + "/tmp/tmpOutput.txt"));
-			//keep track of all line nums that have repairs cuz we only care 
-			//about the coef's original values on these lines
-			HashSet<Integer> changedLineNums = new HashSet<Integer>();
-			for(Integer coefIdx : coefToInitVal.keySet()) {
-				changedLineNums.add(ConstraintFactory.coeffIndexToLine.get(coefIdx));
-			}
-			
-			//second pass, we check for what the coef function returns 
-			//depending on if init was 0 or not and if that coef is on a repaired line
-			while(scnr.hasNextLine()) {
-				
-				line = scnr.nextLine();
-				if (line.length() > 12 && line.substring(0, 10).equals("void Coeff")) {
-					
-					int curCoeff= extractInt(line).get(0);
-					//	next line will always be _out = 0; which we don't care about
-					scnr.nextLine();
-					scnr.nextLine();
-					line = scnr.nextLine();
-					boolean isOnRepairLine = changedLineNums.contains(ConstraintFactory.coeffIndexToLine.get(curCoeff));
-					//	now on the next line there is 2 possible options:
-					//1)	if(coeffXchange_yadayada == 0
-					//2)	_out = coeffXchange_yadayada
-					//check for first case
-					if(line.substring(2,10).equals("if(coeff") && isOnRepairLine) {
-						//we want return value in the if statement
-						if(coefToInitVal.get(curCoeff) == null) {
-							//throw away line with the curly brace
-							scnr.nextLine();
-							line = scnr.nextLine();
-							int retVal = extractInt(line).get(0);
-							coefToVal.put(curCoeff, retVal);
-							//next few lines we dont care about
-							scnr.nextLine();
-							scnr.nextLine();
-							scnr.nextLine();
-							scnr.nextLine();
-							scnr.nextLine();
-							continue;
-						} else if (coefToInitVal.get(curCoeff) != null ) {
-							scnr.nextLine();
-							scnr.nextLine();
-							scnr.nextLine();
-							scnr.nextLine();
-							line = scnr.nextLine();
-							int retVal = extractInt(line).get(0);
-							coefToVal.put(curCoeff, retVal);
-						}
-					} else if(line.substring(2,9).equals("_out = ") && isOnRepairLine) {
-						if(coefToInitVal.get(curCoeff) != null) {
-							coefToVal.put(curCoeff, coefToInitVal.get(curCoeff));
-						}
-					}
-						
-				}
-			}
-			scnr.close();
-			return coefToVal;
-
-		} catch (IOException e) {
-			System.out.println("ERROR: " + e);
-			e.printStackTrace();
+			sketchInputFile.createNewFile();
+		} catch (IOException e1) {
+			logger.error("Unable to create temporary sketch file, is file in use?");
+			logger.debug(e1.toString());
 		}
-		return coefToVal;
+		try {
+			writeStringToFile(sketchInputFile, script.toString());
+		} catch (IOException e1) {
+			logger.error("Unable to write contents to temporary sketch file, is file in use?");
+			logger.debug(e1.toString());
+		}
+		
+		Runtime rt = Runtime.getRuntime();
+		Process sketchProc = null;
+		String sketchCmd = "sketch " + suggestDIR + "/tmp/tmp.txt"; 
+		try {
+			sketchProc = rt.exec(sketchCmd, null);
+		} catch (IOException e) {
+			logger.error("Unable to execute sketch process");
+			logger.debug(e.toString());
+		}
+		
+		InputStream stderr = sketchProc.getErrorStream();
+		Scanner errScnr = new Scanner(stderr);
+		errScnr.useDelimiter("\\A");
+		while (errScnr.hasNext()) {
+			logger.warn("Sketch process stderr: " + errScnr.nextLine());
+		}
+		errScnr.close();
+		
+		return sketchProc.getInputStream();
 	}
 
-	static void WriteStringToFile(File file, String contents) throws IOException {
+	private static void writeStringToFile(File file, String contents) throws IOException {
 		FileWriter fileWriter = new FileWriter(file);
 		fileWriter.write(contents);
 		fileWriter.close();
 	}
-
-	static List<Integer> extractInt(String str) {
-		
-		if (str.length() < 3)
-			return new ArrayList<>();
-		
-		str = str.replaceAll("[^-?0-9]+", " ");
-		List<String> lstr = Arrays.asList(str.trim().split(" "));
-		List<Integer> lint = new ArrayList<Integer>();
-		
-		if (lstr.size() == 0)
-			return lint;
-		for (String s : lstr) {
-			if (s.length() == 0 || s.length() > 5 || s.equals("-"))
-				continue;
-			lint.add(Integer.parseInt(s));
-		}
-		return (lint);
-	}
-
 }
