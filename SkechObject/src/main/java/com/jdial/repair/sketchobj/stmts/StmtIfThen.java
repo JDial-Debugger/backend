@@ -247,9 +247,17 @@ public class StmtIfThen extends Statement {
 	
 	@Override
 	public void insertCoeffs(List<Coefficient> coeffs) {
+		
 		cond.setCtx(this.getPostctx());
 		cond.setBoolean(true);
+		
+		int startingCoeffsSize = coeffs.size();
 		cond.insertCoeffs(coeffs);
+		//add this statement as a parent to all added coeffs
+		for (int i = startingCoeffsSize; i < coeffs.size(); ++i) {
+			coeffs.get(i).setParent(this);
+		}
+		
 		cons.insertCoeffs(coeffs);
 		
 		if (alt != null){

@@ -5,9 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
@@ -20,7 +18,6 @@ import sketchobj.expr.ExprArrayRange;
 import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprSketchHole;
-import sketchobj.expr.ExprString;
 import sketchobj.expr.ExprUnary;
 import sketchobj.expr.ExprVar;
 import sketch_input.Coefficient;
@@ -234,4 +231,42 @@ public abstract class Statement extends SketchNode {
 	}
 
 	public abstract Context buildContext(Context postctx2, int scopePosition);
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + lineNumber;
+		result = prime * result + ((postctx == null) ? 0 : postctx.hashCode());
+		result = prime * result + ((prectx == null) ? 0 : prectx.hashCode());
+		result = prime * result + (sorceCode ? 1231 : 1237);
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Statement other = (Statement) obj;
+		if (lineNumber != other.lineNumber)
+			return false;
+		if (postctx == null) {
+			if (other.postctx != null)
+				return false;
+		} else if (!postctx.equals(other.postctx))
+			return false;
+		if (prectx == null) {
+			if (other.prectx != null)
+				return false;
+		} else if (!prectx.equals(other.prectx))
+			return false;
+		if (sorceCode != other.sorceCode)
+			return false;
+		return true;
+	}
 }

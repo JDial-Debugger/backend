@@ -190,6 +190,8 @@ public class StmtAssign extends Statement {
 	@Override
 	public void insertCoeffs(List<Coefficient> coeffs) {
 		
+		int startingCoeffsSize = coeffs.size();
+		
 		List<SketchObject> toAdd = new ArrayList<SketchObject>();
 		
 		rhs.checkAtom();
@@ -274,6 +276,11 @@ public class StmtAssign extends Statement {
 		coeffs.add(valCoeff);
 		this.rhs = valCoeff.addToExpr(
 				this.rhs, coeffs, (TypePrimitive) this.rhs.getType());
+		
+		//add this statement as a parent to all added coeffs
+		for (int i = startingCoeffsSize; i < coeffs.size(); ++i) {
+			coeffs.get(i).setParent(this);
+		}
 	}
 
 	@Override

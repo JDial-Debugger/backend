@@ -18,7 +18,6 @@ import sketch_input.VectorCoefficient;
 import sketchobj.core.Context;
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
-import sketchobj.core.TypeArray;
 import sketchobj.core.TypePrimitive;
 import sketchobj.expr.ExprConstant;
 import sketchobj.expr.ExprFuncCall;
@@ -440,6 +439,8 @@ public class StmtVarDecl extends Statement {
 	@Override
 	public void insertCoeffs(List<Coefficient> coeffs) {
 		
+		int startingCoeffsSize = coeffs.size();
+		
 		for (int i = 0; i < this.getInits().size(); i++) {
 			
 			Expression curInit = this.getInits().get(i);
@@ -508,6 +509,10 @@ public class StmtVarDecl extends Statement {
 					coeffs.size(), initType, curInit.getLineNumber());
 			coeffs.add(coeff);
 			inits.set(i, coeff.addToExpr(curInit, coeffs, initType));
+		}
+		//add this statement as a parent to all added coeffs
+		for (int i = startingCoeffsSize; i < coeffs.size(); ++i) {
+			coeffs.get(i).setParent(this);
 		}
 	}
 

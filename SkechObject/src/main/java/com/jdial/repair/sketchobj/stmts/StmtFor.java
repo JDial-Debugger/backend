@@ -196,11 +196,17 @@ public class StmtFor extends Statement {
 
 	@Override
 	public void insertCoeffs(List<Coefficient> coeffs) {
+		
 		this.cond.setBoolean(true);
 		init.insertCoeffs(coeffs);
 		incr.insertCoeffs(coeffs);
 		body.insertCoeffs(coeffs);
+		int startingCoeffsSize = coeffs.size();
 		cond.insertCoeffs(coeffs);
+		//add this statement as a parent to all added coeffs
+		for (int i = startingCoeffsSize; i < coeffs.size(); ++i) {
+			coeffs.get(i).setParent(this);
+		}
 	}
 
 	@Override

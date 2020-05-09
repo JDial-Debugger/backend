@@ -7,7 +7,6 @@ import java.util.List;
 import sketchobj.core.Function;
 import sketchobj.core.Function.FcnType;
 import sketchobj.core.Parameter;
-import sketchobj.core.Type;
 import sketchobj.core.TypePrimitive;
 import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
@@ -43,6 +42,11 @@ public class VectorCoefficient extends Coefficient {
 	
 	public VectorCoefficient(int idx, TypePrimitive type, int lineNumber) {
 		super(idx, type, lineNumber);
+	}
+	
+	public VectorCoefficient(
+			int idx, TypePrimitive type, int lineNumber, Statement parent) {
+		super(idx, type, lineNumber, parent);
 	}
 
 	@Override

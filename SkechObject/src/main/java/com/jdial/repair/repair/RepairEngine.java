@@ -1,4 +1,6 @@
 package repair;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +22,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
-import cfg.CFG;
 import constants.Errors;
 import constants.Json;
 import javaparser.simpleJavaLexer;
@@ -28,9 +29,13 @@ import javaparser.simpleJavaParser;
 import json_input.Correction;
 import json_input.Trace;
 import json_input.TracePoint;
+import sketch_input.CallSketch;
+import sketch_input.Coefficient;
+import sketch_input.SketchResult;
 import sketch_input.SketchScript;
 import sketchobj.core.Function;
 import sketchobj.core.SketchObject;
+import sketchobj.stmts.Statement;
 import visitor.JavaVisitor;
 
 public class RepairEngine {
@@ -106,7 +111,38 @@ public class RepairEngine {
 		logger.debug("Functions found in Traces: " + relevantFuncNames);
 		Map<String, Function> relevantFuncs = parseJava(code, relevantFuncNames);
 		SketchScript script = new SketchScript(code, targetFunc, examples, relevantFuncs);
-		logger.debug(script.toString());
+		
+		InputStream sketchOutput = CallSketch.getSketchProc(script);
+		Set<Coefficient> changedCoeffs = 
+				SketchResult.getChangedCoeffs(sketchOutput, script.getCoefficients());
+		logger.info(changedCoeffs.toString());
+		Set<Statement> changedStmts = getChangeStmts(changedCoeffs);
+		outputLineChanges(changedStmts, new Gson(), System.out);
+	}
+	
+	/**
+	 * Given a set of coefficients, find the containing statements and outputs
+	 * a json object where each property is a line number and each value
+	 * is the str value of that statement
+	 * @param coeffs - the coefficients to apply changes for
+	 */
+	private static void outputLineChanges(Set<Statement> stmts, Gson gson, PrintStream output) {
+		
+		Map<Integer, String> lineToContents = new HashMap<Integer, String>();
+		for (Statement stmt : stmts) {
+			lineToContents.put(stmt.getLineNumber(), stmt.toString());
+		}
+		output.println(gson.toJson(lineToContents));
+	}
+	
+	private static Set<Statement> getChangeStmts(Set<Coefficient> coeffs) {
+		
+		Set<Statement> changeStmts = new HashSet<Statement>();
+		for (Coefficient coeff : coeffs) {
+			changeStmts.add(coeff.getParent());
+		}
+		return changeStmts;
+		
 	}
 	
 	private static Map<String, Function> parseJava(String source, Set<String> relevantFuncNames) {
@@ -145,7 +181,6 @@ public class RepairEngine {
 			JsonObject repairJson,
 			Gson gson) {
 		
-		Type tracePointsType = new TypeToken<List<TracePoint>>() {}.getType();
 		TracePoint[] tracePoints = gson.fromJson(
 								repairJson.get("trace"), TracePoint[].class);
 		Trace trace = new Trace(Arrays.asList(tracePoints));

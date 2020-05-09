@@ -7,7 +7,6 @@ import java.util.List;
 import sketchobj.core.Function;
 import sketchobj.core.Function.FcnType;
 import sketchobj.core.Parameter;
-import sketchobj.core.Type;
 import sketchobj.core.TypePrimitive;
 import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
@@ -31,6 +30,7 @@ public class ScalarCoefficient extends Coefficient {
 	//true if this coefficient being 1 or -1 adds a new expression to the code
 	//false if this coefficient being 1 or -1 removes an expression from the code
 	private boolean isAdditive;
+	
 	/**
 	 * Creates a scalar coefficient with the given unique index and type
 	 * @param idx - an index to uniquely identify the coefficient
@@ -41,8 +41,19 @@ public class ScalarCoefficient extends Coefficient {
 		this.isAdditive = isAdditive;
 	}
 	
-	public ScalarCoefficient(int idx, TypePrimitive type, int lineNumber, boolean isAdditive) {
+	public ScalarCoefficient(
+			int idx, TypePrimitive type, int lineNumber, boolean isAdditive) {
 		super(idx, type, lineNumber);
+		this.isAdditive = isAdditive;
+	}
+	
+	public ScalarCoefficient(
+			int idx, 
+			TypePrimitive type, 
+			int lineNumber, 
+			boolean isAdditive, 
+			Statement parent) {
+		super(idx, type, lineNumber, parent);
 		this.isAdditive = isAdditive;
 	}
 

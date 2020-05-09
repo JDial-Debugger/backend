@@ -122,7 +122,14 @@ public class StmtWhile extends Statement {
 
 	@Override
 	public void insertCoeffs(List<Coefficient> coeffs) {
+		
+		int startingCoeffsSize = coeffs.size();
 		this.getCond().insertCoeffs(coeffs);
+		//add this statement as a parent to all added coeffs
+		for (int i = startingCoeffsSize; i < coeffs.size(); ++i) {
+			coeffs.get(i).setParent(this);
+		}
+		
 		this.getBody().insertCoeffs(coeffs);
 	}
 

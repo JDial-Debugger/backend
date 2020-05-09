@@ -25,7 +25,7 @@ public class SketchResult {
 	 * @param sketchOutput
 	 * @return - Any coefficients that have repair values
 	 */
-	public static Set<Coefficient> getChangedLines(
+	public static Set<Coefficient> getChangedCoeffs(
 			InputStream sketchOutput, List<Coefficient> coeffs) {
 		
 		Set<Coefficient> repairedCoeffs = new HashSet<Coefficient>();
@@ -33,15 +33,22 @@ public class SketchResult {
 				new LineNumberReader(new InputStreamReader(sketchOutput));
 		
 		String line = null;
+		logger.debug("  " +
+						Coefficient.PREFIX + 
+						"[0-9]*" + 
+						Coefficient.CHANGE_SUFFIX + 
+						"_s[0-9]* = ");
+		Pattern coeffAssignPattern = Pattern.compile("  " + 
+						Coefficient.PREFIX + 
+						"[0-9]*" + 
+						Coefficient.CHANGE_SUFFIX + 
+						"_s[0-9]* = ");
 		try {
 			//search for lines of the form:   __jdial_coeff_8_change_s98 = 4;
 			while ((line = input.readLine()) != null) {
-				if(line.matches("  " + 
-						SketchScript.VAR_PREFIX + 
-						Coefficient.PREFIX + 
-						"[0-9]+" + 
-						Coefficient.CHANGE_SUFFIX + 
-						"_s[0-9]+ = ")) {
+				
+				Matcher assignMatch = coeffAssignPattern.matcher(line);
+				if(assignMatch.find()) {
 					
 					String[] splitLine = line.split("= ");
 					int repairVal = Integer.parseInt(splitLine[1].substring(0, splitLine.length - 1));
