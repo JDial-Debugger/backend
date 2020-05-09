@@ -56,28 +56,26 @@ public class SketchResult {
 					String coeffName = extractCoeffNameFromLine(line);
 					//sketch has found a value for this coefficient
 					if (coeffName != null) {
-						if (repairVal != 0) {
+						
+						Coefficient repairCoeff = coeffs.stream()
+								.filter(coeff -> coeff.getName().equals(coeffName))
+								.findFirst()
+								.orElse(null);
+						
+						if (repairCoeff == null) {
+							logger.warn("Unknown coefficient name found: " + coeffName);
+						} else if (repairVal != 0) {
 								
 							logger.debug("Adding coefficient to repair list: " + coeffName);
-							Coefficient repairCoeff = coeffs.stream()
-									.filter(coeff -> coeff.getName().equals(coeffName))
-									.findFirst()
-									.orElse(null);
 							
-							if (repairCoeff != null) {
-								repairCoeff.setRepairValue(repairVal);
-								repairedCoeffs.add(repairCoeff);
-							} else {
-								logger.warn("Unknown coefficient name found: " + coeffName);
-							}
+							repairCoeff.setRepairValue(repairVal);
+							repairedCoeffs.add(repairCoeff);
 						//if no change for the coefficient, effectively remove it from ast
 						} else {
-							logger.debug("Unchanged coeff change value found on line:\n" + line);
-							
+							logger.debug("Unchanged coeff " + coeffName + " found on line:\n" + line);
+							repairCoeff.removeFromSource();
 						}
-						
 					}
-					
 				}
 			}
 		} catch (IOException e) {
