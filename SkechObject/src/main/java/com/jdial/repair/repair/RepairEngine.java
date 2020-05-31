@@ -1,4 +1,6 @@
 package repair;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
@@ -9,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -77,9 +80,19 @@ public class RepairEngine {
 			return;
 		}
 		
-		
 		String repairType = args[0];
-		String json = args[1];
+		String inputFileName = args[1];
+		
+		Scanner scnr = null;
+		try {
+			scnr = new Scanner(new File(inputFileName));
+		} catch (FileNotFoundException e) {
+			logger.error("Input file not found " + inputFileName);
+			return;
+		}
+		logger.debug("Reading input from " + inputFileName);
+		String json = scnr.useDelimiter("\\A").next();
+		scnr.close();
 		
 		Gson gson = new Gson();
 		repair(repairType, json, gson);
@@ -221,7 +234,8 @@ public class RepairEngine {
 	 * @param targetFunc - the function to repair
 	 * @return - an example with the necessary data to perform a repair
 	 */
-	private static CorrectionExample getExample(Correction correction, String targetFunc) {
+	private static CorrectionExample getExample(
+			Correction correction, String targetFunc) {
 		
 			Trace curTrace = new Trace(Arrays.asList(correction.getTracePoints()));
 			int curReturnVal = correction.getReturnVal();

@@ -1,13 +1,14 @@
 
 public class Main {
 	
-	public static int foo(int b, int a) {
-		int x = 5;
-		int y = a + 7;
-		return y + b;
+	public static int foo(int a, int b) {
+		int x = a + 3;
+		int y = b;
+		return x + y;
 	}
 	
 	public static void main(String[] args) {
-		foo(4, 6);
+		foo(2, 5);//14
+		foo(0, 3);//10
 	}
 }
