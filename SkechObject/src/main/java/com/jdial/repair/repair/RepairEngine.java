@@ -45,8 +45,19 @@ public class RepairEngine {
 	
 	private static final String TRACE_POINT_CORRECTION_TYPE = "tracePointCorrection";
 	private static final String FUNC_CORRECTION_TYPE = "funcCorrection";
-	private static final Logger logger = LoggerFactory.getLogger(RepairEngine.class);;
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(RepairEngine.class);
+	
+	private class JsonPropName {
+		private static final String CODE = "code";
+		private static final String TARGET_FUNC = "targetFunc";
+	}
+	
+	private enum RepairType {
+		TRACE_POINT,
+		FUNC_CORRECTION,
+	}
+	
 	/**
 	 * Main entrance point to get program repairs. Takes in JSON input in args[0]
 	 * and prints JSON output to stdout. The output json object has a property 
@@ -80,46 +91,56 @@ public class RepairEngine {
 			return;
 		}
 		
-		String repairType = args[0];
+		RepairType type = parseRepairType(args[0]);
 		String inputFileName = args[1];
+		if (type == null) {
+			return;
+		}
+		
+		String json = readInputFile(inputFileName);
+		Gson gson = new Gson();
+		repair(type, json, gson);
+	}
+	
+	
+	private static RepairType parseRepairType(String repairType) {
+		RepairType type = null; 
+		try {
+			type = RepairType.valueOf(repairType);
+		} catch (IllegalArgumentException ex) {
+			logger.error(Errors.invalidRepairType(repairType));
+		}
+		return type;
+		
+	}
+	
+	private static String readInputFile(String inputFileName) {\
 		
 		Scanner scnr = null;
 		try {
 			scnr = new Scanner(new File(inputFileName));
 		} catch (FileNotFoundException e) {
 			logger.error("Input file not found " + inputFileName);
-			return;
+			return null;
 		}
-		logger.debug("Reading input from " + inputFileName);
-		String json = scnr.useDelimiter("\\A").next();
+		
+		logger.info("Reading input from " + inputFileName);
+		String fileContents = scnr.useDelimiter("\\A").next();
 		scnr.close();
 		
-		Gson gson = new Gson();
-		repair(repairType, json, gson);
+		return fileContents;
 	}
 	
-	public static void repair(String repairType, String json, Gson parser) {
+	public static void repair(RepairType repairType, String json, Gson parser) {
 		
 		JsonObject repairJson = JsonParser.parseString(json).getAsJsonObject();
-		String code = repairJson.get("code").getAsString();
-		String targetFunc = repairJson.get("targetFunc").getAsString();
 		
 		List<CorrectionExample> examples = new ArrayList<CorrectionExample>();
 		
-		if (repairType.equals(TRACE_POINT_CORRECTION_TYPE)) {
-			logger.info("Trace Point Correction Repair Initiating...");
-			
-			addExampleByTracePointRepair(examples, repairJson, parser);
-		} else if (repairType.equals(FUNC_CORRECTION_TYPE)) {
-			logger.info("Function Correction Repair Initiating...");
-			
-			addExamplesByFuncRepair(examples, repairJson, parser);
-			
-		} else {
-			logger.error(Errors.invalidRepairType(repairType));
-			return;
-		}
+		addExamplesByRepairType(examples, repairType, repairJson, parser);
 		
+		String code = repairJson.get(JsonPropName.CODE).getAsString();
+		String targetFunc = repairJson.get(JsonPropName.TARGET_FUNC).getAsString();
 		Set<String> relevantFuncNames = getRelevantFuncs(examples);
 		logger.debug("Functions found in Traces: " + relevantFuncNames);
 		Map<String, Function> relevantFuncs = parseJava(code, relevantFuncNames);
@@ -187,6 +208,24 @@ public class RepairEngine {
 			funcs.addAll(example.getProgramTrace().getCalledFuncs());
 		}
 		return funcs;
+	}
+	
+	private static void addExamplesByRepairType(
+			List<CorrectionExample> examples,
+			RepairType type,
+			JsonObject repairJson,
+			Gson gson) {
+		
+		if (type == RepairType.FUNC_CORRECTION) {
+			logger.info("Function Correction Repair Initiating...");
+			addExamplesByFuncRepair(examples, repairJson, gson);
+		} else if (type == RepairType.TRACE_POINT) {
+			logger.info("Trace Point Correction Repair Initiating...");
+			addExampleByTracePointRepair(examples, repairJson, gson);
+		} else {
+			throw new IllegalArgumentException("Invalid repair type provided");
+		}
+		
 	}
 	
 	private static void addExampleByTracePointRepair(

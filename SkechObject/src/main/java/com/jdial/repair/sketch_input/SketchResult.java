@@ -28,6 +28,7 @@ public class SketchResult {
 	public static Set<Coefficient> getChangedCoeffs(
 			InputStream sketchOutput, List<Coefficient> coeffs) {
 		
+		
 		Set<Coefficient> repairedCoeffs = new HashSet<Coefficient>();
 		LineNumberReader input = 
 				new LineNumberReader(new InputStreamReader(sketchOutput));
