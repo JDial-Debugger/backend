@@ -1,6 +1,8 @@
 package repair;
 
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
@@ -23,8 +25,8 @@ public class RepairEngineTest {
 	
 	@Before
 	public void setUpStreams() {
-		//System.setOut(new PrintStream(outContent));
-		//System.setErr(new PrintStream(errContent));
+		System.setOut(new PrintStream(outContent));
+		System.setErr(new PrintStream(errContent));
 	}
 
 	@Test
@@ -34,19 +36,19 @@ public class RepairEngineTest {
 		String[] args = new String[] { repairType, json };
 		// default test
 		RepairEngine.main(args);
-		System.out.println("out content");
-		System.out.println(outContent.toString());
 	}
 	
 	@Test
 	public void testMainFuncCorrectionBasic() throws Exception {
 		String repairType = "funcCorrection";
-		String filePath= Resources.getResource("basicFuncCorrection1.json").getPath();
+		String inputResourceName = "basicFuncCorrection1.json";
+		String filePath = Resources.getResource(inputResourceName).getPath();
 		String[] args = new String[] { repairType, filePath };
 		// default test
 		RepairEngine.main(args);
-		System.out.println("out content");
-		System.out.println(outContent.toString());
+		
+		String expectedRepairOutput = "{\"5\":\"int y = b + 4;\"}";
+		assertEquals(expectedRepairOutput, outContent.toString().trim());
 	}
 	
 	@After

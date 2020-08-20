@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -97,7 +98,7 @@ public class RepairEngine {
 		}
 		
 		String json = readInputFile(inputFileName);
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 		repair(type, json, gson);
 	}
 	
@@ -149,7 +150,7 @@ public class RepairEngine {
 		InputStream sketchOutput = CallSketch.getSketchProc(script);
 		
 		Set<Statement> changedStmts = calculateChangedSrcStmts(sketchOutput, script);
-		outputLineChanges(changedStmts, new Gson(), System.out);
+		outputLineChanges(changedStmts, parser, System.out);
 	}
 	
 	private static List<CorrectionExample> createExamplesByRepairType(

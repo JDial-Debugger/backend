@@ -1,0 +1,4 @@
+16:00:16.597 [main] ERROR repair.RepairEngine - usage: java RepairEngine <tracePointCorrection | funcCorrection> <json>
+16:00:22.906 [main] ERROR repair.RepairEngine - usage: java RepairEngine <tracePointCorrection | funcCorrection> <json>
+16:01:35.477 [main] ERROR repair.RepairEngine - usage: java RepairEngine <tracePointCorrection | funcCorrection> <json>
+16:01:46.925 [main] ERROR repair.RepairEngine - usage: java RepairEngine <tracePointCorrection | funcCorrection> <json>

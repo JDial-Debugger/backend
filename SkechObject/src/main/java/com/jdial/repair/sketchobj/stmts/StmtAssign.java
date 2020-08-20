@@ -106,7 +106,7 @@ public class StmtAssign extends Statement {
 			theOp = "?= (" + op + ")";
 			break;
 		}
-		return lhs + " " + theOp + " " + rhs + ";";
+		return lhs.toString() + " " + theOp + " " + rhs.toString() + ";";
 	}
 
 	@Override

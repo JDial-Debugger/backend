@@ -48,10 +48,6 @@ public class StmtAssert extends Statement {
 	        }
 	    }
 
-
-
-
-
 	    /** Creates a new assert statement with the specified conditional. */
 	    public StmtAssert( Expression cond, int isSuper)
 	    {

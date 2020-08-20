@@ -264,16 +264,26 @@ public class StmtVarDecl extends Statement {
 	}
 
 	public String toString() {
+		
 		StringBuffer result = new StringBuffer();
+		
 		for (int i = 0; i < types.size(); i++) {
-			if (i != 0)
+			
+			if (i != 0) {
 				result.append("; ");
+			}
+			
 			result.append(types.get(i) + " " + names.get(i));
-			if (inits.get(i) != null)
-				result.append(" = " + inits.get(i));
+			
+			if (inits.get(i) != null) {
+				result.append(" = " + inits.get(i).toString());
+			}
 		}
-		if (types.size() == 1)
+		
+		if (types.size() == 1) {
 			result.append(";");
+		}
+		
 		return result.toString();
 	}
 
