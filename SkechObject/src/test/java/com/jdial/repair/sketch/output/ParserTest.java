@@ -1,6 +1,5 @@
-package sketch_input;
+package sketch.output;
 
-import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,12 +8,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
+
+import sketch.input.Coefficient;
+
 import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
 
 import static org.mockito.Mockito.*;
 
-public class SketchOutputParserTest {
+public class ParserTest {
 
 	private LineNumberReaderFactory getMockLineReaderFactory(LineNumberReader mockReader) {
 		LineNumberReaderFactory factoryMock = mock(LineNumberReaderFactory.class);
@@ -23,7 +24,7 @@ public class SketchOutputParserTest {
 	}
 
 	@Test
-	public void testParseChangedCoeffs_GoldenFlow() throws IOException {
+	public void testParseChangedCoeffs_GoldenFlow() throws java.io.IOException {
 
 		List<Coefficient> mockInputCoeffs = new ArrayList<Coefficient>();
 		Coefficient mockCoeff2 = mock(Coefficient.class);
@@ -70,8 +71,8 @@ public class SketchOutputParserTest {
 
 		LineNumberReaderFactory mockFactory = getMockLineReaderFactory(mockSketchOutputReader);
 
-		SketchOutputParser sketchOutputParserToTest
-			= new SketchOutputParser(mockInputCoeffs, mockFactory);
+		Parser sketchOutputParserToTest
+			= new Parser(mockInputCoeffs, mockFactory);
 
 		Set<Coefficient> resultCoeffs = sketchOutputParserToTest.parseChangedCoeffs(null);
 		Set<Coefficient> expectedCoeffs
@@ -83,13 +84,13 @@ public class SketchOutputParserTest {
 	}
 
 	@Test
-	public void testParseChangedCoeffs_EmptyStr() throws IOException {
+	public void testParseChangedCoeffs_EmptyStr() throws java.io.IOException {
 		LineNumberReader mockSketchOutputReader = mock(LineNumberReader.class);
 		when(mockSketchOutputReader.readLine()).thenReturn("").thenReturn(null);
 
 		LineNumberReaderFactory mockFactory = getMockLineReaderFactory(mockSketchOutputReader);
-		SketchOutputParser sketchOutputParserToTest
-			= new SketchOutputParser(new ArrayList<Coefficient>(), mockFactory);
+		Parser sketchOutputParserToTest
+			= new Parser(new ArrayList<Coefficient>(), mockFactory);
 
 		Set<Coefficient> resultCoeffs = sketchOutputParserToTest.parseChangedCoeffs(null);
 
@@ -97,7 +98,7 @@ public class SketchOutputParserTest {
 	}
 
 	@Test
-	public void testParseChangedCoeffs_UnknownCoeff() throws IOException {
+	public void testParseChangedCoeffs_UnknownCoeff() throws java.io.IOException {
 
 		List<Coefficient> mockInputCoeffs = new ArrayList<Coefficient>();
 		Coefficient mockCoeff2 = mock(Coefficient.class);
@@ -117,8 +118,8 @@ public class SketchOutputParserTest {
 			.thenReturn(null);
 
 		LineNumberReaderFactory mockFactory = getMockLineReaderFactory(mockSketchOutputReader);
-		SketchOutputParser sketchOutputParserToTest
-			= new SketchOutputParser(mockInputCoeffs, mockFactory);
+		Parser sketchOutputParserToTest
+			= new Parser(mockInputCoeffs, mockFactory);
 
 		Set<Coefficient> resultCoeffs = sketchOutputParserToTest.parseChangedCoeffs(null);
 
@@ -129,7 +130,7 @@ public class SketchOutputParserTest {
 	}
 
 	@Test
-	public void testParseChangedCoeffs_MissingRepairValue() throws IOException {
+	public void testParseChangedCoeffs_MissingRepairValue() throws java.io.IOException {
 		
 		List<Coefficient> mockInputCoeffs = new ArrayList<Coefficient>();
 		Coefficient mockCoeff3 = mock(Coefficient.class);
@@ -146,8 +147,8 @@ public class SketchOutputParserTest {
 			.thenReturn(null);
 
 		LineNumberReaderFactory mockFactory = getMockLineReaderFactory(mockSketchOutputReader);
-		SketchOutputParser sketchOutputParserToTest
-			= new SketchOutputParser(new ArrayList<Coefficient>(), mockFactory);
+		Parser sketchOutputParserToTest
+			= new Parser(new ArrayList<Coefficient>(), mockFactory);
 
 		Set<Coefficient> resultCoeffs = sketchOutputParserToTest.parseChangedCoeffs(null);
 
@@ -158,7 +159,7 @@ public class SketchOutputParserTest {
 	}
 
 	@Test
-	public void testParseChangedCoeffs_NonIntRepairValue() throws IOException {
+	public void testParseChangedCoeffs_NonIntRepairValue() throws java.io.IOException {
 		
 		List<Coefficient> mockInputCoeffs = new ArrayList<Coefficient>();
 		Coefficient mockCoeff3 = mock(Coefficient.class);
@@ -175,8 +176,8 @@ public class SketchOutputParserTest {
 			.thenReturn(null);
 
 		LineNumberReaderFactory mockFactory = getMockLineReaderFactory(mockSketchOutputReader);
-		SketchOutputParser sketchOutputParserToTest
-			= new SketchOutputParser(new ArrayList<Coefficient>(), mockFactory);
+		Parser sketchOutputParserToTest
+			= new Parser(new ArrayList<Coefficient>(), mockFactory);
 
 		Set<Coefficient> resultCoeffs = sketchOutputParserToTest.parseChangedCoeffs(null);
 
@@ -187,17 +188,17 @@ public class SketchOutputParserTest {
 	}
 
 	@Test
-	public void testParseChangedCoeffs_IOException() throws IOException {
+	public void testParseChangedCoeffs_IOException() throws java.io.IOException {
 		LineNumberReader mockSketchOutputReader = mock(LineNumberReader.class);
-		when(mockSketchOutputReader.readLine()).thenThrow(new IOException("File not found"));
+		when(mockSketchOutputReader.readLine()).thenThrow(new java.io.IOException("File not found"));
 
 		LineNumberReaderFactory mockFactory = getMockLineReaderFactory(mockSketchOutputReader);
-		SketchOutputParser sketchOutputParserToTest
-			= new SketchOutputParser(new ArrayList<Coefficient>(), mockFactory);
+		Parser sketchOutputParserToTest
+			= new Parser(new ArrayList<Coefficient>(), mockFactory);
 
 		try {
 			sketchOutputParserToTest.parseChangedCoeffs(null);
-		} catch(SketchOutputIOException expectedException) {
+		} catch(IOException expectedException) {
 			//	should throw exception
 			return;
 		}

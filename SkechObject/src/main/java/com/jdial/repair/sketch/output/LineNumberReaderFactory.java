@@ -1,4 +1,4 @@
-package sketch_input;
+package sketch.output;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

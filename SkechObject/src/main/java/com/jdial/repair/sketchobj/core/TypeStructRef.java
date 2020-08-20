@@ -3,7 +3,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import sketch_input.Coefficient;
+import sketch.input.Coefficient;
 
 public class TypeStructRef extends Type{
 	

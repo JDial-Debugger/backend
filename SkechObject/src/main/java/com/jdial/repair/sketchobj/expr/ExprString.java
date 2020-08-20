@@ -6,7 +6,7 @@ import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
-import sketch_input.Coefficient;
+import sketch.input.Coefficient;
 
 public class ExprString extends Expression{
 	private String content;

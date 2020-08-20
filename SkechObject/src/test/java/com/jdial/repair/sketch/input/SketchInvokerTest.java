@@ -1,4 +1,4 @@
-package sketch_input;
+package sketch.input;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +8,8 @@ import java.lang.reflect.*;
 import static org.mockito.Mockito.*;
 
 import org.mockito.internal.util.reflection.FieldSetter;
+
+import sketch.input.SketchInvoker;
 
 import java.io.File;
 import java.io.FileWriter;

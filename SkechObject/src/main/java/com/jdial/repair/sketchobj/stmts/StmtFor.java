@@ -10,7 +10,7 @@ import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
 import constraintfactory.ExternalFunction;
 import global.Global;
-import sketch_input.Coefficient;
+import sketch.input.Coefficient;
 import sketchobj.core.*;
 import sketchobj.expr.ExprConstant;
 import sketchobj.expr.ExprFuncCall;

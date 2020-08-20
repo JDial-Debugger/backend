@@ -87,3 +87,13 @@ int __jdial_invoke_count = -1;
 08:28:21.941 [main] ERROR sketch_input.SketchOutputParser - [Ljava.lang.StackTraceElement;@30f842ca
 08:28:21.943 [main] WARN  sketch_input.SketchOutputParser - Found non-int repair value: a
 08:28:21.943 [main] WARN  sketch_input.SketchOutputParser - [Ljava.lang.StackTraceElement;@69c81773
+08:47:06.805 [main] WARN  sketch.output.SketchOutputParser - Unable to parse repaired value assignment line
+08:47:06.807 [main] WARN  sketch.output.SketchOutputParser - [Ljava.lang.StackTraceElement;@eadd4fb
+08:47:06.810 [main] DEBUG sketch.output.SketchOutputParser - Unchanged coeff __jdial_coeff_3 found in sketch output
+08:47:06.811 [main] DEBUG sketch.output.SketchOutputParser - Adding coefficient to repair list: __jdial_coeff_4
+08:47:06.812 [main] DEBUG sketch.output.SketchOutputParser - Unchanged coeff __jdial_coeff_2 found in sketch output
+08:47:06.813 [main] DEBUG sketch.output.SketchOutputParser - Adding coefficient to repair list: __jdial_coeff_5
+08:47:06.818 [main] ERROR sketch.output.SketchOutputParser - Error occured reading sketch output: java.io.IOException: File not found
+08:47:06.818 [main] ERROR sketch.output.SketchOutputParser - [Ljava.lang.StackTraceElement;@30f842ca
+08:47:06.820 [main] WARN  sketch.output.SketchOutputParser - Found non-int repair value: a
+08:47:06.820 [main] WARN  sketch.output.SketchOutputParser - [Ljava.lang.StackTraceElement;@69c81773

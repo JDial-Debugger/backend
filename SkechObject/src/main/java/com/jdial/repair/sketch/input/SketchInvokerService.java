@@ -1,4 +1,4 @@
-package sketch_input;
+package sketch.input;
 
 public class SketchInvokerService {
 

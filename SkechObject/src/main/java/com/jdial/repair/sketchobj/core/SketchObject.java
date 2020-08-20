@@ -3,7 +3,7 @@ package sketchobj.core;
 import java.util.List;
 
 import constraintfactory.ConstData;
-import sketch_input.Coefficient;
+import sketch.input.Coefficient;
 
 public abstract class SketchObject {
 	

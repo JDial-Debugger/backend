@@ -8,9 +8,9 @@ import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
-import sketch_input.Coefficient;
-import sketch_input.ScalarCoefficient;
-import sketch_input.VectorCoefficient;
+import sketch.input.Coefficient;
+import sketch.input.ScalarCoefficient;
+import sketch.input.VectorCoefficient;
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
 import sketchobj.core.TypeArray;

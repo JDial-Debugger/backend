@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
 import json_input.Trace;
+import sketch.input.Coefficient;
+import sketch.input.SketchScript;
 import sketchobj.core.Context;
 import sketchobj.core.SketchNode;
 import sketchobj.core.Type;
@@ -24,8 +26,6 @@ import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprSketchHole;
 import sketchobj.expr.ExprUnary;
 import sketchobj.expr.ExprVar;
-import sketch_input.Coefficient;
-import sketch_input.SketchScript;
 
 public abstract class Statement extends SketchNode {
 

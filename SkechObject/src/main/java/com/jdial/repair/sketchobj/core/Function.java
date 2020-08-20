@@ -2,7 +2,7 @@ package sketchobj.core;
 
 import java.util.*;
 
-import sketch_input.SketchScript;
+import sketch.input.SketchScript;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprUnary;
 import sketchobj.expr.ExprVar;

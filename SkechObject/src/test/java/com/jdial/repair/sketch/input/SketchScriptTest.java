@@ -1,4 +1,4 @@
-package sketch_input;
+package sketch.input;
 
 import java.util.List;
 import java.util.Map;
@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import repair.CorrectionExample;
+import sketch.input.SketchScript;
 import sketchobj.core.Function;
 import sketchobj.stmts.Statement;
 

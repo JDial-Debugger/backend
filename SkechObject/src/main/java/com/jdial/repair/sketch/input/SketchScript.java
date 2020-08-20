@@ -1,4 +1,4 @@
-package sketch_input;
+package sketch.input;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -6,7 +6,7 @@ import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
-import sketch_input.Coefficient;
+import sketch.input.Coefficient;
 
 /**
  * Represents a sketch hole (???) aka an expression for sketch to insert a value

@@ -8,7 +8,7 @@ import java.util.Set;
 
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
-import sketch_input.Coefficient;
+import sketch.input.Coefficient;
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
 

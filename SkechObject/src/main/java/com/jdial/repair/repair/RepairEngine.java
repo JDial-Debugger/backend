@@ -32,11 +32,11 @@ import javaparser.simpleJavaParser;
 import json_input.Correction;
 import json_input.Trace;
 import json_input.TracePoint;
-import sketch_input.SketchInvoker;
-import sketch_input.Coefficient;
-import sketch_input.SketchExecException;
-import sketch_input.SketchOutputParser;
-import sketch_input.SketchScript;
+import sketch.input.Coefficient;
+import sketch.input.SketchExecException;
+import sketch.input.SketchInvoker;
+import sketch.input.SketchScript;
+import sketch.output.Parser;
 import sketchobj.core.Function;
 import sketchobj.core.SketchObject;
 import sketchobj.stmts.Statement;
@@ -269,7 +269,7 @@ public class RepairEngine {
 	private static Set<Statement> calculateChangedSrcStmts(
 			InputStream sketchOutput, SketchScript script) {
 		
-		Set<Coefficient> changedCoeffs = SketchOutputParser.parseChangedCoeffs(
+		Set<Coefficient> changedCoeffs = Parser.parseChangedCoeffs(
 				sketchOutput, script.getCoefficients());
 		
 		logger.debug("Changed coefficients: " + changedCoeffs.toString());

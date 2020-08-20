@@ -1,8 +1,6 @@
-package sketch_input;
+package sketch.output;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.HashSet;
 import java.util.List;
@@ -13,18 +11,20 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sketch.input.Coefficient;
+
 /**
  * Parses output of sketch using regex's to find repaired values of coefficients
  */
-public class SketchOutputParser {
+public class Parser {
 
-	private static Logger logger = LoggerFactory.getLogger(SketchOutputParser.class);
+	private static Logger logger = LoggerFactory.getLogger(Parser.class);
 	private LineNumberReaderFactory lineNumberReaderFactory;
 	private Set<Coefficient> repairedCoeffs;
 	private List<Coefficient> inputCoeffs;
 	private Pattern sketchCoeffChangeStmt;
 
-	public SketchOutputParser(
+	public Parser(
 		List<Coefficient> inputCoeffs,
 		LineNumberReaderFactory lineNumberReaderFactory
 	) {
@@ -59,8 +59,8 @@ public class SketchOutputParser {
 			while ((sketchOutputLine = sketchOutputReader.readLine()) != null) {
 				this.processSketchOutputLine(sketchOutputLine);
 			}
-		} catch (IOException ex) {
-			throw new SketchOutputIOException(ex, logger);
+		} catch (java.io.IOException ex) {
+			throw new IOException(ex, logger);
 		}
 	}
 
@@ -81,7 +81,7 @@ public class SketchOutputParser {
 		int coeffRepairVal;
 		try {
 			coeffRepairVal = this.extractRepairedValFromLine(sketchOutputLine);
-		} catch (SketchOutputParseException ex) {
+		} catch (ParseException ex) {
 			return;
 		}
 		this.saveRepairedCoeff(repairCoeff, coeffRepairVal);
@@ -121,7 +121,7 @@ public class SketchOutputParser {
 		String[] splitLine = line.split("= ");
 
 		if (splitLine.length != 2) {
-			throw new SketchOutputParseException(
+			throw new ParseException(
 				"Unable to parse repaired value assignment line",
 				logger
 			);
@@ -132,7 +132,7 @@ public class SketchOutputParser {
 		try {
 			return Integer.parseInt(repairVal);
 		} catch (NumberFormatException ex) {
-			throw new SketchOutputParseException(
+			throw new ParseException(
 				"Found non-int repair value: " + repairVal,
 				logger
 			);

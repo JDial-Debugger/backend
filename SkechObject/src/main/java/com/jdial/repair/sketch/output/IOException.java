@@ -1,12 +1,12 @@
-package sketch_input;
-
-import java.io.IOException;
+package sketch.output;
 
 import org.slf4j.Logger;
 
-public class SketchOutputIOException extends RuntimeException {
+public class IOException extends RuntimeException {
 	
-	public SketchOutputIOException(IOException ex, Logger logger) {
+	private static final long serialVersionUID = 3614590124085235456L;
+
+	public IOException(java.io.IOException ex, Logger logger) {
 		super("Error occured reading sketch output: " + ex.toString());
 		this.initCause(ex);
 		this.setStackTrace(ex.getStackTrace());

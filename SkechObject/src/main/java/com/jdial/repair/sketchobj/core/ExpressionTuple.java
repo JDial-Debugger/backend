@@ -3,7 +3,7 @@ package sketchobj.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import sketch_input.Coefficient;
+import sketch.input.Coefficient;
 
 public class ExpressionTuple extends SketchObject{
 

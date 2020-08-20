@@ -6,7 +6,7 @@ import java.util.Map;
 
 import json_input.Trace;
 import json_input.TracePoint;
-import sketch_input.SketchScript;
+import sketch.input.SketchScript;
 import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprConstant;

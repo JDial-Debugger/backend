@@ -1,4 +1,4 @@
-package sketch_input;
+package sketch.input;
 
 import java.io.*;
 import java.util.Scanner;

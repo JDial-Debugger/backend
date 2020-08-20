@@ -2,7 +2,7 @@ package sketchobj.core;
 
 import java.util.List;
 
-import sketch_input.Coefficient;
+import sketch.input.Coefficient;
 
 public class Parameter extends SketchObject{
  // NOTE -- don't change these, or modify ScAstModel.gm in Skalch project
