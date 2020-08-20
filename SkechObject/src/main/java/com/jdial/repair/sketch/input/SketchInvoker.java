@@ -1,7 +1,6 @@
 package sketch.input;
 
 import java.io.*;
-import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +13,7 @@ import repair.RepairEngine;
  */
 public final class SketchInvoker {
 
-	private static final Logger logger =
-			LoggerFactory.getLogger(SketchInvoker.class);
+	private static final Logger logger = LoggerFactory.getLogger(SketchInvoker.class);
 	private static final String INPUT_FILE_SUFFIX = "sketch-script";
 	private static final String SKETCH_PROC_NAME = "sketch";
 
@@ -23,9 +21,7 @@ public final class SketchInvoker {
 	private FileWriter sketchInputWriter;
 	private Process sketchProc;
 	private Runtime runtime;
-	private Scanner sketchErrorReader;
-	private BufferedReader sketchErrReader;
-	private BufferedReader sketchOutReader;
+	private ErrorScannerFactory scannerFactory;
 
 	private String sketchInputFilePath;
 
@@ -36,23 +32,27 @@ public final class SketchInvoker {
 	 */
 	public static SketchInvoker createSketchInvoker() throws IOException {
 
-		File sketchInput =
-				File.createTempFile(RepairEngine.APP_NAME, INPUT_FILE_SUFFIX);
+		File sketchInput = File.createTempFile(RepairEngine.APP_NAME, INPUT_FILE_SUFFIX);
 		return new SketchInvoker(
-				sketchInput.getAbsolutePath(),
-				new FileWriter(sketchInput),
-				Runtime.getRuntime());
+			sketchInput.getAbsolutePath(),
+			new FileWriter(sketchInput),
+			Runtime.getRuntime(),
+			new ErrorScannerFactory()
+		);
 	}
 
-	private SketchInvoker(
-			String sketchInputFilePath,
-			FileWriter sketchInputWriter,
-			Runtime runtime) {
-
+	protected SketchInvoker(
+		String sketchInputFilePath,
+		FileWriter sketchInputWriter,
+		Runtime runtime,
+		ErrorScannerFactory scannerFactory
+	) {
 		this.sketchInputFilePath = sketchInputFilePath;
 		this.sketchInputWriter = sketchInputWriter;
+		this.runtime = runtime;
+		this.scannerFactory = scannerFactory;
 	}
-	
+
 	/**
 	 * Invokes the MIT Sketch Synthesizer process on a given sketch script
 	 * 
@@ -69,10 +69,6 @@ public final class SketchInvoker {
 		this.logSketchStdError();
 
 		return this.sketchProc.getInputStream();
-	}
-	
-	public InputStream getSketchProc(Object script) throws IOException {
-		return this.getSketchProc(script.toString());
 	}
 
 	private void writeContentsToInputFile(String contents) throws IOException {
@@ -91,9 +87,7 @@ public final class SketchInvoker {
 
 	private void logSketchStdError() {
 
-		InputStream stderr = this.sketchProc.getErrorStream();
-		Scanner errScnr = new Scanner(stderr);
-		errScnr.useDelimiter("\\A");
+		ErrorScanner errScnr = this.scannerFactory.getErrorScanner(this.sketchProc);
 		while (errScnr.hasNext()) {
 			logger.warn("Sketch process stderr: " + errScnr.nextLine());
 		}

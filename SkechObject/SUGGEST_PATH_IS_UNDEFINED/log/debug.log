@@ -97,3 +97,5 @@ int __jdial_invoke_count = -1;
 08:47:06.818 [main] ERROR sketch.output.SketchOutputParser - [Ljava.lang.StackTraceElement;@30f842ca
 08:47:06.820 [main] WARN  sketch.output.SketchOutputParser - Found non-int repair value: a
 08:47:06.820 [main] WARN  sketch.output.SketchOutputParser - [Ljava.lang.StackTraceElement;@69c81773
+10:26:57.162 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
+10:27:53.935 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8

@@ -1,68 +1,60 @@
 package sketch.input;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.*;
 
 import static org.mockito.Mockito.*;
 
-import org.mockito.internal.util.reflection.FieldSetter;
+import static org.junit.Assert.*;
 
-import sketch.input.SketchInvoker;
-
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class SketchInvokerTest {
 
-	private Constructor<?> sketchInvokerConstructor;
-
-	@Before
-	public void setConstructorAccessible()
-			throws ClassNotFoundException,
-			NoSuchMethodException,
-			SecurityException,
-			InstantiationException,
-			IllegalAccessException,
-			IllegalArgumentException,
-			InvocationTargetException {
-
-		Class sketchInvokerClassRef = Class.forName("SketchInvoker");
-		this.sketchInvokerConstructor =
-				sketchInvokerClassRef.getDeclaredConstructor();
-		this.sketchInvokerConstructor.setAccessible(true);
-	}
-
 	@Test
-	public void testGetSketchProc()
-			throws IOException,
-			NoSuchFieldException,
-			SecurityException,
-			InstantiationException,
-			IllegalAccessException,
-			IllegalArgumentException,
-			InvocationTargetException {
+	public void testGetSketchProc_GoldenFlow()
+		throws IOException,
+		NoSuchFieldException,
+		SecurityException,
+		InstantiationException,
+		IllegalAccessException,
+		IllegalArgumentException,
+		InvocationTargetException {
 
 		String sampleFilePath = "/tmp/jdial-fer8ds8dsdf8r3j8";
-		FileWriter sketchInputWriterMock = mock(FileWriter.class);
-		Runtime runtimeMock = mock(Runtime.class);
-		Process processMock = mock(Process.class);
-		
-		when(runtimeMock.exec(anyString(), null)).thenReturn(processMock);
+		FileWriter mockSketchInputWriter = mock(FileWriter.class);
+		Runtime mockRuntime = mock(Runtime.class);
+		Process mockProcess = mock(Process.class);
+		InputStream mockStdOut = mock(InputStream.class);
+
+		when(mockProcess.getInputStream()).thenReturn(mockStdOut);
+
+		when(mockRuntime.exec(anyString(), isNull())).thenReturn(mockProcess);
 		String sampleScript = "int a = 5; a = 3 + ??; assert (a == 10);";
-		
-		SketchInvoker sketchInvokerToTest =
-				(SketchInvoker) this.sketchInvokerConstructor
-						.newInstance(
-								sampleFilePath,
-								sketchInputWriterMock,
-								runtimeMock);
-		InputStream result = sketchInvokerToTest.getSketchProc(sampleScript);
-		System.out.println(result.toString());
-		
+
+		ErrorScanner mockErrScnr = mock(ErrorScanner.class);
+		when(mockErrScnr.hasNext()).thenReturn(false);
+
+		ErrorScannerFactory mockScnrFactory = mock(ErrorScannerFactory.class);
+		when(mockScnrFactory.getErrorScanner(mockProcess)).thenReturn(mockErrScnr);
+
+		SketchInvoker sketchInvokerToTest
+			= new SketchInvoker(
+				sampleFilePath,
+				mockSketchInputWriter,
+				mockRuntime,
+				mockScnrFactory
+			);
+
+		InputStream result = sketchInvokerToTest.invokeSketch(sampleScript);
+		assertEquals(mockStdOut, result);
+		verify(mockSketchInputWriter).write(eq(sampleScript));
+		verify(mockSketchInputWriter).close();
+
+		verify(mockErrScnr).close();
 
 	}
 
