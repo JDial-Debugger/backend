@@ -2,7 +2,7 @@ package sketch.input;
 
 import org.junit.Test;
 
-import java.lang.reflect.*;
+import constants.Errors;
 
 import static org.mockito.Mockito.*;
 
@@ -112,10 +112,10 @@ public class SketchInvokerTest {
 			verify(mockSketchInputWriter).close();
 			return;
 		} catch (Exception ex) {
-			assertTrue("Threw the incorrect exception: " + ex.toString(), false);
+			assertTrue(Errors.wrongException(ex), false);
 		}
 
-		assertTrue("Did not throw any exception", false);
+		assertTrue(Errors.NO_EXCEPTION, false);
 	}
 
 }

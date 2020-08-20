@@ -132,7 +132,7 @@ public class RepairEngine {
 		
 		logger.info("Reading input from " + inputFileName);
 		String fileContents = scnr.useDelimiter("\\A").next();
-		scnr.close();//
+		scnr.close();
 		
 		return fileContents;
 	}

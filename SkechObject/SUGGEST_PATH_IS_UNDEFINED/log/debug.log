@@ -122,3 +122,9 @@ int __jdial_invoke_count = -1;
 11:24:08.510 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
 11:24:08.510 [main] ERROR sketch.input.SketchInvoker - Error occured creating temporary file to write sketch input into: java.io.IOException: File not found
 11:24:08.511 [main] ERROR sketch.input.SketchInvoker - [Ljava.lang.StackTraceElement;@471a9022
+10:19:19.945 [main] ERROR repair.InputReader - Repair type: badRepairType not recognized
+10:19:19.947 [main] ERROR repair.InputReader - [Ljava.lang.StackTraceElement;@39fb3ab6
+10:20:54.297 [main] ERROR repair.InputReader - Repair type: badRepairType not recognized
+10:20:54.298 [main] ERROR repair.InputReader - [Ljava.lang.StackTraceElement;@39fb3ab6
+10:20:54.299 [main] ERROR repair.InputReader - usage: java RepairEngine <tracePointCorrection | funcCorrection> <json>
+10:20:54.299 [main] ERROR repair.InputReader - [Ljava.lang.StackTraceElement;@3c09711b

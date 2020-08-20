@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import constants.Errors;
 import sketch.input.Coefficient;
 
 import static org.junit.Assert.*;
@@ -202,9 +203,9 @@ public class ParserTest {
 			//	should throw exception
 			return;
 		} catch (Exception ex) {
-			assertTrue("Threw the incorrect exception: " + ex.toString(), false);
+			assertTrue(Errors.wrongException(ex), false);
 		}
-		assertTrue("Did not throw correct exception", false);
+		assertTrue(Errors.NO_EXCEPTION, false);
 
 	}
 }
