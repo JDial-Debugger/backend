@@ -1,0 +1,1923 @@
+{
+	"code": "public class Search {\n\t\n\tpublic static int search(int[] arrayToSearch, int value) {\n\t\t\n\t\tfor (int i = 0; i < arrayToSearch.length; ++i) {\n\t\t\tif (arrayToSearch[i] == value) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\t\n\t\treturn -1;\n\t}\n\t\n\tpublic static void main(String[] args) {\n\t\tint[] arrayToSearch = { 1, 5, 3, 2, 6, 3, 8 };\n\t\tint targetValue = 8;\n\t\t\n\t\tint matchingIdx = search(arrayToSearch, targetValue);\n\t}\n}\n",
+	"stdin": "3 4\n5\n  \n",
+	"trace": [
+		{
+			"stdout": "",
+			"event": "call",
+			"line": 15,
+			"stack_to_render": [
+				{
+					"func_name": "main:15",
+					"encoded_locals": {
+					},
+					"ordered_varnames": [
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "1",
+					"frame_id": 1
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "main",
+			"heap": {
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 15,
+			"stack_to_render": [
+				{
+					"func_name": "main:15",
+					"encoded_locals": {
+					},
+					"ordered_varnames": [
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "2",
+					"frame_id": 2
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "main",
+			"heap": {
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 16,
+			"stack_to_render": [
+				{
+					"func_name": "main:16",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						]
+					},
+					"ordered_varnames": [
+						"arrayToSearch"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "33",
+					"frame_id": 33
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "main",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 18,
+			"stack_to_render": [
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "36",
+					"frame_id": 36
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "main",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "call",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "40",
+					"frame_id": 40
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "41",
+					"frame_id": 41
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "42",
+					"frame_id": 42
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "43",
+					"frame_id": 43
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 0
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "48",
+					"frame_id": 48
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "49",
+					"frame_id": 49
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 6,
+			"stack_to_render": [
+				{
+					"func_name": "search:6",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 0
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "56",
+					"frame_id": 56
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "57",
+					"frame_id": 57
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 0
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "68",
+					"frame_id": 68
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "69",
+					"frame_id": 69
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 1
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "72",
+					"frame_id": 72
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "73",
+					"frame_id": 73
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 6,
+			"stack_to_render": [
+				{
+					"func_name": "search:6",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 1
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "82",
+					"frame_id": 82
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "83",
+					"frame_id": 83
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 1
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "94",
+					"frame_id": 94
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "95",
+					"frame_id": 95
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 2
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "98",
+					"frame_id": 98
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "99",
+					"frame_id": 99
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 6,
+			"stack_to_render": [
+				{
+					"func_name": "search:6",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 2
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "108",
+					"frame_id": 108
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "109",
+					"frame_id": 109
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 2
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "120",
+					"frame_id": 120
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "121",
+					"frame_id": 121
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 3
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "124",
+					"frame_id": 124
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "125",
+					"frame_id": 125
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 6,
+			"stack_to_render": [
+				{
+					"func_name": "search:6",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 3
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "134",
+					"frame_id": 134
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "135",
+					"frame_id": 135
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 3
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "146",
+					"frame_id": 146
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "147",
+					"frame_id": 147
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 4
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "150",
+					"frame_id": 150
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "151",
+					"frame_id": 151
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 6,
+			"stack_to_render": [
+				{
+					"func_name": "search:6",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 4
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "160",
+					"frame_id": 160
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "161",
+					"frame_id": 161
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 4
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "172",
+					"frame_id": 172
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "173",
+					"frame_id": 173
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 5
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "176",
+					"frame_id": 176
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "177",
+					"frame_id": 177
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 6,
+			"stack_to_render": [
+				{
+					"func_name": "search:6",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 5
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "186",
+					"frame_id": 186
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "187",
+					"frame_id": 187
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 5
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "198",
+					"frame_id": 198
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "199",
+					"frame_id": 199
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 5,
+			"stack_to_render": [
+				{
+					"func_name": "search:5",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 6
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "202",
+					"frame_id": 202
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "203",
+					"frame_id": 203
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 6,
+			"stack_to_render": [
+				{
+					"func_name": "search:6",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 6
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "212",
+					"frame_id": 212
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "213",
+					"frame_id": 213
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 7,
+			"stack_to_render": [
+				{
+					"func_name": "search:7",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 6
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "224",
+					"frame_id": 224
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "225",
+					"frame_id": 225
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "return",
+			"line": 7,
+			"stack_to_render": [
+				{
+					"func_name": "search:7",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"value": 8,
+						"i": 6,
+						"__return__": 6
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"value",
+						"i",
+						"__return__"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "230",
+					"frame_id": 230
+				},
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": false,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "231",
+					"frame_id": 231
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "search",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 18,
+			"stack_to_render": [
+				{
+					"func_name": "main:18",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "232",
+					"frame_id": 232
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "main",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "step_line",
+			"line": 19,
+			"stack_to_render": [
+				{
+					"func_name": "main:19",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8,
+						"matchingIdx": 6
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue",
+						"matchingIdx"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "233",
+					"frame_id": 233
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "main",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		},
+		{
+			"stdout": "",
+			"event": "return",
+			"line": 19,
+			"stack_to_render": [
+				{
+					"func_name": "main:19",
+					"encoded_locals": {
+						"arrayToSearch": [
+							"REF",
+							172
+						],
+						"targetValue": 8,
+						"matchingIdx": 6,
+						"__return__": [
+							"VOID"
+						]
+					},
+					"ordered_varnames": [
+						"arrayToSearch",
+						"targetValue",
+						"matchingIdx",
+						"__return__"
+					],
+					"parent_frame_id_list": [
+					],
+					"is_highlighted": true,
+					"is_zombie": false,
+					"is_parent": false,
+					"unique_hash": "235",
+					"frame_id": 235
+				}
+			],
+			"globals": {
+			},
+			"ordered_globals": [
+			],
+			"func_name": "main",
+			"heap": {
+				"172": [
+					"LIST",
+					1,
+					5,
+					3,
+					2,
+					6,
+					3,
+					8
+				]
+			}
+		}
+	]
+}

@@ -28,28 +28,17 @@ return 1;}
 return -1;
 }
 
-bit __jdial_coeff_3_change = ??;
+int __jdial_coeff_3_change = ??;
  int __jdial_coeff_3(){
-if(__jdial_coeff_3_change == 0){
-return 1;}
-
 if(??){
 return 0;}
 
-return -1;
+return __jdial_coeff_3_change;
 }
 
-int __jdial_coeff_4_change = ??;
+bit __jdial_coeff_4_change = ??;
  int __jdial_coeff_4(){
-if(??){
-return 0;}
-
-return __jdial_coeff_4_change;
-}
-
-bit __jdial_coeff_5_change = ??;
- int __jdial_coeff_5(){
-if(__jdial_coeff_5_change == 0){
+if(__jdial_coeff_4_change == 0){
 return 0;}
 
 if(??){
@@ -58,73 +47,279 @@ return 1;}
 return -1;
 }
 
-int __jdial_final_foo___return__ = 0;
-int[5][2] __jdial_foo_a_state = {{0,0,0,0,0},{0,0,0,0,0}};
-int[5][2] __jdial_foo_b_state = {{0,0,0,0,0},{0,0,0,0,0}};
-int[5][2] __jdial_foo_x_state = {{0,0,0,0,0},{0,0,0,0,0}};
-int[5][2] __jdial_foo_y_state = {{0,0,0,0,0},{0,0,0,0,0}};
+int __jdial_coeff_5_change = ??;
+ int __jdial_coeff_5(){
+if(??){
+return 0;}
+
+return __jdial_coeff_5_change;
+}
+
+bit __jdial_coeff_6_change = ??;
+ int __jdial_coeff_6(){
+if(__jdial_coeff_6_change == 0){
+return 0;}
+
+if(??){
+return 1;}
+
+return -1;
+}
+
+int __jdial_coeff_7_change = ??;
+ int __jdial_coeff_7(){
+if(??){
+return 0;}
+
+return __jdial_coeff_7_change;
+}
+
+bit __jdial_coeff_8_change = ??;
+ int __jdial_coeff_8(){
+if(__jdial_coeff_8_change == 0){
+return 0;}
+
+if(??){
+return 1;}
+
+return -1;
+}
+
+int __jdial_coeff_9_change = ??;
+ int __jdial_coeff_9(){
+if(??){
+return 0;}
+
+return __jdial_coeff_9_change;
+}
+
+bit __jdial_coeff_10_change = ??;
+ int __jdial_coeff_10(){
+if(__jdial_coeff_10_change == 0){
+return 0;}
+
+if(??){
+return 1;}
+
+return -1;
+}
+
+int __jdial_coeff_11_change = ??;
+ int __jdial_coeff_11(){
+if(??){
+return 0;}
+
+return __jdial_coeff_11_change;
+}
+
+bit __jdial_coeff_12_change = ??;
+ int __jdial_coeff_12(){
+if(__jdial_coeff_12_change == 0){
+return 0;}
+
+if(??){
+return 1;}
+
+return -1;
+}
+
+int __jdial_coeff_13_change = ??;
+ int __jdial_coeff_13(){
+if(??){
+return 0;}
+
+return __jdial_coeff_13_change;
+}
+
+bit __jdial_coeff_14_change = ??;
+ int __jdial_coeff_14(){
+if(__jdial_coeff_14_change == 0){
+return 0;}
+
+if(??){
+return 1;}
+
+return -1;
+}
+
+int __jdial_coeff_15_change = ??;
+ int __jdial_coeff_15(){
+if(??){
+return 0;}
+
+return __jdial_coeff_15_change;
+}
+
+bit __jdial_coeff_16_change = ??;
+ int __jdial_coeff_16(){
+if(__jdial_coeff_16_change == 0){
+return 0;}
+
+if(??){
+return 1;}
+
+return -1;
+}
+
+int __jdial_coeff_17_change = ??;
+ int __jdial_coeff_17(){
+if(??){
+return 0;}
+
+return __jdial_coeff_17_change;
+}
+
+bit __jdial_coeff_18_change = ??;
+ int __jdial_coeff_18(){
+if(__jdial_coeff_18_change == 0){
+return 0;}
+
+if(??){
+return 1;}
+
+return -1;
+}
+
+int __jdial_coeff_19_change = ??;
+ int __jdial_coeff_19(){
+if(??){
+return 0;}
+
+return __jdial_coeff_19_change;
+}
+
+bit __jdial_coeff_20_change = ??;
+ int __jdial_coeff_20(){
+if(__jdial_coeff_20_change == 0){
+return 0;}
+
+if(??){
+return 1;}
+
+return -1;
+}
+
+int __jdial_coeff_21_change = ??;
+ int __jdial_coeff_21(){
+if(??){
+return 0;}
+
+return __jdial_coeff_21_change;
+}
+
+bit __jdial_coeff_22_change = ??;
+ int __jdial_coeff_22(){
+if(__jdial_coeff_22_change == 0){
+return 0;}
+
+if(??){
+return 1;}
+
+return -1;
+}
+
+int __jdial_final_conditionalFunc_result = 0;
+int[10][1] __jdial_conditionalFunc_result_state = {{0,0,0,0,0,0,0,0,0,0}};
+int[10][1] __jdial_conditionalFunc_a_state = {{0,0,0,0,0,0,0,0,0,0}};
+int[10][1] __jdial_conditionalFunc_b_state = {{0,0,0,0,0,0,0,0,0,0}};
 int __jdial_invoke_count = -1;
- int foo(int a, int b){
+ int conditionalFunc(int a){
 int __jdial_state_idx = -1;
 int __jdial_line_hit = 0;
 ++(__jdial_invoke_count);
 (__jdial_state_idx)++;
-__jdial_foo_a_state[__jdial_invoke_count][__jdial_state_idx] = a;
-__jdial_foo_b_state[__jdial_invoke_count][__jdial_state_idx] = b;
-int x = (((__jdial_coeff_0()) * a) + 3) + ((__jdial_coeff_2()) * (__jdial_coeff_1()));
+__jdial_conditionalFunc_a_state[__jdial_invoke_count][__jdial_state_idx] = a;
+int b = (((__jdial_coeff_0()) * a) + 5) + ((__jdial_coeff_2()) * (__jdial_coeff_1()));
 
 (__jdial_state_idx)++;
-__jdial_foo_x_state[__jdial_invoke_count][__jdial_state_idx] = x;
-__jdial_foo_a_state[__jdial_invoke_count][__jdial_state_idx] = a;
-__jdial_foo_b_state[__jdial_invoke_count][__jdial_state_idx] = b;
-int y = b + ((__jdial_coeff_5()) * (__jdial_coeff_4()));
+__jdial_conditionalFunc_a_state[__jdial_invoke_count][__jdial_state_idx] = a;
+__jdial_conditionalFunc_b_state[__jdial_invoke_count][__jdial_state_idx] = b;
+int result = 100 + ((__jdial_coeff_4()) * (__jdial_coeff_3()));
 
 (__jdial_state_idx)++;
-__jdial_foo_x_state[__jdial_invoke_count][__jdial_state_idx] = x;
-__jdial_foo_a_state[__jdial_invoke_count][__jdial_state_idx] = a;
-__jdial_foo_y_state[__jdial_invoke_count][__jdial_state_idx] = y;
-__jdial_foo_b_state[__jdial_invoke_count][__jdial_state_idx] = b;
+__jdial_conditionalFunc_result_state[__jdial_invoke_count][__jdial_state_idx] = result;
+__jdial_conditionalFunc_a_state[__jdial_invoke_count][__jdial_state_idx] = a;
+__jdial_conditionalFunc_b_state[__jdial_invoke_count][__jdial_state_idx] = b;
+if((b + ((__jdial_coeff_6()) * (__jdial_coeff_5()))) == 7){
+(__jdial_state_idx)++;
+__jdial_conditionalFunc_result_state[__jdial_invoke_count][__jdial_state_idx] = result;
+__jdial_conditionalFunc_a_state[__jdial_invoke_count][__jdial_state_idx] = a;
+__jdial_conditionalFunc_b_state[__jdial_invoke_count][__jdial_state_idx] = b;
+result = 2 + ((__jdial_coeff_8()) * (__jdial_coeff_7()));
+
+}else{
+if(((b / 2) + ((__jdial_coeff_10()) * (__jdial_coeff_9()))) == 3){
+(__jdial_state_idx)++;
+__jdial_conditionalFunc_result_state[__jdial_invoke_count][__jdial_state_idx] = result;
+__jdial_conditionalFunc_a_state[__jdial_invoke_count][__jdial_state_idx] = a;
+__jdial_conditionalFunc_b_state[__jdial_invoke_count][__jdial_state_idx] = b;
+result = 4 + ((__jdial_coeff_12()) * (__jdial_coeff_11()));
+
+}else{
+if(((b * 2) + ((__jdial_coeff_14()) * (__jdial_coeff_13()))) == 10){
+(__jdial_state_idx)++;
+__jdial_conditionalFunc_result_state[__jdial_invoke_count][__jdial_state_idx] = result;
+__jdial_conditionalFunc_a_state[__jdial_invoke_count][__jdial_state_idx] = a;
+__jdial_conditionalFunc_b_state[__jdial_invoke_count][__jdial_state_idx] = b;
+result = 0 + ((__jdial_coeff_16()) * (__jdial_coeff_15()));
+
+}else{
+if(((b - 2) + ((__jdial_coeff_18()) * (__jdial_coeff_17()))) == 6){
+(__jdial_state_idx)++;
+__jdial_conditionalFunc_result_state[__jdial_invoke_count][__jdial_state_idx] = result;
+__jdial_conditionalFunc_a_state[__jdial_invoke_count][__jdial_state_idx] = a;
+__jdial_conditionalFunc_b_state[__jdial_invoke_count][__jdial_state_idx] = b;
+result = 3 + ((__jdial_coeff_20()) * (__jdial_coeff_19()));
+
+}else{
+(__jdial_state_idx)++;
+__jdial_conditionalFunc_result_state[__jdial_invoke_count][__jdial_state_idx] = result;
+__jdial_conditionalFunc_a_state[__jdial_invoke_count][__jdial_state_idx] = a;
+__jdial_conditionalFunc_b_state[__jdial_invoke_count][__jdial_state_idx] = b;
+result = 100 + ((__jdial_coeff_22()) * (__jdial_coeff_21()));
+
+}
+}
+}
+}
+
+
+(__jdial_state_idx)++;
+__jdial_conditionalFunc_result_state[__jdial_invoke_count][__jdial_state_idx] = result;
+__jdial_conditionalFunc_a_state[__jdial_invoke_count][__jdial_state_idx] = a;
+__jdial_conditionalFunc_b_state[__jdial_invoke_count][__jdial_state_idx] = b;
 (__jdial_line_hit)++;
 if(__jdial_line_hit == (??)){
-__jdial_final_foo___return__ = x + y;
+__jdial_final_conditionalFunc_result = result;
 return 0;
 }
 
-return x + y;
+return result;
 
 
 }
 harness void Constraint(){
-int[5][2] __jdial_original_foo_a_state = {{2,2,2,2,2},{0,0,0,0,0}};
-int[5][2] __jdial_original_foo_b_state = {{5,5,5,5,5},{3,3,3,3,3}};
-int[5][2] __jdial_original_foo_x_state = {{0,0,5,5,5},{0,0,3,3,3}};
-int[5][2] __jdial_original_foo_y_state = {{0,0,0,5,5},{0,0,0,3,3}};
+int[10][1] __jdial_original_conditionalFunc_result_state = {{0,0,0,-100,-100,-100,-100,-100,-3,-3}};
+int[10][1] __jdial_original_conditionalFunc_a_state = {{3,3,3,3,3,3,3,3,3,3}};
+int[10][1] __jdial_original_conditionalFunc_b_state = {{0,0,8,8,8,8,8,8,8,8}};
 
-foo(2, 5);
-assert (__jdial_final_foo___return__ == 14);
-
-foo(0, 3);
-assert (__jdial_final_foo___return__ == 10);
+conditionalFunc(3);
+assert (__jdial_final_conditionalFunc_result == 0);
 
 int __jdial_semantic_distance = 0;
-for(int i = 0; i < 2; ++(i)){
-for(int j = 0; j < 5; ++(j)){
-__jdial_semantic_distance += (__jdial_foo_a_state[i][j]) != (__jdial_original_foo_a_state[i][j]);}
+for(int i = 0; i < 1; ++(i)){
+for(int j = 0; j < 10; ++(j)){
+__jdial_semantic_distance += (__jdial_conditionalFunc_result_state[i][j]) != (__jdial_original_conditionalFunc_result_state[i][j]);}
 }
 
-for(int i = 0; i < 2; ++(i)){
-for(int j = 0; j < 5; ++(j)){
-__jdial_semantic_distance += (__jdial_foo_b_state[i][j]) != (__jdial_original_foo_b_state[i][j]);}
+for(int i = 0; i < 1; ++(i)){
+for(int j = 0; j < 10; ++(j)){
+__jdial_semantic_distance += (__jdial_conditionalFunc_a_state[i][j]) != (__jdial_original_conditionalFunc_a_state[i][j]);}
 }
 
-for(int i = 0; i < 2; ++(i)){
-for(int j = 0; j < 5; ++(j)){
-__jdial_semantic_distance += (__jdial_foo_x_state[i][j]) != (__jdial_original_foo_x_state[i][j]);}
-}
-
-for(int i = 0; i < 2; ++(i)){
-for(int j = 0; j < 5; ++(j)){
-__jdial_semantic_distance += (__jdial_foo_y_state[i][j]) != (__jdial_original_foo_y_state[i][j]);}
+for(int i = 0; i < 1; ++(i)){
+for(int j = 0; j < 10; ++(j)){
+__jdial_semantic_distance += (__jdial_conditionalFunc_b_state[i][j]) != (__jdial_original_conditionalFunc_b_state[i][j]);}
 }
 
 
@@ -135,6 +330,23 @@ __jdial_syntactic_distance += __jdial_coeff_2_change;
 __jdial_syntactic_distance += __jdial_coeff_3_change;
 __jdial_syntactic_distance += __jdial_coeff_4_change;
 __jdial_syntactic_distance += __jdial_coeff_5_change;
+__jdial_syntactic_distance += __jdial_coeff_6_change;
+__jdial_syntactic_distance += __jdial_coeff_7_change;
+__jdial_syntactic_distance += __jdial_coeff_8_change;
+__jdial_syntactic_distance += __jdial_coeff_9_change;
+__jdial_syntactic_distance += __jdial_coeff_10_change;
+__jdial_syntactic_distance += __jdial_coeff_11_change;
+__jdial_syntactic_distance += __jdial_coeff_12_change;
+__jdial_syntactic_distance += __jdial_coeff_13_change;
+__jdial_syntactic_distance += __jdial_coeff_14_change;
+__jdial_syntactic_distance += __jdial_coeff_15_change;
+__jdial_syntactic_distance += __jdial_coeff_16_change;
+__jdial_syntactic_distance += __jdial_coeff_17_change;
+__jdial_syntactic_distance += __jdial_coeff_18_change;
+__jdial_syntactic_distance += __jdial_coeff_19_change;
+__jdial_syntactic_distance += __jdial_coeff_20_change;
+__jdial_syntactic_distance += __jdial_coeff_21_change;
+__jdial_syntactic_distance += __jdial_coeff_22_change;
 
 minimize(__jdial_semantic_distance + __jdial_syntactic_distance);
 }

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
 
 import javax.annotation.Generated;
 
@@ -18,10 +17,10 @@ import com.google.common.io.Resources;
 @Generated(value = "org.junit-tools-1.1.0")
 public class RepairEngineTest {
 
-	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-	private final PrintStream originalOut = System.out;
-	private final PrintStream originalErr = System.err;
+	private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+	private ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+	private PrintStream originalOut = System.out;
+	private PrintStream originalErr = System.err;
 	
 	@Before
 	public void setUpStreams() {
@@ -53,6 +52,22 @@ public class RepairEngineTest {
 		
 		String expectedRepairOutput = "{\"5\":\"int y = b + 4;\"}";
 		assertEquals(expectedRepairOutput, outContent.toString().trim());
+	}
+	
+	@Test
+	public void testBasicConditionalTracePoint() throws Exception {
+		String repairType = "tracePointCorrection";
+		String inputResourceName = "conditional/basic/tracePointCorrection1.json";
+		String filePath = Resources.getResource(inputResourceName).getPath();
+		String[] args = new String[] { repairType, filePath };
+		// default test
+		RepairEngine.main(args);
+		
+		String expectedRepairOutput = "{\"4\":\"int b = a + 2;\"}";
+		assertEquals(expectedRepairOutput, outContent.toString().trim());
+		System.setOut(originalOut);
+		System.out.println(outContent.toString());
+		System.out.println("fdsfdsfds");
 	}
 	
 	@After

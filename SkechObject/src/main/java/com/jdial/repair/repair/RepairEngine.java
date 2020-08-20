@@ -32,9 +32,10 @@ import javaparser.simpleJavaParser;
 import json_input.Correction;
 import json_input.Trace;
 import json_input.TracePoint;
-import sketch_input.CallSketch;
+import sketch_input.SketchInvoker;
 import sketch_input.Coefficient;
-import sketch_input.SketchResult;
+import sketch_input.SketchExecException;
+import sketch_input.SketchOutputParser;
 import sketch_input.SketchScript;
 import sketchobj.core.Function;
 import sketchobj.core.SketchObject;
@@ -42,6 +43,8 @@ import sketchobj.stmts.Statement;
 import visitor.JavaVisitor;
 
 public class RepairEngine {
+	
+	public static final String APP_NAME = "jdial";
 	
 	private static final String TRACE_POINT_CORRECTION_TYPE = "tracePointCorrection";
 	private static final String FUNC_CORRECTION_TYPE = "funcCorrection";
@@ -147,7 +150,14 @@ public class RepairEngine {
 		Map<String, Function> relevantFuncs = getRelevantFuncs(examples, code);
 		
 		SketchScript script = new SketchScript(code, targetFunc, examples, relevantFuncs);
-		InputStream sketchOutput = CallSketch.getSketchProc(script);
+		
+		
+		InputStream sketchOutput = null;
+		try {
+			sketchOutput = CallSketch.getSketchProc(script);
+		} catch (SketchExecException ex) {
+			
+		}
 		
 		Set<Statement> changedStmts = calculateChangedSrcStmts(sketchOutput, script);
 		outputLineChanges(changedStmts, parser, System.out);
@@ -259,7 +269,7 @@ public class RepairEngine {
 	private static Set<Statement> calculateChangedSrcStmts(
 			InputStream sketchOutput, SketchScript script) {
 		
-		Set<Coefficient> changedCoeffs = SketchResult.getChangedCoeffs(
+		Set<Coefficient> changedCoeffs = SketchOutputParser.parseChangedCoeffs(
 				sketchOutput, script.getCoefficients());
 		
 		logger.debug("Changed coefficients: " + changedCoeffs.toString());
