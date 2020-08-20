@@ -5,16 +5,12 @@ import java.io.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import repair.RepairEngine;
-
 /**
- * Used to invoke sketch processes on input scripts and log any errors
- *
+ * Used to invoke sketch processes on an input script and log any errors
  */
 public final class SketchInvoker {
 
 	private static final Logger logger = LoggerFactory.getLogger(SketchInvoker.class);
-	private static final String INPUT_FILE_SUFFIX = "sketch-script";
 	private static final String SKETCH_PROC_NAME = "sketch";
 
 	// A temporary file to hold the input script for the sketch process
@@ -25,22 +21,7 @@ public final class SketchInvoker {
 
 	private String sketchInputFilePath;
 
-	/**
-	 * Initializes a SketchInvoker to use a new temporary file
-	 * 
-	 * @throws IOException - if error creating temporary file for sketch input
-	 */
-	public static SketchInvoker createSketchInvoker() throws IOException {
-
-		File sketchInput = File.createTempFile(RepairEngine.APP_NAME, INPUT_FILE_SUFFIX);
-		return new SketchInvoker(
-			sketchInput.getAbsolutePath(),
-			new FileWriter(sketchInput),
-			Runtime.getRuntime(),
-			new ErrorScannerFactory()
-		);
-	}
-
+	//	Should use SketchInvokerFactory to instantiate
 	protected SketchInvoker(
 		String sketchInputFilePath,
 		FileWriter sketchInputWriter,
@@ -60,7 +41,7 @@ public final class SketchInvoker {
 	 * @return The standard output stream of the sketch process
 	 * @throws IOException - if error executing sketch process
 	 */
-	public InputStream invokeSketch(String script) throws IOException {
+	public InputStream invokeSketch(String script) {
 
 		this.writeContentsToInputFile(script);
 
@@ -71,18 +52,26 @@ public final class SketchInvoker {
 		return this.sketchProc.getInputStream();
 	}
 
-	private void writeContentsToInputFile(String contents) throws IOException {
-
+	private void writeContentsToInputFile(String contents) {
+		
 		logger.debug("Writing sketch input to " + this.sketchInputFilePath);
 
-		this.sketchInputWriter.write(contents);
-		this.sketchInputWriter.close();
+		try {
+			this.sketchInputWriter.write(contents);
+			this.sketchInputWriter.close();
+		} catch (IOException ex) {
+			throw new TempFileIOException(ex, logger);
+		}
 	}
 
-	private void execSketch() throws IOException {
+	private void execSketch() {
 
 		String sketchCmd = SKETCH_PROC_NAME + " " + this.sketchInputFilePath;
-		this.sketchProc = this.runtime.exec(sketchCmd, null);
+		try {
+			this.sketchProc = this.runtime.exec(sketchCmd, null);
+		} catch (IOException ex) {
+			throw new SketchExecException(ex, logger);
+		}
 	}
 
 	private void logSketchStdError() {

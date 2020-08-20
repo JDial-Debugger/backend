@@ -99,3 +99,26 @@ int __jdial_invoke_count = -1;
 08:47:06.820 [main] WARN  sketch.output.SketchOutputParser - [Ljava.lang.StackTraceElement;@69c81773
 10:26:57.162 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
 10:27:53.935 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
+10:50:02.301 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
+11:12:26.684 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
+11:12:26.703 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
+11:12:26.703 [main] ERROR sketch.input.SketchInvoker - Error occured creating temporary file to write sketch input into: java.io.IOException: File not found
+11:12:26.703 [main] ERROR sketch.input.SketchInvoker - [Ljava.lang.StackTraceElement;@7b50df34
+11:20:55.548 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
+11:20:55.558 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
+11:20:55.558 [main] ERROR sketch.input.SketchInvoker - Error occured creating temporary file to write sketch input into: java.io.IOException: File not found
+11:20:55.558 [main] ERROR sketch.input.SketchInvoker - [Ljava.lang.StackTraceElement;@7b50df34
+11:23:53.158 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
+11:23:53.169 [main] ERROR sketch.input.SketchInvoker - Error occured executing sketch: java.io.IOException: Could not find executable
+11:23:53.169 [main] ERROR sketch.input.SketchInvoker - [Ljava.lang.StackTraceElement;@34129c78
+11:23:53.173 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
+11:23:53.175 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
+11:23:53.175 [main] ERROR sketch.input.SketchInvoker - Error occured creating temporary file to write sketch input into: java.io.IOException: File not found
+11:23:53.175 [main] ERROR sketch.input.SketchInvoker - [Ljava.lang.StackTraceElement;@1b410b60
+11:24:08.497 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
+11:24:08.500 [main] ERROR sketch.input.SketchInvoker - Error occured creating temporary file to write sketch input into: java.io.IOException: Could not find executable
+11:24:08.500 [main] ERROR sketch.input.SketchInvoker - [Ljava.lang.StackTraceElement;@34129c78
+11:24:08.505 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
+11:24:08.510 [main] DEBUG sketch.input.SketchInvoker - Writing sketch input to /tmp/jdial-fer8ds8dsdf8r3j8
+11:24:08.510 [main] ERROR sketch.input.SketchInvoker - Error occured creating temporary file to write sketch input into: java.io.IOException: File not found
+11:24:08.511 [main] ERROR sketch.input.SketchInvoker - [Ljava.lang.StackTraceElement;@471a9022

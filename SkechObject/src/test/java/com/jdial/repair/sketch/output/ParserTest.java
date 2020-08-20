@@ -201,6 +201,8 @@ public class ParserTest {
 		} catch(IOException expectedException) {
 			//	should throw exception
 			return;
+		} catch (Exception ex) {
+			assertTrue("Threw the incorrect exception: " + ex.toString(), false);
 		}
 		assertTrue("Did not throw correct exception", false);
 
