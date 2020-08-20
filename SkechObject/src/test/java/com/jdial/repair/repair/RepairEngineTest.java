@@ -32,10 +32,14 @@ public class RepairEngineTest {
 	@Test
 	public void testMainTracePointBasic() throws Exception {
 		String repairType = "tracePointCorrection";
-		String json = Resources.toString(Resources.getResource("basicTracePointCorrection1.json"), Charset.defaultCharset());
-		String[] args = new String[] { repairType, json };
+		String inputResourceName = "basicTracePointCorrection1.json";
+		String filePath = Resources.getResource(inputResourceName).getPath();
+		String[] args = new String[] { repairType, filePath };
 		// default test
 		RepairEngine.main(args);
+		
+		String expectedRepairOutput = "{\"4\":\"int b = ((a) + 1) + 3;\"}";
+		assertEquals(expectedRepairOutput, outContent.toString().trim());
 	}
 	
 	@Test
