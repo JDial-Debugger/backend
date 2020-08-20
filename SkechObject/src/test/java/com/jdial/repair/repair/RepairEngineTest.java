@@ -1,60 +1,58 @@
 package repair;
 
-import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
-import java.util.*;
 
 import javax.annotation.Generated;
 
-import org.junit.Assert;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
 import com.google.common.io.Resources;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import json_input.Correction;
 
 @Generated(value = "org.junit-tools-1.1.0")
 public class RepairEngineTest {
 
+	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+	private final PrintStream originalOut = System.out;
+	private final PrintStream originalErr = System.err;
+	
+	@Before
+	public void setUpStreams() {
+		//System.setOut(new PrintStream(outContent));
+		//System.setErr(new PrintStream(errContent));
+	}
+
 	@Test
-	public void testMain() throws Exception {
+	public void testMainTracePointBasic() throws Exception {
 		String repairType = "tracePointCorrection";
 		String json = Resources.toString(Resources.getResource("basicTracePointCorrection1.json"), Charset.defaultCharset());
 		String[] args = new String[] { repairType, json };
 		// default test
 		RepairEngine.main(args);
+		System.out.println("out content");
+		System.out.println(outContent.toString());
 	}
 	
 	@Test
-	public void testMainFuncC() throws Exception {
+	public void testMainFuncCorrectionBasic() throws Exception {
 		String repairType = "funcCorrection";
 		String filePath= Resources.getResource("basicFuncCorrection1.json").getPath();
 		String[] args = new String[] { repairType, filePath };
 		// default test
 		RepairEngine.main(args);
+		System.out.println("out content");
+		System.out.println(outContent.toString());
 	}
 	
-	@Test
-	public void testRepairFuncCorrection() throws Exception {
-		Gson gson = new Gson();
-		String repairType = "tracePointCorrection";
-		String json = Resources.toString(Resources.getResource("basicTracePointCorrection1.json"), Charset.defaultCharset());
-		RepairEngine.repair(repairType, json, gson);
+	@After
+	public void restoreStreams() {
+		System.setOut(originalOut);
+		System.setOut(originalErr);
 	}
-
-	@Test
-	public void testAddExampleByTracePointRepair() throws Exception {
-	}
-
-	@Test
-	public void testAddExamplesByFuncRepair() throws Exception {
-	}
-
-	@Test
-	public void testGetExample() throws Exception {
-	}
+	
 }

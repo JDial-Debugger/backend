@@ -6,7 +6,6 @@ import java.io.PrintStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,7 +54,7 @@ public class RepairEngine {
 	
 	private enum RepairType {
 		TRACE_POINT,
-		FUNC_CORRECTION,
+		FUNC_CORRECTION
 	}
 	
 	/**
@@ -104,17 +103,20 @@ public class RepairEngine {
 	
 	
 	private static RepairType parseRepairType(String repairType) {
+		
 		RepairType type = null; 
-		try {
-			type = RepairType.valueOf(repairType);
-		} catch (IllegalArgumentException ex) {
+		if (repairType == TRACE_POINT_CORRECTION_TYPE) {
+			type = RepairType.TRACE_POINT;
+		} else if (repairType == FUNC_CORRECTION_TYPE) {
+			type = RepairType.FUNC_CORRECTION;
+		} else {
 			logger.error(Errors.invalidRepairType(repairType));
 		}
 		return type;
 		
 	}
 	
-	private static String readInputFile(String inputFileName) {\
+	private static String readInputFile(String inputFileName) {
 		
 		Scanner scnr = null;
 		try {
@@ -131,90 +133,31 @@ public class RepairEngine {
 		return fileContents;
 	}
 	
-	public static void repair(RepairType repairType, String json, Gson parser) {
+	private static void repair(RepairType repairType, String json, Gson parser) {
 		
 		JsonObject repairJson = JsonParser.parseString(json).getAsJsonObject();
 		
-		List<CorrectionExample> examples = new ArrayList<CorrectionExample>();
-		
-		addExamplesByRepairType(examples, repairType, repairJson, parser);
+		List<CorrectionExample> examples = createExamplesByRepairType(
+				repairType, repairJson, parser);
 		
 		String code = repairJson.get(JsonPropName.CODE).getAsString();
 		String targetFunc = repairJson.get(JsonPropName.TARGET_FUNC).getAsString();
-		Set<String> relevantFuncNames = getRelevantFuncs(examples);
-		logger.debug("Functions found in Traces: " + relevantFuncNames);
-		Map<String, Function> relevantFuncs = parseJava(code, relevantFuncNames);
-		SketchScript script = new SketchScript(code, targetFunc, examples, relevantFuncs);
 		
+		Map<String, Function> relevantFuncs = getRelevantFuncs(examples, code);
+		
+		SketchScript script = new SketchScript(code, targetFunc, examples, relevantFuncs);
 		InputStream sketchOutput = CallSketch.getSketchProc(script);
-		Set<Coefficient> changedCoeffs = 
-				SketchResult.getChangedCoeffs(sketchOutput, script.getCoefficients());
-		logger.info(changedCoeffs.toString());
-		Set<Statement> changedStmts = getChangeStmts(changedCoeffs);
+		
+		Set<Statement> changedStmts = calculateChangedSrcStmts(sketchOutput, script);
 		outputLineChanges(changedStmts, new Gson(), System.out);
 	}
 	
-	/**
-	 * Given a set of coefficients, find the containing statements and outputs
-	 * a json object where each property is a line number and each value
-	 * is the str value of that statement
-	 * @param coeffs - the coefficients to apply changes for
-	 */
-	private static void outputLineChanges(Set<Statement> stmts, Gson gson, PrintStream output) {
-		
-		Map<Integer, String> lineToContents = new HashMap<Integer, String>();
-		for (Statement stmt : stmts) {
-			lineToContents.put(stmt.getLineNumber(), stmt.toString());
-		}
-		output.println(gson.toJson(lineToContents));
-	}
-	
-	private static Set<Statement> getChangeStmts(Set<Coefficient> coeffs) {
-		
-		Set<Statement> changeStmts = new HashSet<Statement>();
-		for (Coefficient coeff : coeffs) {
-			changeStmts.add(coeff.getParentStmt());
-		}
-		return changeStmts;
-		
-	}
-	
-	private static Map<String, Function> parseJava(String source, Set<String> relevantFuncNames) {
-		
-		ANTLRInputStream input = new ANTLRInputStream(source);
-		simpleJavaLexer lexer = new simpleJavaLexer(input);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		simpleJavaParser parser = new simpleJavaParser(tokens);
-		Map<String, Function> relevantFuncs = new HashMap<String, Function>();
-		
-		for (String funcName : relevantFuncNames) {
-			SketchObject funcAst = new JavaVisitor(funcName).visit(parser.compilationUnit());
-			
-			relevantFuncs.put(funcName, (Function) funcAst);
-			
-		}
-		return relevantFuncs;
-	}
-	
-	/**
-	 * Gets all function names invoked during execution of any of the examples
-	 * TODO: does not work for overloaded methods
-	 * @param examples - the examples to find function invocations in
-	 * @return - All function names invoked
-	 */
-	private static Set<String> getRelevantFuncs(List<CorrectionExample> examples) {
-		Set<String> funcs = new HashSet<String>();
-		for (CorrectionExample example : examples) {
-			funcs.addAll(example.getProgramTrace().getCalledFuncs());
-		}
-		return funcs;
-	}
-	
-	private static void addExamplesByRepairType(
-			List<CorrectionExample> examples,
+	private static List<CorrectionExample> createExamplesByRepairType(
 			RepairType type,
 			JsonObject repairJson,
 			Gson gson) {
+		
+		List<CorrectionExample> examples = new ArrayList<CorrectionExample>();
 		
 		if (type == RepairType.FUNC_CORRECTION) {
 			logger.info("Function Correction Repair Initiating...");
@@ -225,6 +168,8 @@ public class RepairEngine {
 		} else {
 			throw new IllegalArgumentException("Invalid repair type provided");
 		}
+		
+		return examples;
 		
 	}
 	
@@ -256,16 +201,14 @@ public class RepairEngine {
 		JsonElement correctionsJson = repairJson.get("corrections");
 		String targetFunc = gson.fromJson(targetFuncJson, String.class);
 		
-		Type correctionColType = 
-				new TypeToken<Collection<Correction>>() {}.getType();
-		Correction[] corrections = gson.fromJson(correctionsJson, 
-														Correction[].class);
+		Correction[] corrections = gson.fromJson(correctionsJson, Correction[].class);
 		for (Correction correction: corrections) {
 			
 			examples.add(getExample(correction, targetFunc));
 		}
 		
 	}
+	
 	/**
 	 * Converts a correction and its targetFunction to a general example type
 	 * that can be used for the repair
@@ -288,11 +231,79 @@ public class RepairEngine {
 			return new CorrectionExample(curTrace, expectedVars);
 	}
 	
-/*	
-	private boolean doExecutionsMatchCode(List<ProgramExecution> executions) {
-		return false;
+	private static Map<String, Function> getRelevantFuncs(
+			List<CorrectionExample> examples, 
+			String code) {
+		
+		Set<String> relevantFuncNames = getRelevantFuncNames(examples);
+		logger.debug("Functions found in Traces: " + relevantFuncNames);
+		Map<String, Function> relevantFuncs = parseJava(code, relevantFuncNames);
+		return relevantFuncs;
 	}
-*/	
 	
-
+	/**
+	 * Gets all function names invoked during execution of any of the examples
+	 * TODO: does not work for overloaded methods
+	 * @param examples - the examples to find function invocations in
+	 * @return - All function names invoked
+	 */
+	private static Set<String> getRelevantFuncNames(List<CorrectionExample> examples) {
+		Set<String> funcs = new HashSet<String>();
+		for (CorrectionExample example : examples) {
+			funcs.addAll(example.getProgramTrace().getCalledFuncs());
+		}
+		return funcs;
+	}
+	
+	private static Set<Statement> calculateChangedSrcStmts(
+			InputStream sketchOutput, SketchScript script) {
+		
+		Set<Coefficient> changedCoeffs = SketchResult.getChangedCoeffs(
+				sketchOutput, script.getCoefficients());
+		
+		logger.debug("Changed coefficients: " + changedCoeffs.toString());
+		return getChangeStmts(changedCoeffs);
+	}
+	
+	private static Set<Statement> getChangeStmts(Set<Coefficient> coeffs) {
+		
+		Set<Statement> changeStmts = new HashSet<Statement>();
+		for (Coefficient coeff : coeffs) {
+			changeStmts.add(coeff.getParentStmt());
+		}
+		return changeStmts;
+		
+	}
+	
+	/**
+	 * Given a set of coefficients, find the containing statements and outputs
+	 * a json object where each property is a line number and each value
+	 * is the str value of that statement
+	 * @param coeffs - the coefficients to apply changes for
+	 */
+	private static void outputLineChanges(Set<Statement> stmts, Gson gson, PrintStream output) {
+		
+		Map<Integer, String> lineToContents = new HashMap<Integer, String>();
+		for (Statement stmt : stmts) {
+			lineToContents.put(stmt.getLineNumber(), stmt.toString());
+		}
+		output.println(gson.toJson(lineToContents));
+	}
+	
+	private static Map<String, Function> parseJava(String source, Set<String> relevantFuncNames) {
+		
+		ANTLRInputStream input = new ANTLRInputStream(source);
+		simpleJavaLexer lexer = new simpleJavaLexer(input);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		simpleJavaParser parser = new simpleJavaParser(tokens);
+		Map<String, Function> relevantFuncs = new HashMap<String, Function>();
+		
+		for (String funcName : relevantFuncNames) {
+			SketchObject funcAst = new JavaVisitor(funcName).visit(parser.compilationUnit());
+			
+			relevantFuncs.put(funcName, (Function) funcAst);
+			
+		}
+		return relevantFuncs;
+	}
 }

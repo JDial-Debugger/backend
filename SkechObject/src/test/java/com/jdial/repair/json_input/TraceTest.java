@@ -1,6 +1,5 @@
 package json_input;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Field;
