@@ -15,7 +15,6 @@ public class LibraryException extends RuntimeException {
 		super(message + ": " + cause.toString());
 		this.initCause(cause);
 		this.setStackTrace(cause.getStackTrace());
-		logger.error(this.getMessage());
-		logger.error(this.getStackTrace().toString());
+		ExceptionLogger.logErrorException(this, logger);
 	}
 }
