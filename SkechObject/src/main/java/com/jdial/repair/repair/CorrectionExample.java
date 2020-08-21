@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import constants.Json;
 import json_input.Trace;
 import json_input.TracePoint;
 import sketch.input.SketchScript;
@@ -37,6 +38,11 @@ public class CorrectionExample {
 			this.correctVarValues.put(
 					entry.getKey(), new ExprConstInt(entry.getValue()));
 		}
+	}
+	
+	public CorrectionExample(Trace programTrace, int expectedReturnVal) {
+		HashMap<String, Integer> correctVarVals = new HashMap<String, Integer>();
+		correctVarVals.put(Json.RETURN_VAR_NAME, expectedReturnVal);
 	}
 
 	/**

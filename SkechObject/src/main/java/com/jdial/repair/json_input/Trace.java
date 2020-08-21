@@ -1,19 +1,15 @@
 package json_input;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import constants.Errors;
-import jsonparser.jsonParser.TraceContext;
-import sketchobj.expr.ExprConstant;
 
 public class Trace implements Frameable {
 
@@ -27,6 +23,10 @@ public class Trace implements Frameable {
 	
 	public Trace(List<TracePoint> tracePoints) {
 		this.tracePoints = tracePoints;
+	}
+	
+	public Trace(TracePoint[] tracePoints) {
+		this.tracePoints = Arrays.asList(tracePoints);
 	}
 	
 	/**
@@ -99,7 +99,7 @@ public class Trace implements Frameable {
 	 * @param targetFuncCallLine - The line number that the target function is called on
 	 * @return 
 	 */
-	public void trimTracePoints(String targetFunc, Integer bound, Integer callLine) {
+	public void removeTracePointsOutsideCallStack(String targetFunc, Integer bound, Integer callLine) {
 		
 		if (targetFunc == null) {
 			throw new IllegalArgumentException("Target function is null");
@@ -167,9 +167,9 @@ public class Trace implements Frameable {
 	 * Uses function at bound for target function
 	 * @param bound
 	 */
-	public void trimTracePoints(Integer bound) {
+	public void removeTracePointsOutsideCallStack(Integer bound) {
 		String targetFunc = this.tracePoints.get(bound).getFuncName();
-		this.trimTracePoints(targetFunc, bound, null);
+		this.removeTracePointsOutsideCallStack(targetFunc, bound, null);
 	}
 	
 	/**

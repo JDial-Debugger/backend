@@ -53,7 +53,7 @@ public class TraceTest {
 		String targetFunc = "SimpleJava";
 		int bound = 5;
 		
-		testSubject.trimTracePoints(targetFunc, bound, null);
+		testSubject.removeTracePointsOutsideCallStack(targetFunc, bound, null);
 		
 		final Field field = testSubject.getClass().getDeclaredField("tracePoints");
         field.setAccessible(true);
@@ -72,7 +72,7 @@ public class TraceTest {
 		String targetFunc = "SimpleJava";
 		int callLine = 10;
 		
-		testSubject.trimTracePoints(targetFunc, null, callLine);
+		testSubject.removeTracePointsOutsideCallStack(targetFunc, null, callLine);
 		
 		final Field field = testSubject.getClass().getDeclaredField("tracePoints");
         field.setAccessible(true);
