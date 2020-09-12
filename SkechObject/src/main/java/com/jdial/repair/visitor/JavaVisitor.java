@@ -11,7 +11,7 @@ import sketchobj.stmts.*;
 
 public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 
-	private String targetFunc;
+	private String functionToParse;
 
 	//added 11/18
 	public static Queue<String> methodNames = new LinkedList<>();
@@ -19,10 +19,13 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	
 	public JavaVisitor() {}
 	
-	public JavaVisitor(String targetFunc) {
-		this.targetFunc = targetFunc;
+	public JavaVisitor(String functionToParse) {
+		this.functionToParse = functionToParse;
 	}
 	
+	public void setFunctionToParse(String functionToParse) {
+		this.functionToParse = functionToParse;
+	}
 	
 	/**
 	 * compilationUnit : packageDeclaration? importDeclaration* typeDeclaration*
@@ -39,7 +42,7 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	@Override
 	public SketchObject visitClassBody(simpleJavaParser.ClassBodyContext ctx) {
 		for (int i = 0; i < ctx.classBodyDeclaration().size(); i++) {
-			if (targetFunc == null || targetFunc.equals(ctx.classBodyDeclaration()
+			if (functionToParse == null || functionToParse.equals(ctx.classBodyDeclaration()
 					.get(i).classMemberDeclaration().methodDeclaration().methodHeader()
 					.getChild(1).getChild(0).getText())) {
 				return visit(ctx.classBodyDeclaration().get(i).classMemberDeclaration().methodDeclaration());

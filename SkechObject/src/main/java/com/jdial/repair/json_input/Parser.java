@@ -10,6 +10,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
+import repair.VarCorrections;
+import repair.VarCorrectionsFactory;
+
 public class Parser {
 
 	private class JsonPropName {
@@ -19,9 +22,11 @@ public class Parser {
 
 	private Gson gson;
 	private JsonObject repairJson;
+	private VarCorrectionsFactory varCorrectionsFactory;
 
-	public Parser(Gson gson) {
+	public Parser(Gson gson, VarCorrectionsFactory varCorrectionsFactory) {
 		this.gson = gson;
+		this.varCorrectionsFactory = varCorrectionsFactory;
 	}
 
 	public String parseCode(String jsonInput) {
@@ -42,7 +47,7 @@ public class Parser {
 
 		Integer correctionIdx = this.getCorrectionIdx(repairJson);
 
-		Map<String, Integer> expectedVars = this.getExpectedVars(repairJson);
+		VarCorrections expectedVars = this.getExpectedVars(repairJson);
 
 		return new TracePointRepairInput(trace, correctionIdx, expectedVars);
 	}
@@ -56,10 +61,12 @@ public class Parser {
 		return this.gson.fromJson(repairJson.get("correctionIdx"), Integer.class);
 	}
 
-	private Map<String, Integer> getExpectedVars(JsonObject repairJson) {
+	private VarCorrections getExpectedVars(JsonObject repairJson) {
 		Type expectedVarsType = new TypeToken<Map<String, Integer>>() {
 		}.getType();
-		return gson.fromJson(repairJson.get("expectedVars"), expectedVarsType);
+		JsonElement elem = repairJson.get("expectedVars");
+		Map<String, Integer> varNameToValue = gson.fromJson(elem, expectedVarsType);
+		return this.varCorrectionsFactory.getVarCorrections(varNameToValue);
 	}
 
 	public FuncRepairInput parseFuncRepairInput(String jsonInput) {

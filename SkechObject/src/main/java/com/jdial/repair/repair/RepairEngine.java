@@ -122,8 +122,8 @@ public class RepairEngine {
 
 		List<CorrectionExample> examples = this.exampleFactory.getExampleList(input);
 
-		String code = repairJson.get(JsonPropName.CODE).getAsString();
-		String targetFunc = repairJson.get(JsonPropName.TARGET_FUNC).getAsString();
+		String code = inputParser.parseCode(input.json);
+		String targetFunc = inputParser.parseTargetFunc(input.json);
 
 		Map<String, Function> relevantFuncs = getRelevantFuncs(examples, code);
 
@@ -199,22 +199,5 @@ public class RepairEngine {
 			lineToContents.put(stmt.getLineNumber(), stmt.toString());
 		}
 		output.println(gson.toJson(lineToContents));
-	}
-
-	private static Map<String, Function> parseJava(String source, Set<String> relevantFuncNames) {
-
-		ANTLRInputStream input = new ANTLRInputStream(source);
-		simpleJavaLexer lexer = new simpleJavaLexer(input);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		simpleJavaParser parser = new simpleJavaParser(tokens);
-		Map<String, Function> relevantFuncs = new HashMap<String, Function>();
-
-		for (String funcName : relevantFuncNames) {
-			SketchObject funcAst = new JavaVisitor(funcName).visit(parser.compilationUnit());
-
-			relevantFuncs.put(funcName, (Function) funcAst);
-
-		}
-		return relevantFuncs;
 	}
 }

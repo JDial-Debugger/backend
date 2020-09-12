@@ -23,7 +23,7 @@ public class CorrectionExampleFactory {
 	public List<CorrectionExample> getExampleList(Input input) {
 
 		Parser inputParser = this.inputParserFactory.getParser();
-
+ 
 		if (input.repairType == RepairType.TRACE_POINT) {
 			TracePointRepairInput tracePointInput
 				= inputParser.parseTracePointRepairInput(input.json);
