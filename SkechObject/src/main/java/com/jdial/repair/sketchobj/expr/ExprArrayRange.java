@@ -67,20 +67,24 @@ public class ExprArrayRange extends Expression {
 	private int line;
 	private boolean unchecked = false;
 
+	public ExprArrayRange(Expression base2, RangeLen flatRl, int line) {
+		this(base2, Collections.singletonList(flatRl), line);
+	}
+
 	public ExprArrayRange(Expression base, List<RangeLen> rl, int i) {
 		this(base, rl, false, i);
 	}
 
-	public ExprArrayRange(String s, int i, int line) {
-		this(new ExprVar(s), new RangeLen(new ExprConstInt(i), null), false, line);
-	}
-
-	public ExprArrayRange(String s, Expression i, int line) {
-		this(new ExprVar(s), new RangeLen(i, null), false, line);
-	}
-
 	public ExprArrayRange(String s, String i, int line) {
 		this(new ExprVar(s), new RangeLen(new ExprVar(i), null), false, line);
+	}
+
+	public ExprArrayRange(Expression nbase, RangeLen rangeLen, boolean unchecked2, int line) {
+		this(nbase, Collections.singletonList(rangeLen), unchecked2, line);
+	}
+
+	public ExprArrayRange(Expression base, List<RangeLen> rl) {
+		this(base, rl, false, 0);
 	}
 
 	/**
@@ -98,22 +102,6 @@ public class ExprArrayRange extends Expression {
 		this.index = rl.get(rl.size() - 1);
 		this.line = line;
 		setUnchecked(unchecked);
-	}
-
-	public ExprArrayRange(Expression base, List<RangeLen> rl) {
-		this(base, rl, false, 0);
-	}
-
-	public ExprArrayRange(Expression base, Expression offset, boolean unchecked, int line) {
-		this(base, Collections.singletonList(new RangeLen(offset)), unchecked, line);
-	}
-
-	public ExprArrayRange(Expression nbase, RangeLen rangeLen, boolean unchecked2, int line) {
-		this(nbase, Collections.singletonList(rangeLen), unchecked2, line);
-	}
-
-	public ExprArrayRange(Expression base2, RangeLen flatRl, int line) {
-		this(base2, Collections.singletonList(flatRl), line);
 	}
 
 	/**
