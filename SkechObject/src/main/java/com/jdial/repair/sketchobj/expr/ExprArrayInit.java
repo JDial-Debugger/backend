@@ -11,20 +11,19 @@ import sketch.input.Coefficient;
 
 /**
  * An array initializer. This is an expression like the right hand side of
- * <code>a[3] = {1, 2, 3}</code>. Each array initializer contains only a single
- * dimension; multi-dimensional arrays are supported by nested initializers.
+ * <code>a[3] = {1, 2, 3}</code>. Each array initializer contains only a single dimension;
+ * multi-dimensional arrays are supported by nested initializers.
  *
- * NOTE that the current implementation (first checkin) assumes that all of the
- * literals are specified in the array initialization. It does not currently
- * allow symbolic arrays as members -- for example,
+ * NOTE that the current implementation (first checkin) assumes that all of the literals are
+ * specified in the array initialization. It does not currently allow symbolic arrays as members --
+ * for example,
  *
  * <code>
  * A[1] = { 1 );  B[1][1] = { A };
  * </code>
  *
- * If this behavior is going to be supported, you'll need to adjust (at least)
- * the constructor of this class, as well as the semantic checker and
- * GenerateCopies.
+ * If this behavior is going to be supported, you'll need to adjust (at least) the constructor of
+ * this class, as well as the semantic checker and GenerateCopies.
  *
  * @author Bill Thies &lt;thies@mit.edu&gt;
  * @version $Id$
@@ -34,10 +33,9 @@ public class ExprArrayInit extends Expression {
 	private List<Expression> elements;
 
 	/**
-	 * number of dimensions that are initialized in this. If all the
-	 * <elements> are plain Expressions, then dims=1. If the elements are also
-	 * array initializers, then dims=1+elem.dims (where "elem" is one of the
-	 * children.
+	 * number of dimensions that are initialized in this. If all the <elements> are plain
+	 * Expressions, then dims=1. If the elements are also array initializers, then dims=1+elem.dims
+	 * (where "elem" is one of the children.
 	 */
 	private int dims;
 	public Expression length;
@@ -45,12 +43,6 @@ public class ExprArrayInit extends Expression {
 	public ExprArrayInit(Expression length, int k) {
 		this.length = length;
 		this.elements = new ArrayList<Expression>();
-	}
-
-	public ExprArrayInit(Expression singleElem) {
-		this.elements = new ArrayList<Expression>(1);
-		singleElem.setParent(this);
-		elements.add(singleElem);
 	}
 
 	public ExprArrayInit(List<Expression> elements) {
@@ -79,8 +71,7 @@ public class ExprArrayInit extends Expression {
 	}
 
 	/**
-	 * Returns the components of this. The returned list is a list of
-	 * expressions.
+	 * Returns the components of this. The returned list is a list of expressions.
 	 */
 	public List<Expression> getElements() {
 		return elements;
@@ -92,8 +83,7 @@ public class ExprArrayInit extends Expression {
 	}
 
 	/**
-	 * Determine if this expression can be assigned to. Array initializers can
-	 * never be assigned to.
+	 * Determine if this expression can be assigned to. Array initializers can never be assigned to.
 	 *
 	 * @return always false
 	 */
@@ -164,9 +154,9 @@ public class ExprArrayInit extends Expression {
 	public Set<String> getVarNames() {
 		return new HashSet<String>();
 	}
-	
+
 	@Override
-	public void insertCoeffs(List<Coefficient> coeffs) {}
-	
+	public void insertCoeffs(List<Coefficient> coeffs) {
+	}
 
 }
