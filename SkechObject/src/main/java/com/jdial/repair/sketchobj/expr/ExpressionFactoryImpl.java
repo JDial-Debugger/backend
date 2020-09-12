@@ -2,6 +2,8 @@ package sketchobj.expr;
 
 import java.util.List;
 
+import sketchobj.expr.ExprArrayRange.RangeLen;
+
 public class ExpressionFactoryImpl implements ExpressionFactory {
 
 	@Override
@@ -10,9 +12,13 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	}
 
 	@Override
-	public ExprArrayRange getArrayRange() {
-		// TODO Auto-generated method stub
-		return null;
+	public ExprArrayRange getArrayRange(String arrayVarName, String idxVarName) {
+		return new ExprArrayRange(arrayVarName, idxVarName, 0);
+	}
+	
+	@Override
+	public ExprArrayRange getArrayRange(Expression arrayVarExpr, Expression idxExpr) {
+		return new ExprArrayRange(arrayVarExpr, idxExpr, 0);
 	}
 
 	@Override

@@ -67,14 +67,15 @@ public class ExprArrayRange extends Expression {
 	private int line;
 	private boolean unchecked = false;
 
-	public ExprArrayRange(Expression base2, RangeLen flatRl, int line) {
-		this(base2, Collections.singletonList(flatRl), line);
+	public ExprArrayRange(Expression base, Expression flatRl, int line) {
+		this(base, Collections.singletonList(new RangeLen(flatRl)), line);
 	}
 
 	public ExprArrayRange(Expression base, List<RangeLen> rl, int i) {
 		this(base, rl, false, i);
 	}
 
+	// TODO line is always passed as 0: figure out if we can get rid of line
 	public ExprArrayRange(String s, String i, int line) {
 		this(new ExprVar(s), new RangeLen(new ExprVar(i), null), false, line);
 	}

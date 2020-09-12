@@ -5,7 +5,8 @@ import java.util.List;
 public interface ExpressionFactory {
 	
 	public ExprArrayInit getArrayInit(List<Expression> elements);
-	public ExprArrayRange getArrayRange();
+	public ExprArrayRange getArrayRange(String arrayVarName, String idxVarName);
+	public ExprArrayRange getArrayRange(Expression arrayVarExpr, Expression idxExpr);
 	public ExprBinary getBinary();
 	public ExprConstant getConstant();
 	public ExprConstInt getConstInt();

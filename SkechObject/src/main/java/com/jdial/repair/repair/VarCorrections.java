@@ -29,6 +29,7 @@ public class VarCorrections implements Iterable<VarCorrections.VarCorrection>{
 		this.corrections.add(correction);
 	}
 	
+	//TODO remove this if no need for it
 	@Override
 	public Iterator<VarCorrection> iterator() {
 		return this.corrections.iterator();
