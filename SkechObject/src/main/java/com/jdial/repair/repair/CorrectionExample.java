@@ -8,10 +8,10 @@ import constants.Json;
 import json_input.Trace;
 import json_input.TracePoint;
 import sketch.input.SketchScript;
-import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprConstant;
 import sketchobj.expr.ExprVar;
+import sketchobj.expr.binary.ExprBinary2;
 import sketchobj.stmts.StmtAssert;
 import sketchobj.stmts.StmtBlock;
 
@@ -50,10 +50,10 @@ public class CorrectionExample {
 		StmtBlock asserts = new StmtBlock();
 		for (VarCorrections.VarCorrection correction : this.varCorrections) {
 
-			ExprBinary equals
-				= new ExprBinary(
+			ExprBinary2 equals
+				= new ExprBinary2(
 					new ExprVar(SketchScript.getFinalName(targetFunc, correction.varName)),
-					ExprBinary.BINOP_EQ,
+					ExprBinary2.BINOP_EQ,
 					correction.valueExpr
 				);
 			asserts.addStmt(new StmtAssert(equals));

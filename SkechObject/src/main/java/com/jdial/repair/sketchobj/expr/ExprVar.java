@@ -92,9 +92,4 @@ public class ExprVar extends Expression
 	
 	@Override
 	public void insertCoeffs(List<Coefficient> coeffs) {}
-	@Override
-	public boolean equals(Expression other) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 }

@@ -30,13 +30,6 @@ public class ExprString extends Expression{
 		return null;
 	}
 
-
-	@Override
-	public boolean equals(Expression other) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	@Override
 	public List<ExternalFunction> extractExternalFuncs(List<ExternalFunction> externalFuncNames) {
 		// TODO Auto-generated method stub

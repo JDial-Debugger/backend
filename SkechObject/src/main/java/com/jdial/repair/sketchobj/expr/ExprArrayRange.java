@@ -119,12 +119,6 @@ public class ExprArrayRange extends Expression {
 		return unchecked;
 	}
 
-	// TODO replace with copy constructor
-	@Override
-	public ExprArrayRange clone() {
-		return new ExprArrayRange(this.base.clone(), this.index, this.unchecked, this.line);
-	}
-
 	public Expression getOffset() {
 		RangeLen rl = index;
 		assert !rl.hasLen();
@@ -244,12 +238,6 @@ public class ExprArrayRange extends Expression {
 	public ConstData replaceConst(int index) {
 		// TODO Auto-generated method stub
 		return this.replaceConst(index, "");
-	}
-
-	@Override
-	public boolean equals(Expression other) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override

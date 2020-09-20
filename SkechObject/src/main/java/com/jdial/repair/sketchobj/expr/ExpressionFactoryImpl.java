@@ -2,7 +2,7 @@ package sketchobj.expr;
 
 import java.util.List;
 
-import sketchobj.expr.ExprArrayRange.RangeLen;
+import sketchobj.expr.binary.ExprBinary2;
 
 public class ExpressionFactoryImpl implements ExpressionFactory {
 
@@ -22,7 +22,7 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	}
 
 	@Override
-	public ExprBinary getBinary() {
+	public ExprBinary2 getBinary() {
 		// TODO Auto-generated method stub
 		return null;
 	}

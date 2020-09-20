@@ -61,15 +61,6 @@ public class ExprArrayInit extends Expression {
 		}
 	}
 
-	@Override
-	public ExprArrayInit clone() {
-		List<Expression> newList = new ArrayList<>();
-		for (int i = 0; i < this.elements.size(); i++) {
-			newList.add(this.elements.get(i).clone());
-		}
-		return new ExprArrayInit(newList);
-	}
-
 	/**
 	 * Returns the components of this. The returned list is a list of expressions.
 	 */
@@ -129,12 +120,6 @@ public class ExprArrayInit extends Expression {
 	public ConstData replaceConst(int index, String string) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public boolean equals(Expression other) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override

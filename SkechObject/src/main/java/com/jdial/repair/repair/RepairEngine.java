@@ -119,7 +119,7 @@ public class RepairEngine {
 
 		Input input = this.inputReader.readInput(args);
 		json_input.Parser inputParser = this.parserFactory.getParser();
-
+		
 		List<CorrectionExample> examples = this.exampleFactory.getExampleList(input);
 
 		String code = inputParser.parseCode(input.json);

@@ -120,13 +120,6 @@ public class ExprFuncCall extends Expression
 	}
 
 	@Override
-	public boolean equals(Expression other) {
-		if(this.name.equals(((ExprFuncCall)other).name))
-		return true;
-		return false;
-	}
-
-	@Override
 	public List<ExternalFunction> extractExternalFuncs(List<ExternalFunction> externalFuncNames) {
 		for(ExternalFunction ef: externalFuncNames){
 			if(ef.getName().equals(this.name))

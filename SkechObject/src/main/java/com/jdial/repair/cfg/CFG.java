@@ -19,10 +19,10 @@ import sketchobj.core.Parameter;
 import sketchobj.core.Type;
 import sketchobj.core.TypeArray;
 import sketchobj.expr.ExprArrayRange;
-import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprUnary;
 import sketchobj.expr.ExprVar;
 import sketchobj.expr.Expression;
+import sketchobj.expr.binary.ExprBinary2;
 import sketchobj.stmts.*;
 
 // Assume each line has at most one Statement

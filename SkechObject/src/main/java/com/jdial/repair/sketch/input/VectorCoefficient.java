@@ -8,11 +8,11 @@ import sketchobj.core.Function;
 import sketchobj.core.Function.FcnType;
 import sketchobj.core.Parameter;
 import sketchobj.core.TypePrimitive;
-import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprSketchHole;
 import sketchobj.expr.ExprVar;
 import sketchobj.expr.Expression;
+import sketchobj.expr.binary.ExprBinary2;
 import sketchobj.stmts.Statement;
 import sketchobj.stmts.StmtBlock;
 import sketchobj.stmts.StmtFuncDecl;
@@ -93,7 +93,7 @@ public class VectorCoefficient extends Coefficient {
 	 * @return - A new expression containing toModify added with this
 	 * times a scalar
 	 */
-	public ExprBinary addToExpr(
+	public ExprBinary2 addToExpr(
 			Expression toModify, 
 			List<Coefficient> coeffs, 
 			TypePrimitive type) {
@@ -102,12 +102,12 @@ public class VectorCoefficient extends Coefficient {
 				new ScalarCoefficient(coeffs.size(), type, this.lineNumber, true);
 		coeffs.add(changeCoeff);
 		
-		ExprBinary coeffBinaryExpr = 
+		ExprBinary2 coeffBinaryExpr = 
 				changeCoeff.modifyExpr(this.getFuncCall());
 		
-		this.parentExpr = new ExprBinary(
+		this.parentExpr = new ExprBinary2(
 				toModify,
-				ExprBinary.BINOP_ADD, 
+				ExprBinary2.BINOP_ADD, 
 				coeffBinaryExpr,
 				this.lineNumber);
 		

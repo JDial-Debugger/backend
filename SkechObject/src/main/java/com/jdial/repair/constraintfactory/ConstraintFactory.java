@@ -18,6 +18,7 @@ import json_input.Trace;
 import sketchobj.core.*;
 import sketchobj.core.Function.FcnType;
 import sketchobj.expr.*;
+import sketchobj.expr.binary.ExprBinary2;
 import sketchobj.stmts.*;
 import cfg.*;
 
@@ -542,7 +543,7 @@ public class ConstraintFactory {
 		for (String str : tbi) {
 			sts = new ArrayList<>();
 			for (int p : Global.primes) {
-				ExprBinary rhs = new ExprBinary(5, new ExprVar(str), new ExprConstInt(p), line);
+				ExprBinary2 rhs = new ExprBinary2(5, new ExprVar(str), new ExprConstInt(p), line);
 				Statement assign
 					= new StmtAssign(new ExprVar(str + Integer.toString(p)), rhs, line);
 				sts.add(assign);
@@ -553,7 +554,7 @@ public class ConstraintFactory {
 			dupStmt.add(update);
 
 			Expression cond
-				= new ExprBinary(8, new ExprVar(str + "ini"), new ExprConstInt(0), line);
+				= new ExprBinary2(8, new ExprVar(str + "ini"), new ExprConstInt(0), line);
 			Statement cons = new StmtBlock(sts);
 			dupStmt.add(cons);
 			Statement ifthen = new StmtIfThen(cond, cons, null, line);
@@ -582,8 +583,8 @@ public class ConstraintFactory {
 				if (si instanceof StmtAssign) {
 					boolean keepActual = true;
 					boolean isAdd
-						= ((StmtAssign) si).getOp() == ExprBinary.BINOP_ADD
-							|| ((StmtAssign) si).getOp() == ExprBinary.BINOP_SUB;
+						= ((StmtAssign) si).getOp() == ExprBinary2.BINOP_ADD
+							|| ((StmtAssign) si).getOp() == ExprBinary2.BINOP_SUB;
 					Expression l = ((StmtAssign) si).getLHS();
 					if (
 						Global.facts.get(si.getLineNumber()) == null
@@ -632,8 +633,8 @@ public class ConstraintFactory {
 							StmtAssign reset
 								= new StmtAssign(
 									lhs,
-									new ExprBinary(
-										ExprBinary.BINOP_MOD,
+									new ExprBinary2(
+										ExprBinary2.BINOP_MOD,
 										lhs,
 										new ExprConstInt(p),
 										newSt.getLineNumber()
@@ -827,10 +828,10 @@ public class ConstraintFactory {
 			changeExpr(newExpr.getBase(), p);
 			return newExpr;
 		}
-		if (e instanceof ExprBinary) {
-			Expression l = ConvertExpr(((ExprBinary) e).getLeft(), p);
-			Expression r = ConvertExpr(((ExprBinary) e).getRight(), p);
-			return modExpr(new ExprBinary(((ExprBinary) e).getOp(), l, r, e.lineNumber), p);
+		if (e instanceof ExprBinary2) {
+			Expression l = ConvertExpr(((ExprBinary2) e).getLeft(), p);
+			Expression r = ConvertExpr(((ExprBinary2) e).getRight(), p);
+			return modExpr(new ExprBinary2(((ExprBinary2) e).getOp(), l, r, e.lineNumber), p);
 		}
 		if (e instanceof ExprVar) {
 			// System.err.println("var is " + ((ExprVar) e).getName());
@@ -870,9 +871,9 @@ public class ConstraintFactory {
 		if (e instanceof ExprArrayRange) {
 			changeExpr(((ExprArrayRange) e).getBase(), p);
 		}
-		if (e instanceof ExprBinary) {
-			changeExpr(((ExprBinary) e).getLeft(), p);
-			changeExpr(((ExprBinary) e).getRight(), p);
+		if (e instanceof ExprBinary2) {
+			changeExpr(((ExprBinary2) e).getLeft(), p);
+			changeExpr(((ExprBinary2) e).getRight(), p);
 			return;
 		}
 		if (e instanceof ExprVar) {
@@ -889,11 +890,11 @@ public class ConstraintFactory {
 		}
 	}
 
-	private static ExprBinary modExpr(Expression e, int p) {
+	private static ExprBinary2 modExpr(Expression e, int p) {
 		Expression left = e;
-		int op = ExprBinary.BINOP_MOD;
+		int op = ExprBinary2.BINOP_MOD;
 		Expression right = new ExprConstInt(p);
-		return new ExprBinary(op, left, right, left.lineNumber);
+		return new ExprBinary2(op, left, right, left.lineNumber);
 	}
 
 	private static Function addLCConstFun(int i, Type type) {
@@ -910,7 +911,7 @@ public class ConstraintFactory {
 
 	private static Function addCoeffFun(int index, int value, Type type) {
 		Expression condition
-			= new ExprBinary(new ExprVar("coeff" + index + "change"), "==", new ExprConstInt(0), 0);
+			= new ExprBinary2(new ExprVar("coeff" + index + "change"), "==", new ExprConstInt(0), 0);
 		StmtReturn return_1 = new StmtReturn(new ExprConstInt(value), 0);
 		Expression condition_2 = new ExprSketchHole();// ??
 		StmtReturn return_2 = new StmtReturn(new ExprConstInt(1 - value), 0);
@@ -1038,7 +1039,7 @@ public class ConstraintFactory {
 			Expression old = assign.get(line);
 			if (old == null)
 				old
-					= new ExprBinary(
+					= new ExprBinary2(
 						new ExprVar("coeff" + coeff + "change"),
 						"!=",
 						new ExprConstInt(0),
@@ -1046,10 +1047,10 @@ public class ConstraintFactory {
 					);
 			else
 				old
-					= new ExprBinary(
+					= new ExprBinary2(
 						old,
 						"||",
-						new ExprBinary(
+						new ExprBinary2(
 							new ExprVar("coeff" + coeff + "change"),
 							"!=",
 							new ExprConstInt(0),
@@ -1062,12 +1063,12 @@ public class ConstraintFactory {
 		}
 		Expression sum = new ExprConstInt(0);
 		for (int line : appeared) {
-			sum = new ExprBinary(sum, "+", new ExprVar("line" + line + "change"), -1);
+			sum = new ExprBinary2(sum, "+", new ExprVar("line" + line + "change"), -1);
 			result.addStmt(
 				new StmtAssign(new ExprVar("line" + line + "change"), assign.get(line), -1)
 			);
 		}
-		result.addStmt(new StmtAssert(new ExprBinary(sum, "==", new ExprConstInt(1), -1)));
+		result.addStmt(new StmtAssert(new ExprBinary2(sum, "==", new ExprConstInt(1), -1)));
 		return result;
 	}
 
@@ -1167,7 +1168,7 @@ public class ConstraintFactory {
 					String num = Integer.toString(i);
 					stmts.add(
 						new StmtAssert(
-							new ExprBinary(
+							new ExprBinary2(
 								new ExprVar(v + num),
 								"==",
 								new ExprVar("correctFinal_" + v + " % " + num),
@@ -1183,7 +1184,7 @@ public class ConstraintFactory {
 				// 0)));
 				stmts.add(
 					new StmtAssert(
-						new ExprBinary(
+						new ExprBinary2(
 							new ExprFuncCall(fh.getName(), args, fh.getName()),
 							"==",
 							new ExprVar("correctFinal_" + v),
@@ -1319,7 +1320,7 @@ public class ConstraintFactory {
 					String num = Integer.toString(i);
 					stmts.add(
 						new StmtAssert(
-							new ExprBinary(
+							new ExprBinary2(
 								new ExprVar(v + num),
 								"==",
 								new ExprVar("correctFinal_" + v + " % " + num),
@@ -1335,7 +1336,7 @@ public class ConstraintFactory {
 				// 0)));
 				stmts.add(
 					new StmtAssert(
-						new ExprBinary(
+						new ExprBinary2(
 							new ExprFuncCall(fh.getName(), args, fh.getName()),
 							"==",
 							new ExprVar("correctFinal_" + v),
@@ -1480,7 +1481,7 @@ public class ConstraintFactory {
 				List<Expression> subCondition = new ArrayList<Expression>();
 				for (Integer indexOfv : constMap.get(v)) {
 					subCondition.add(
-						new ExprBinary(
+						new ExprBinary2(
 							new ExprVar("const" + (indexOfv - 1) + "change"),
 							"==",
 							new ExprConstInt(0),
@@ -1492,7 +1493,7 @@ public class ConstraintFactory {
 				ifCondition = subCondition.get(0);
 				if (subCondition.size() > 1) {
 					for (int i = 1; i < subCondition.size(); i++) {
-						ifCondition = new ExprBinary(ifCondition, "&&", subCondition.get(i), 0);
+						ifCondition = new ExprBinary2(ifCondition, "&&", subCondition.get(i), 0);
 					}
 				}
 				forBody.add(
@@ -1500,7 +1501,7 @@ public class ConstraintFactory {
 						ifCondition,
 						new StmtAssign(
 							new ExprVar("SemanticDistance"),
-							new ExprBinary(
+							new ExprBinary2(
 								new ExprArrayRange(v + "Array", "i", 0),
 								"!=",
 								new ExprArrayRange("oringianl" + v + "Array", "i", 0),
@@ -1518,7 +1519,7 @@ public class ConstraintFactory {
 					forBody.add(
 						new StmtAssign(
 							new ExprVar("SemanticDistance"),
-							new ExprBinary(
+							new ExprBinary2(
 								new ExprArrayRange(varList.get(v) + v + "Array", "i", 0),
 								"!=",
 								new ExprArrayRange("oringianl" + v + "Array", "i", 0),
@@ -1534,7 +1535,7 @@ public class ConstraintFactory {
 			}
 		}
 		Statement forinit = new StmtVarDecl(new TypePrimitive(4), "i", new ExprConstInt(0), 0);
-		Expression forcon = new ExprBinary(new ExprVar("i"), "<", new ExprConstInt(bound), 0);
+		Expression forcon = new ExprBinary2(new ExprVar("i"), "<", new ExprConstInt(bound), 0);
 		Statement forupdate = new StmtExpr(new ExprUnary(5, new ExprVar("i"), 0), 0);
 		stmts.add(new StmtFor(forinit, forcon, forupdate, new StmtBlock(forBody), false, 0));
 		if (Global.prime_mod) {
@@ -1570,7 +1571,7 @@ public class ConstraintFactory {
 					String num = Integer.toString(i);
 					stmts.add(
 						new StmtAssert(
-							new ExprBinary(
+							new ExprBinary2(
 								new ExprVar(v + num),
 								"==",
 								new ExprVar("correctFinal_" + v + " % " + num),
@@ -1583,7 +1584,7 @@ public class ConstraintFactory {
 			} else if (!Global.test_mod)
 				stmts.add(
 					new StmtAssert(
-						new ExprBinary(
+						new ExprBinary2(
 							new ExprVar(v + "final"),
 							"==",
 							new ExprVar("correctFinal_" + v),
@@ -1594,7 +1595,7 @@ public class ConstraintFactory {
 			else
 				stmts.add(
 					new StmtAssert(
-						new ExprBinary(
+						new ExprBinary2(
 							new ExprFuncCall(fh.getName(), args, fh.getName()),
 							"==",
 							new ExprVar("correctFinal_" + v),
@@ -1711,7 +1712,7 @@ public class ConstraintFactory {
 					String num = Integer.toString(i);
 					stmts.add(
 						new StmtAssert(
-							new ExprBinary(
+							new ExprBinary2(
 								new ExprVar(v + num),
 								"==",
 								new ExprVar("correctFinal_" + v + " % " + num),
@@ -1727,7 +1728,7 @@ public class ConstraintFactory {
 				// 0)));
 				stmts.add(
 					new StmtAssert(
-						new ExprBinary(
+						new ExprBinary2(
 							new ExprFuncCall(
 								fh.getName(),
 								extra_args.get(extra_index++),
@@ -1815,7 +1816,7 @@ public class ConstraintFactory {
 				List<Expression> subCondition = new ArrayList<Expression>();
 				for (Integer indexOfv : constMap.get(v)) {
 					subCondition.add(
-						new ExprBinary(
+						new ExprBinary2(
 							new ExprVar("const" + (indexOfv - 1) + "change"),
 							"==",
 							new ExprConstInt(0),
@@ -1827,7 +1828,7 @@ public class ConstraintFactory {
 				ifCondition = subCondition.get(0);
 				if (subCondition.size() > 1) {
 					for (int i = 1; i < subCondition.size(); i++) {
-						ifCondition = new ExprBinary(ifCondition, "&&", subCondition.get(i), 0);
+						ifCondition = new ExprBinary2(ifCondition, "&&", subCondition.get(i), 0);
 					}
 				}
 				forBody.add(
@@ -1835,7 +1836,7 @@ public class ConstraintFactory {
 						ifCondition,
 						new StmtAssign(
 							new ExprVar("SemanticDistance"),
-							new ExprBinary(
+							new ExprBinary2(
 								new ExprArrayRange(v + "Array", "i", 0),
 								"!=",
 								new ExprArrayRange("oringianl" + v + "Array", "i", 0),
@@ -1855,7 +1856,7 @@ public class ConstraintFactory {
 					forBody.add(
 						new StmtAssign(
 							new ExprVar("SemanticDistance"),
-							new ExprBinary(
+							new ExprBinary2(
 								new ExprArrayRange(varList.get(v) + v + "Array", "i", 0),
 								"!=",
 								new ExprArrayRange("oringianl" + v + "Array", "i", 0),
@@ -1868,7 +1869,7 @@ public class ConstraintFactory {
 			}
 		}
 		Statement forinit = new StmtVarDecl(new TypePrimitive(4), "i", new ExprConstInt(0), 0);
-		Expression forcon = new ExprBinary(new ExprVar("i"), "<", new ExprConstInt(bound), 0);
+		Expression forcon = new ExprBinary2(new ExprVar("i"), "<", new ExprConstInt(bound), 0);
 		Statement forupdate = new StmtExpr(new ExprUnary(5, new ExprVar("i"), 0), 0);
 		stmts.add(new StmtFor(forinit, forcon, forupdate, new StmtBlock(forBody), false, 0));
 		if (Global.prime_mod) {
@@ -1910,7 +1911,7 @@ public class ConstraintFactory {
 					String num = Integer.toString(i);
 					stmts.add(
 						new StmtAssert(
-							new ExprBinary(
+							new ExprBinary2(
 								new ExprVar(v + num),
 								"==",
 								new ExprVar("correctFinal_" + v + " % " + num),
@@ -1926,7 +1927,7 @@ public class ConstraintFactory {
 				// 0)));
 				stmts.add(
 					new StmtAssert(
-						new ExprBinary(
+						new ExprBinary2(
 							new ExprFuncCall(
 								fh.getName(),
 								extra_args.get(extra_index++),
@@ -2009,7 +2010,7 @@ public class ConstraintFactory {
 
 	static public Function addConstFun(int index, int ori, Type t) {
 		Expression condition
-			= new ExprBinary(new ExprVar("const" + index + "change"), "==", new ExprConstInt(1), 0);
+			= new ExprBinary2(new ExprVar("const" + index + "change"), "==", new ExprConstInt(1), 0);
 		StmtReturn return_1 = new StmtReturn(new ExprSketchHole(), 0);
 		StmtReturn return_2 = new StmtReturn(new ExprConstInt(ori), 0);
 		Statement ifst = new StmtIfThen(condition, return_1, return_2, 0);
@@ -2159,7 +2160,7 @@ public class ConstraintFactory {
 			// Of the form: if (linehit == (??)) { <consStmts> }
 			Statement iflinehit
 				= new StmtIfThen(
-					new ExprBinary(new ExprVar("linehit"), "==", new ExprString("??"), 0),
+					new ExprBinary2(new ExprVar("linehit"), "==", new ExprString("??"), 0),
 					cons,
 					null,
 					0

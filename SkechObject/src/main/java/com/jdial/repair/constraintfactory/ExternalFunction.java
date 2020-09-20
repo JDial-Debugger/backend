@@ -7,6 +7,7 @@ import java.util.Map;
 
 import sketchobj.core.*;
 import sketchobj.expr.*;
+import sketchobj.expr.binary.ExprBinary2;
 import sketchobj.stmts.*;
 
 public class ExternalFunction {
@@ -56,9 +57,9 @@ public class ExternalFunction {
 		}
 		
 		for(ExpressionTuple pl: safeTable.keySet()){
-			Expression cond = new ExprBinary(vars.get(0), "==", new ExprConstInt(pl.l.get(0)),0);
+			Expression cond = new ExprBinary2(vars.get(0), "==", new ExprConstInt(pl.l.get(0)),0);
 			for( int i = 1; i < length; i++){
-				cond = new ExprBinary(cond, "&&", new ExprBinary(vars.get(i), "==", new ExprConstInt(pl.l.get(i)),-1),-1);
+				cond = new ExprBinary2(cond, "&&", new ExprBinary2(vars.get(i), "==", new ExprConstInt(pl.l.get(i)),-1),-1);
 			}
 			Statement res = new StmtReturn(safeTable.get(pl));
 			stmts.add(new StmtIfThen(cond,res,null));

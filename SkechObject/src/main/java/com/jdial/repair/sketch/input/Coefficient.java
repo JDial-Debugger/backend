@@ -4,11 +4,11 @@ import java.util.List;
 
 import sketchobj.core.Type;
 import sketchobj.core.TypePrimitive;
-import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprConstant;
 import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.ExprVar;
+import sketchobj.expr.binary.ExprBinary2;
 import sketchobj.stmts.Statement;
 
 /**
@@ -72,7 +72,7 @@ public abstract class Coefficient {
 	
 	//Expression closest in the AST that contains the expression that this 
 	//coefficient is in
-	protected ExprBinary parentExpr;
+	protected ExprBinary2 parentExpr;
 	//True if this coefficient should be added to the orginal source code
 	protected boolean repaired;
 	//Statement closest in the AST that contains the expression that this 

@@ -33,13 +33,8 @@ public abstract class Expression extends SketchNode{
 	@Override
 	public abstract void insertCoeffs(List<Coefficient> coeffs);
 	
-	//TODO get rid of this
-	public abstract boolean equals(Expression other);
-	
 	public abstract List<ExternalFunction> extractExternalFuncs(
 			List<ExternalFunction> externalFuncNames);
-	
-	public abstract Expression clone();
 	
 	public abstract Set<String> getVarNames();
 	

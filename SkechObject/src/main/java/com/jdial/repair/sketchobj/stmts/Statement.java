@@ -21,11 +21,11 @@ import sketchobj.core.Type;
 import sketchobj.core.TypeArray;
 import sketchobj.core.TypeVoid;
 import sketchobj.expr.ExprArrayRange;
-import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprSketchHole;
 import sketchobj.expr.ExprUnary;
 import sketchobj.expr.ExprVar;
+import sketchobj.expr.binary.ExprBinary2;
 
 public abstract class Statement extends SketchNode {
 
@@ -156,7 +156,7 @@ public abstract class Statement extends SketchNode {
 			Statement cons = new StmtBlock(finalStates);
 			//Of the form: if (linehit == (??)) { <finalStates> }
 			Statement ifLineHit = new StmtIfThen(
-					new ExprBinary(
+					new ExprBinary2(
 						new ExprVar(SketchScript.LINE_HIT), 
 						"==", 
 						new ExprSketchHole(), 

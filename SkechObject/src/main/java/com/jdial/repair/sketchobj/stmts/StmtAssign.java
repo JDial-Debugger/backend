@@ -17,10 +17,10 @@ import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
 import sketchobj.core.TypeArray;
 import sketchobj.core.TypePrimitive;
-import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstant;
 import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.Expression;
+import sketchobj.expr.binary.ExprBinary2;
 
 public class StmtAssign extends Statement {
 	
@@ -90,16 +90,16 @@ public class StmtAssign extends Statement {
 		case 0:
 			theOp = "=";
 			break;
-		case ExprBinary.BINOP_ADD:
+		case ExprBinary2.BINOP_ADD:
 			theOp = "+=";
 			break;
-		case ExprBinary.BINOP_SUB:
+		case ExprBinary2.BINOP_SUB:
 			theOp = "-=";
 			break;
-		case ExprBinary.BINOP_MUL:
+		case ExprBinary2.BINOP_MUL:
 			theOp = "*=";
 			break;
-		case ExprBinary.BINOP_DIV:
+		case ExprBinary2.BINOP_DIV:
 			theOp = "/=";
 			break;
 		default:

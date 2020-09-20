@@ -8,11 +8,11 @@ import sketchobj.core.Function;
 import sketchobj.core.Function.FcnType;
 import sketchobj.core.Parameter;
 import sketchobj.core.TypePrimitive;
-import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprSketchHole;
 import sketchobj.expr.ExprVar;
 import sketchobj.expr.Expression;
+import sketchobj.expr.binary.ExprBinary2;
 import sketchobj.stmts.Statement;
 import sketchobj.stmts.StmtBlock;
 import sketchobj.stmts.StmtFuncDecl;
@@ -62,7 +62,7 @@ public class ScalarCoefficient extends Coefficient {
 	public List<Statement> getDeclFunc() {
 
 		Expression changeCond
-			= new ExprBinary(
+			= new ExprBinary2(
 				new ExprVar(super.name + Coefficient.CHANGE_SUFFIX),
 				"==",
 				new ExprConstInt(0),
@@ -128,9 +128,9 @@ public class ScalarCoefficient extends Coefficient {
 	 * @return - the resulting expression after toModify is multiplied by this
 	 *         coefficient
 	 */
-	public ExprBinary modifyExpr(Expression toModify) {
+	public ExprBinary2 modifyExpr(Expression toModify) {
 		this.parentExpr
-			= new ExprBinary(this.getFuncCall(), ExprBinary.BINOP_MUL, toModify, this.lineNumber);
+			= new ExprBinary2(this.getFuncCall(), ExprBinary2.BINOP_MUL, toModify, this.lineNumber);
 		return this.parentExpr;
 	}
 

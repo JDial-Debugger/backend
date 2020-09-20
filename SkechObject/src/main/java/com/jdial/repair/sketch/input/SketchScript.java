@@ -22,13 +22,13 @@ import sketchobj.core.TypePrimitive;
 import sketchobj.core.TypeVoid;
 import sketchobj.expr.ExprArrayInit;
 import sketchobj.expr.ExprArrayRange;
-import sketchobj.expr.ExprBinary;
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprConstant;
 import sketchobj.expr.ExprFuncCall;
 import sketchobj.expr.ExprUnary;
 import sketchobj.expr.ExprVar;
 import sketchobj.expr.Expression;
+import sketchobj.expr.binary.ExprBinary2;
 import sketchobj.stmts.StmtBlock;
 import sketchobj.stmts.StmtExpr;
 import sketchobj.stmts.StmtFor;
@@ -199,7 +199,7 @@ public class SketchScript {
 				new StmtAssign(
 					new ExprVar(SYN_DISTANCE),
 					coeff.getChangeVar(),
-					ExprBinary.BINOP_ADD,
+					ExprBinary2.BINOP_ADD,
 					0
 				)
 			);
@@ -328,9 +328,9 @@ public class SketchScript {
 				new ExprFuncCall(
 					MINIMIZE_FUNC,
 					Arrays.asList(
-						new ExprBinary(
+						new ExprBinary2(
 							new ExprVar(SEM_DISTANCE),
-							ExprBinary.BINOP_ADD,
+							ExprBinary2.BINOP_ADD,
 							new ExprVar(SYN_DISTANCE)
 						)
 					)
@@ -442,7 +442,7 @@ public class SketchScript {
 		Statement compare
 			= new StmtAssign(
 				new ExprVar(SEM_DISTANCE), // __jdial_semantic_distance
-				new ExprBinary(
+				new ExprBinary2(
 					new ExprArrayRange(
 						// __jdial_funcName_varName_state[i][j]
 						new ExprVar(getVarStateName(funcName, varName)),
@@ -451,7 +451,7 @@ public class SketchScript {
 							new ExprArrayRange.RangeLen(new ExprVar(tracepointCount))
 						)
 					),
-					ExprBinary.BINOP_NEQ, // !=
+					ExprBinary2.BINOP_NEQ, // !=
 					new ExprArrayRange(
 						// __jdial_original_func_name_varName_state[i][j]
 						new ExprVar(getOriginalStateName(funcName, varName)),
@@ -461,7 +461,7 @@ public class SketchScript {
 						)
 					)
 				),
-				ExprBinary.BINOP_ADD, // +=
+				ExprBinary2.BINOP_ADD, // +=
 				0
 			);
 		// Loop through every example and trace point and compare the variable's
@@ -469,9 +469,9 @@ public class SketchScript {
 		StmtFor comparesLoop
 			= new StmtFor(
 				new StmtVarDecl(TypePrimitive.int32type, tracepointCount, new ExprConstInt(0)),
-				new ExprBinary(
+				new ExprBinary2(
 					new ExprVar(tracepointCount),
-					ExprBinary.BINOP_LT,
+					ExprBinary2.BINOP_LT,
 					new ExprConstInt(origLength)
 				),
 				new StmtExpr(new ExprUnary(ExprUnary.UNOP_PREINC, new ExprVar(tracepointCount))),
@@ -480,9 +480,9 @@ public class SketchScript {
 		StmtFor exampleLoop
 			= new StmtFor(
 				new StmtVarDecl(TypePrimitive.int32type, exampleCount, new ExprConstInt(0)),
-				new ExprBinary(
+				new ExprBinary2(
 					new ExprVar(exampleCount),
-					ExprBinary.BINOP_LT,
+					ExprBinary2.BINOP_LT,
 					new ExprConstInt(this.examples.size())
 				),
 				new StmtExpr(new ExprUnary(ExprUnary.UNOP_PREINC, new ExprVar(exampleCount))),

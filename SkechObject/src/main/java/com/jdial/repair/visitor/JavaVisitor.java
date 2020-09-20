@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import sketchobj.core.*;
 import sketchobj.expr.*;
 import sketchobj.expr.ExprArrayRange.RangeLen;
+import sketchobj.expr.binary.ExprBinary2;
 import sketchobj.stmts.*;
 
 public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
@@ -233,7 +234,7 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	 */
 	@Override
 	public StmtFuncAssert visitAssertStatement(simpleJavaParser.AssertStatementContext ctx) {
-		ExprBinary assertExpr = (ExprBinary) visit(ctx.expression(0));
+		ExprBinary2 assertExpr = (ExprBinary2) visit(ctx.expression(0));
 		Expression lhs = assertExpr.getLeft();
 		Expression rhs = assertExpr.getRight();
 		//check if function call in exactly one of lhs or rhs
@@ -498,13 +499,13 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 		int op = 0;
 		String aop = ctx.assignmentOperator().getText();
 		if (aop.equals("*="))
-			op = ExprBinary.BINOP_MUL;
+			op = ExprBinary2.BINOP_MUL;
 		if (aop.equals("/="))
-			op = ExprBinary.BINOP_DIV;
+			op = ExprBinary2.BINOP_DIV;
 		if (aop.equals("+="))
-			op = ExprBinary.BINOP_ADD;
+			op = ExprBinary2.BINOP_ADD;
 		if (aop.equals("-="))
-			op = ExprBinary.BINOP_SUB;
+			op = ExprBinary2.BINOP_SUB;
 		return new StmtAssign((Expression) visit(ctx.leftHandSide()), (Expression) visit(ctx.expression()), op,
 				ctx.start.getLine());
 	}
@@ -616,42 +617,42 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	/** conditionalOrExpression '||' conditionalAndExpression **/
 	@Override
 	public Expression visitExpandConditionalOrExpr(simpleJavaParser.ExpandConditionalOrExprContext ctx) {
-		return new ExprBinary(ExprBinary.BINOP_OR, (Expression) visit(ctx.conditionalOrExpression()),
+		return new ExprBinary2(ExprBinary2.BINOP_OR, (Expression) visit(ctx.conditionalOrExpression()),
 				(Expression) visit(ctx.conditionalAndExpression()), ctx.start.getLine());
 	}
 
 	/** conditionalAndExpression '&&' inclusiveOrExpression **/
 	@Override
 	public Expression visitExpandConditionalAndExpr(simpleJavaParser.ExpandConditionalAndExprContext ctx) {
-		return new ExprBinary(ExprBinary.BINOP_AND, (Expression) visit(ctx.conditionalAndExpression()),
+		return new ExprBinary2(ExprBinary2.BINOP_AND, (Expression) visit(ctx.conditionalAndExpression()),
 				(Expression) visit(ctx.inclusiveOrExpression()), ctx.start.getLine());
 	}
 
 	/** inclusiveOrExpression '|' exclusiveOrExpression **/
 	@Override
 	public Expression visitExpandInclusiveOrExpr(simpleJavaParser.ExpandInclusiveOrExprContext ctx) {
-		return new ExprBinary(ExprBinary.BINOP_BOR, (Expression) visit(ctx.inclusiveOrExpression()),
+		return new ExprBinary2(ExprBinary2.BINOP_BOR, (Expression) visit(ctx.inclusiveOrExpression()),
 				(Expression) visit(ctx.exclusiveOrExpression()), ctx.start.getLine());
 	}
 
 	/** exclusiveOrExpression '^' andExpression **/
 	@Override
 	public Expression visitExpandExclusiveOrExpr(simpleJavaParser.ExpandExclusiveOrExprContext ctx) {
-		return new ExprBinary(ExprBinary.BINOP_BXOR, (Expression) visit(ctx.exclusiveOrExpression()),
+		return new ExprBinary2(ExprBinary2.BINOP_BXOR, (Expression) visit(ctx.exclusiveOrExpression()),
 				(Expression) visit(ctx.andExpression()), ctx.start.getLine());
 	}
 
 	/** andExpression '&' equalityExpression **/
 	@Override
 	public Expression visitExpandAndExpr(simpleJavaParser.ExpandAndExprContext ctx) {
-		return new ExprBinary(ExprBinary.BINOP_BAND, (Expression) visit(ctx.andExpression()),
+		return new ExprBinary2(ExprBinary2.BINOP_BAND, (Expression) visit(ctx.andExpression()),
 				(Expression) visit(ctx.equalityExpression()), ctx.start.getLine());
 	}
 
 	/** relationalExpression '<' shiftExpression **/
 	@Override
 	public Expression visitExpandRelationalExpr(simpleJavaParser.ExpandRelationalExprContext ctx) {
-		return new ExprBinary((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
+		return new ExprBinary2((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
 				(Expression) visit(ctx.getChild(2)), ctx.getStart().getLine());
 	}
 	
@@ -660,31 +661,31 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	@Override
 	public Expression visitExpandEqExpr(simpleJavaParser.ExpandEqExprContext ctx) {
 		// for Matt
-		return new ExprBinary((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
+		return new ExprBinary2((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
 				(Expression) visit(ctx.getChild(2)), ctx.getStart().getLine());
 	}
 
 	@Override
 	public Expression visitExpandShiftLeft(simpleJavaParser.ExpandShiftLeftContext ctx) {
-		return new ExprBinary(ExprBinary.BINOP_LSHIFT, (Expression) visit(ctx.shiftExpression()),
+		return new ExprBinary2(ExprBinary2.BINOP_LSHIFT, (Expression) visit(ctx.shiftExpression()),
 				(Expression) visit(ctx.additiveExpression()), ctx.start.getLine());
 	}
 
 	@Override
 	public Expression visitExpandShiftRight(simpleJavaParser.ExpandShiftRightContext ctx) {
-		return new ExprBinary(ExprBinary.BINOP_RSHIFT, (Expression) visit(ctx.shiftExpression()),
+		return new ExprBinary2(ExprBinary2.BINOP_RSHIFT, (Expression) visit(ctx.shiftExpression()),
 				(Expression) visit(ctx.additiveExpression()), ctx.start.getLine());
 	}
 
 	@Override
 	public Expression visitExpandAdditiveExpr(simpleJavaParser.ExpandAdditiveExprContext ctx) {
-		return new ExprBinary((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
+		return new ExprBinary2((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
 				(Expression) visit(ctx.getChild(2)), ctx.getStart().getLine());
 	}
 
 	@Override
 public Expression visitExpandMulExpr(simpleJavaParser.ExpandMulExprContext ctx) {
-	return new ExprBinary((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
+	return new ExprBinary2((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
 			(Expression) visit(ctx.getChild(2)), ctx.getStart().getLine());
 	}
 

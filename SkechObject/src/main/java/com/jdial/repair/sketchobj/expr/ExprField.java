@@ -110,13 +110,6 @@ public class ExprField extends Expression
 	}
 
 	@Override
-	public boolean equals(Expression other) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	@Override
 	public List<ExternalFunction> extractExternalFuncs(List<ExternalFunction> externalFuncNames) {
 		return externalFuncNames;
 	}
