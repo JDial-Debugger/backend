@@ -12,7 +12,8 @@ import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprSketchHole;
 import sketchobj.expr.ExprVar;
 import sketchobj.expr.Expression;
-import sketchobj.expr.binary.ExprBinary2;
+import sketchobj.expr.binary.ExprBinary;
+import sketchobj.expr.binary.ExprBinaryFactory;
 import sketchobj.stmts.Statement;
 import sketchobj.stmts.StmtBlock;
 import sketchobj.stmts.StmtFuncDecl;
@@ -36,92 +37,101 @@ return coeff6change;
  */
 public class VectorCoefficient extends Coefficient {
 
-	public VectorCoefficient(int idx, TypePrimitive type) {
-		super(idx, type);
+	public VectorCoefficient(int idx, TypePrimitive type, ExprBinaryFactory binaryExprFactory) {
+		super(idx, type, binaryExprFactory);
 	}
-	
-	public VectorCoefficient(int idx, TypePrimitive type, int lineNumber) {
-		super(idx, type, lineNumber);
-	}
-	
+
 	public VectorCoefficient(
-			int idx, TypePrimitive type, int lineNumber, Statement parent) {
-		super(idx, type, lineNumber, parent);
+		int idx,
+		TypePrimitive type,
+		int lineNumber,
+		ExprBinaryFactory binaryExprFactory
+	) {
+		super(idx, type, lineNumber, binaryExprFactory);
+	}
+
+	public VectorCoefficient(
+		int idx,
+		TypePrimitive type,
+		int lineNumber,
+		Statement parent,
+		ExprBinaryFactory binaryExprFactory
+	) {
+		super(idx, type, lineNumber, parent, binaryExprFactory);
 	}
 
 	@Override
 	public List<Statement> getDeclFunc() {
-		
+
 		Expression changeCond = new ExprSketchHole();
 		StmtReturn noChangeReturn = new StmtReturn(new ExprConstInt(0), 0);
-		StmtReturn changeReturn = new StmtReturn(
-				new ExprVar(super.name + Coefficient.CHANGE_SUFFIX), 0);
+		StmtReturn changeReturn
+			= new StmtReturn(new ExprVar(super.name + Coefficient.CHANGE_SUFFIX), 0);
 		Statement changeIf = new StmtIfThen(changeCond, noChangeReturn, null, 0);
-		
+
 		StmtBlock coeffFuncBody = new StmtBlock();
 		coeffFuncBody.addStmt(changeIf);
 		coeffFuncBody.addStmt(changeReturn);
 		return Arrays.asList(
 			this.getChangeDecl(),
-			new StmtFuncDecl(new Function(
-				super.name, 
-				super.type, 
-				new ArrayList<Parameter>(), 
-				coeffFuncBody, 
-				FcnType.Static)));
+			new StmtFuncDecl(
+				new Function(
+					super.name,
+					super.type,
+					new ArrayList<Parameter>(),
+					coeffFuncBody,
+					FcnType.Static
+				)
+			)
+		);
 	}
-	
+
 	/**
 	 * @return example: bit jdial_coeff4_change = ??
 	 */
 	@Override
 	public Statement getChangeDecl() {
-		return new StmtVarDecl(
-				super.type, 
-				this.getChangeName(),
-				new ExprSketchHole(), 
-				0);
+		return new StmtVarDecl(super.type, this.getChangeName(), new ExprSketchHole(), 0);
 	}
-	
+
 	/**
-	 * Adds this times a scalar to the given expression
-	 * example: in: int a = 5; out: int a = 5 + coeff1() * this;
-	 * @param toModify - the expression to add the coefficient to
-	 * @param coeffs - will add any created coefficients to this list
-	 * @param type - the type of the expression to modify
+	 * Adds this times a scalar to the given expression example: in: int a = 5; out: int a = 5 +
+	 * coeff1() * this;
+	 * 
+	 * @param toModify   - the expression to add the coefficient to
+	 * @param coeffs     - will add any created coefficients to this list
+	 * @param type       - the type of the expression to modify
 	 * @param lineNumber - the line number of toModify
-	 * @return - A new expression containing toModify added with this
-	 * times a scalar
+	 * @return - A new expression containing toModify added with this times a scalar
 	 */
-	public ExprBinary2 addToExpr(
-			Expression toModify, 
-			List<Coefficient> coeffs, 
-			TypePrimitive type) {
-		
-		ScalarCoefficient changeCoeff = 
-				new ScalarCoefficient(coeffs.size(), type, this.lineNumber, true);
+	public ExprBinary addToExpr(Expression toModify, List<Coefficient> coeffs, TypePrimitive type) {
+
+		ScalarCoefficient changeCoeff
+			= new ScalarCoefficient(
+				coeffs.size(),
+				type,
+				this.lineNumber,
+				true,
+				this.binaryExprFactory
+			);
 		coeffs.add(changeCoeff);
-		
-		ExprBinary2 coeffBinaryExpr = 
-				changeCoeff.modifyExpr(this.getFuncCall());
-		
-		this.parentExpr = new ExprBinary2(
-				toModify,
-				ExprBinary2.BINOP_ADD, 
-				coeffBinaryExpr,
-				this.lineNumber);
-		
+
+		ExprBinary coeffBinaryExpr = changeCoeff.modifyExpr(this.getFuncCall());
+
+		this.parentExpr
+			= this.binaryExprFactory.getAddExpr(toModify, coeffBinaryExpr, this.lineNumber);
+
 		return this.parentExpr;
-		
+
 	}
 
 	@Override
 	public void removeFromSource() {
-		//since vectors are only added with a scalar, remove the scalar as well
+		// since vectors are only added with a scalar, remove the scalar as well
 		this.parentExpr.ignoreLeft();
 		this.parentExpr.ignoreRight();
 	}
-	
+
 	@Override
 	public void setRepairValue(int value) {
 		super.setRepairValue(value);

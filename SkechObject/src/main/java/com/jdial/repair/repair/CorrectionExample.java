@@ -2,16 +2,14 @@ package repair;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import constants.Json;
 import json_input.Trace;
 import json_input.TracePoint;
 import sketch.input.SketchScript;
-import sketchobj.expr.ExprConstInt;
-import sketchobj.expr.ExprConstant;
 import sketchobj.expr.ExprVar;
-import sketchobj.expr.binary.ExprBinary2;
+import sketchobj.expr.binary.ExprBinary;
+import sketchobj.expr.binary.ExprBinaryFactory;
 import sketchobj.stmts.StmtAssert;
 import sketchobj.stmts.StmtBlock;
 
@@ -19,6 +17,7 @@ public class CorrectionExample {
 
 	private Trace programTrace;
 	private VarCorrections varCorrections;
+	private ExprBinaryFactory binaryExprFactory;
 
 	/**
 	 * Creates an input/output example where the input is the trace of a program and the output is a
@@ -28,9 +27,14 @@ public class CorrectionExample {
 	 * @param programTrace
 	 * @param correctVarVals
 	 */
-	public CorrectionExample(Trace programTrace, VarCorrections varCorrections) {
+	public CorrectionExample(
+		Trace programTrace,
+		VarCorrections varCorrections,
+		ExprBinaryFactory binaryExprFactory
+	) {
 		this.programTrace = programTrace;
 		this.varCorrections = varCorrections;
+		this.binaryExprFactory = binaryExprFactory;
 	}
 
 	public CorrectionExample(Trace programTrace, int expectedReturnVal) {
@@ -50,10 +54,9 @@ public class CorrectionExample {
 		StmtBlock asserts = new StmtBlock();
 		for (VarCorrections.VarCorrection correction : this.varCorrections) {
 
-			ExprBinary2 equals
-				= new ExprBinary2(
+			ExprBinary equals
+				= this.binaryExprFactory.getEqualsExpr(
 					new ExprVar(SketchScript.getFinalName(targetFunc, correction.varName)),
-					ExprBinary2.BINOP_EQ,
 					correction.valueExpr
 				);
 			asserts.addStmt(new StmtAssert(equals));
@@ -63,10 +66,6 @@ public class CorrectionExample {
 
 	public Trace getProgramTrace() {
 		return this.programTrace;
-	}
-
-	public Map<String, ExprConstant> getCorrectVarValues() {
-		return this.correctVarValues;
 	}
 
 	/**

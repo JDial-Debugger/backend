@@ -5,17 +5,22 @@ import sketchobj.expr.Expression;
 
 public class Subtract extends ArithmeticExprBinary {
 
-	Subtract(Expression left, Expression right) {
+	public Subtract(Expression left, Expression right) {
 		super(left, Operator.SUBTRACT, right);
 	}
 
+	public Subtract(Expression left, Expression right, int lineNumber) {
+		super(left, Operator.ADD, right, lineNumber);
+	}
+
 	@Override
-	public CombineableExpression combine() {
-		NumericVals<Integer> values = this.getValsFromExpressions();
+	public CondensibleExpression condense() {
+		NumericVals<Integer> values
+			= this.getValsFromExpressions(new LeftAndRightExpressions(this.left, this.right));
 		if (values.hasVals) {
 			Expression combinedExpr = new ExprConstInt(values.lhsVal - values.rhsVal);
-			return new CombineableExpression(combinedExpr);
+			return new CondensibleExpression(combinedExpr);
 		}
-		return super.combine();
+		return super.condense();
 	}
 }

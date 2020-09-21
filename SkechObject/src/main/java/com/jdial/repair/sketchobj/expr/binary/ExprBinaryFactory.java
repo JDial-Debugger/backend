@@ -8,12 +8,12 @@ import sketchobj.expr.Expression;
 public class ExprBinaryFactory {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExprBinaryFactory.class);
-	
+
 	public ExprBinaryFactory() {
 	}
-	
+
 	public ExprBinary getExprBinary(Expression left, String operator, Expression right) {
-		
+
 		if (operator.equals(Operator.ADD.toString())) {
 			return new Add(left, right);
 		} else if (operator.equals(Operator.AND.toString())) {
@@ -52,6 +52,21 @@ public class ExprBinaryFactory {
 			return new Xor(left, right);
 		}
 		throw new OperatorDoesNotExistException(operator, logger);
-
+	}
+	
+	public Add getAddExpr(Expression left, Expression right) {
+		return new Add(left, right);
+	}
+	
+	public Add getAddExpr(Expression left, Expression right, int lineNumber) {
+		return new Add(left, right, lineNumber);
+	}
+	
+	public Equals getEqualsExpr(Expression left, Expression right) {
+		return new Equals(left, right);
+	}
+	
+	public Multiply getMultiplyExpr(Expression left, Expression right) {
+		return new Multiply(left, right);
 	}
 }

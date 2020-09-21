@@ -5,24 +5,25 @@ import sketchobj.expr.Expression;
 
 public class Multiply extends ArithmeticExprBinary {
 
-	Multiply(Expression left, Expression right) {
+	public Multiply(Expression left, Expression right) {
 		super(left, Operator.MULTIPLY, right);
 	}
 
 	@Override
-	public CombineableExpression combine() {
-		NumericVals<Integer> values = this.getValsFromExpressions();
+	public CondensibleExpression condense() {
+		NumericVals<Integer> values
+			= this.getValsFromExpressions(new LeftAndRightExpressions(this.left, this.right));
 		if (values.hasVals) {
 			Expression combinedExpr = new ExprConstInt(values.lhsVal * values.rhsVal);
-			return new CombineableExpression(combinedExpr);
+			return new CondensibleExpression(combinedExpr);
 		}
-		return super.combine();
+		return super.condense();
 	}
-	
+
 	@Override
 	public void checkAtom() {
 		this.setAtom(false);
-		
+
 	}
 
 }

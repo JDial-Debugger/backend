@@ -17,20 +17,20 @@ import sketchobj.expr.ExprVar;
 import sketchobj.expr.Expression;
 
 public abstract class ExprBinary extends Expression {
-	
+
 	protected Expression left;
 	protected Expression right;
 	protected Operator operator;
 	protected int lineNumber;
 	private boolean doesIgnoreLeft;
 	private boolean doesIgnoreRight;
-	
+
 	public ExprBinary(Expression left, Operator operator, Expression right) {
 		this.left = left;
 		this.operator = operator;
 		this.right = right;
 	}
-	
+
 	public ExprBinary(Expression left, Operator operator, Expression right, int lineNumber) {
 		this(left, operator, right);
 		this.lineNumber = lineNumber;
@@ -67,9 +67,9 @@ public abstract class ExprBinary extends Expression {
 			return this.left.toString();
 		}
 
-		CombineableExpression combineableExpr = this.combine();
-		if (combineableExpr.isCombineable) {
-			return combineableExpr.combinedExpression.toString();
+		CondensibleExpression combineableExpr = this.condense();
+		if (combineableExpr.isCondensible) {
+			return combineableExpr.condensedExpression.toString();
 		}
 		StringBuilder result = new StringBuilder();
 
@@ -85,7 +85,7 @@ public abstract class ExprBinary extends Expression {
 		}
 		return result.toString();
 	}
-	
+
 	@Override
 	public ConstData replaceConst(int index) {
 		String noStr = null;
@@ -112,7 +112,7 @@ public abstract class ExprBinary extends Expression {
 		toAdd.add(right);
 		return new ConstData(null, toAdd, index, 0, string, this.lineNumber);
 	}
-	
+
 	@Override
 	public List<ExternalFunction> extractExternalFuncs(List<ExternalFunction> externalFuncNames) {
 		externalFuncNames = left.extractExternalFuncs(externalFuncNames);
@@ -128,7 +128,7 @@ public abstract class ExprBinary extends Expression {
 			this.setAtom(false);
 		}
 	}
-	
+
 	@Override
 	public void insertCoeffs(List<Coefficient> coeffs) {
 		this.left.setBoolean(true);
@@ -138,7 +138,7 @@ public abstract class ExprBinary extends Expression {
 		left.insertCoeffs(coeffs);
 		right.insertCoeffs(coeffs);
 	}
-	
+
 	@Override
 	public Set<String> getVarNames() {
 		Set<String> names = new HashSet<String>();
@@ -146,29 +146,70 @@ public abstract class ExprBinary extends Expression {
 		names.addAll(this.getRight().getVarNames());
 		return names;
 	}
-	
+
 	/*
-	 * This is meant to be overridden for special cases
+	 * This is meant to be overridden for special cases that can condense
 	 */
-	public CombineableExpression combine() {
-		return new CombineableExpression();
+	public CondensibleExpression condense() {
+		return new CondensibleExpression();
 	}
 
-	protected NumericVals<Integer> getValsFromExpressions() {
-		if (this.bothSidesAreExprConstInts()) {
-			return this.getConstIntVals((ExprConstInt) this.left, (ExprConstInt) this.right);
+	protected NumericVals<Integer> getValsFromExpressions(LeftAndRightExpressions expressions) {
+		this.condenseExpressions(expressions);
+		if (this.bothSidesAreExprConstInts(expressions)) {
+			return this.getConstIntVals(
+				(ExprConstInt) expressions.left,
+				(ExprConstInt) expressions.right
+			);
 		}
 		return new NumericVals<Integer>();
 	}
 
-	private boolean bothSidesAreExprConstInts() {
-		if (this.left instanceof ExprConstInt && this.right instanceof ExprConstInt) {
+	protected void condenseExpressions(LeftAndRightExpressions expressions) {
+		CondensibleExpression leftCondensed = this.condenseExpressions(expressions.left);
+		if (leftCondensed.isCondensible) {
+			expressions.left = leftCondensed.condensedExpression;
+		}
+		CondensibleExpression rightCondensed = this.condenseExpressions(expressions.right);
+		if (rightCondensed.isCondensible) {
+			expressions.right = rightCondensed.condensedExpression;
+		}
+
+	}
+
+	private CondensibleExpression condenseExpressions(Expression expr) {
+		if (expr instanceof ExprBinary) {
+			return ((ExprBinary) expr).condense();
+		}
+		return new CondensibleExpression();
+	}
+
+	private boolean bothSidesAreExprConstInts(LeftAndRightExpressions expressions) {
+		if (expressions.left instanceof ExprConstInt && expressions.right instanceof ExprConstInt) {
 			return true;
 		}
 		return false;
 	}
 
-	private NumericVals<Integer> getConstIntVals(ExprConstInt lhs, ExprConstInt rhs) {
-		return new NumericVals<Integer>(lhs.getVal(), rhs.getVal());
+	private NumericVals<Integer> getConstIntVals(ExprConstInt left, ExprConstInt right) {
+		return new NumericVals<Integer>(left.getVal(), right.getVal());
 	}
+
+	protected class LeftAndRightExpressions {
+		public Expression left, right;
+
+		public LeftAndRightExpressions(Expression left, Expression right) {
+			this.left = left;
+			this.right = right;
+		}
+	}
+
+	public void setLeft(Expression expr) {
+		this.left = expr;
+	}
+	
+	public void setRight(Expression expr) {
+		this.right = expr;
+	}
+
 }
