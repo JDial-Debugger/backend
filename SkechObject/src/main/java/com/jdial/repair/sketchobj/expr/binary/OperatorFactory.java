@@ -49,7 +49,7 @@ public class OperatorFactory {
 		case "^":
 			return new Xor();
 		default:
-			throw new OperatorDoesNotExistException(operator, logger);
+			throw new OperatorDoesNotExistException(logger, operator);
 		}
 	}
 

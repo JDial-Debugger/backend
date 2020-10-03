@@ -9,17 +9,17 @@ public abstract class ConstructorOptions extends Options {
 
 	protected static final Logger logger = LoggerFactory.getLogger(Options.class);
 	// The class that this options object will be passed to
-	protected String destinationClassName;
+	private String destinationClassName;
 
-	public ConstructorOptions() {
-		super();
+	public ConstructorOptions(String[] optionNames, String[] requiredOptionNames) {
+		super(optionNames, requiredOptionNames);
 		this.setDestinationClassName();
 	}
 
 	protected abstract void setDestinationClassName();
 
 	public void handleMissingRequiredOptions() {
-		Set<String> missingOptionNames = this.getMissingRequiredFields();
+		Set<String> missingOptionNames = this.getMissingRequiredOptionNames();
 		if (missingOptionNames.size() > 0) {
 			throw new ConstructorMissingRequiredOptionsException(
 				logger,

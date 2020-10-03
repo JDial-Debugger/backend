@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import coefficient.Coefficient;
+import coefficient.CoefficientFactory;
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
 import sketchobj.core.SketchObject;
@@ -22,13 +23,16 @@ public abstract class ExprBinary extends Expression {
 	protected Expression right;
 	protected Operator operator;
 	protected int lineNumber;
+	protected CoefficientFactory coefficientFactory;
 	private boolean doesIgnoreLeft;
 	private boolean doesIgnoreRight;
 
 	public ExprBinary(ExprBinaryOptions options) {
-		this.left = options.left;
-		this.right = options.right;
-		this.lineNumber = options.lineNumber;
+		options.handleMissingRequiredOptions();
+		this.left = options.getLeft();
+		this.right = options.getRight();
+		this.lineNumber = options.getLineNumber();
+		this.coefficientFactory = options.getCoefficientFactory();
 	}
 
 	public Operator getOperator() {

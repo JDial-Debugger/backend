@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 public abstract class MethodOptions extends Options {
 	
 	protected static final Logger logger = LoggerFactory.getLogger(Options.class);
-	protected String destinationMethodName;
+	private String destinationMethodName;
 	
-	public MethodOptions() {
-		super();
+	public MethodOptions(String[] optionNames, String[] requiredOptionNames) {
+		super(optionNames, requiredOptionNames);
 		this.setDestinationMethodName();
 	}
 	
@@ -19,7 +19,7 @@ public abstract class MethodOptions extends Options {
 
 	@Override
 	public void handleMissingRequiredOptions() {
-		Set<String> missingOptionNames = this.getMissingRequiredFields();
+		Set<String> missingOptionNames = this.getMissingRequiredOptionNames();
 		if (missingOptionNames.size() > 0) {
 			throw new MethodMissingRequiredOptionsException(
 				logger,

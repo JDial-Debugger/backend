@@ -1,32 +1,25 @@
 package coefficient;
 
-import options.Option;
-
 public class ScalarCoefficientOptions extends CoefficientOptions {
 
-	private Boolean isAdditive;
+	private static final String isAdditive = "isAdditive";
 
 	public ScalarCoefficientOptions() {
 		super();
+		this.addRequiredOption(isAdditive);
 	}
 	
-	@Override
-	public void setRequiredOptions() {
-		super.setRequiredOptions();
-		this.requiredOptions.add(new Option("isAdditive", this.isAdditive));
-	}
-
 	@Override
 	public void setDestinationClassName() {
 		super.setDestinationClassName(ScalarCoefficient.class);
 	}
 
 	public Boolean getIsAdditive() {
-		return this.isAdditive;
+		return (Boolean) this.getOption(isAdditive);
 	}
 
-	public ScalarCoefficientOptions setIsAdditive(Boolean isAdditive) {
-		this.isAdditive = isAdditive;
+	public ScalarCoefficientOptions setIsAdditive(Boolean isAdditiveVal) {
+		this.setOption(isAdditive, isAdditiveVal);
 		return this;
 	}
 

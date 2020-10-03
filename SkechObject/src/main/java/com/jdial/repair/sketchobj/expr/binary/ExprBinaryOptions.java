@@ -1,24 +1,25 @@
 package sketchobj.expr.binary;
 
 import coefficient.CoefficientFactory;
-import options.Option;
-import options.Options;
+import options.ConstructorOptions;
 import sketchobj.expr.Expression;
 
-public class ExprBinaryOptions extends Options {
+public class ExprBinaryOptions extends ConstructorOptions {
 
 	private Expression left, right;
 	private CoefficientFactory coefficientFactory;
+	private ExprBinaryFactory exprBinaryFactory;
 	private int lineNumber;
 
 	public ExprBinaryOptions() {
 	}
-
+	
 	@Override
 	protected void setRequiredOptions() {
-		this.requiredOptions.add(new Option("left", this.left));
-		this.requiredOptions.add(new Option("right", this.right));
-		this.requiredOptions.add(new Option("coefficientFactory", this.coefficientFactory));
+		this.addRequiredOption("left", this.left);
+		this.addRequiredOption("right", this.right);
+		this.addRequiredOption("coefficientFactory", this.coefficientFactory);
+		this.addRequiredOption("exprBinaryFactory", this.exprBinaryFactory);
 	}
 
 	@Override

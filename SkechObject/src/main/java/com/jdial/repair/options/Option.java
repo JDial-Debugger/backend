@@ -1,12 +1,12 @@
 package options;
 
-public class Option {
+class Option {
 	
-	public String name;
 	public Object value;
+	public boolean isRequired;
 	
-	public Option(String name, Object value) {
-		this.name = name;
+	public Option(Object value, boolean isRequired) {
 		this.value = value;
+		this.isRequired = isRequired;
 	}
 }

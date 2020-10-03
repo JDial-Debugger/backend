@@ -1,13 +1,12 @@
 package coefficient;
 
-import options.Option;
-
 public class VectorCoefficientOptions extends CoefficientOptions {
 
-	private CoefficientFactory coefficientFactory;
+	private static final String coefficientFactory = "coefficientFactory";
 
 	public VectorCoefficientOptions() {
 		super();
+		this.addRequiredOption(coefficientFactory);
 	}
 
 	@Override
@@ -15,18 +14,12 @@ public class VectorCoefficientOptions extends CoefficientOptions {
 		super.setDestinationClassName(VectorCoefficient.class);
 	}
 
-	@Override
-	public void setRequiredOptions() {
-		super.setRequiredOptions();
-		this.requiredOptions.add(new Option("coefficientFactory", this.coefficientFactory));
-	}
-
 	public CoefficientFactory getCoefficientFactory() {
-		return this.coefficientFactory;
+		return (CoefficientFactory) this.getOption(coefficientFactory);
 	}
 
-	public VectorCoefficientOptions setCoefficientFactory(CoefficientFactory coefficientFactory) {
-		this.coefficientFactory = coefficientFactory;
+	public VectorCoefficientOptions setCoefficientFactory(CoefficientFactory coefficientFactoryVal) {
+		this.setOption(coefficientFactory, coefficientFactoryVal);
 		return this;
 	}
 

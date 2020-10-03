@@ -17,10 +17,10 @@ public class ExprBinaryFactory {
 	/**
 	 * Strictly used by the parser/visitor to construct objects
 	 */
-	public ExprBinary getExprBinary(ExprBinaryParserOptions factoryOptions) {
+	public ExprBinary getExprBinary(GetExprBinaryOptions factoryOptions) {
 		
-		ExprBinaryOptions options = new ExprBinaryOptions(factoryOptions.left, factoryOptions.right, factoryOptions.lineNumber);
-		String operator = factoryOptions.operator;
+		ExprBinaryOptions options = this.copyMethodOptionsToConstructorOptions(factoryOptions);
+		String operator = factoryOptions.getOperator();
 		
 		if (operator.equals(Operator.ADD.toString())) {
 			return new Add(options);
@@ -59,13 +59,24 @@ public class ExprBinaryFactory {
 		} else if (operator.equals(Operator.XOR.toString())) {
 			return new Xor(options);
 		}
-		throw new OperatorDoesNotExistException(operator, logger);
+		throw new OperatorDoesNotExistException(logger, operator);
 	}
-	
+
+	private ExprBinaryOptions copyMethodOptionsToConstructorOptions(
+		GetExprBinaryOptions methodOptions
+	) {
+		return new ExprBinaryOptions().setLeft(methodOptions.getLeft())
+			.setRight(methodOptions.getRight())
+			.setCoefficientFactory(methodOptions.getCoefficientFactory());
+	}
+
 	/**
 	 * After the parser constructs the AST, this can be used to create additional expressions
 	 */
-	public ExprBinary getExprBinary(Class<? extends ExprBinary> exprBinaryClass, ExprBinaryOptions options) {
+	public ExprBinary getExprBinary(
+		Class<? extends ExprBinary> exprBinaryClass,
+		ExprBinaryOptions options
+	) {
 		try {
 			return exprBinaryClass.getConstructor(ExprBinaryOptions.class).newInstance(options);
 		} catch (

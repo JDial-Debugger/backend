@@ -5,8 +5,11 @@ import java.util.Map;
 import java.util.Optional;
 
 import coefficient.Coefficient;
+import coefficient.CoefficientOptions;
 import coefficient.ScalarCoefficient;
+import coefficient.ScalarCoefficientOptions;
 import coefficient.VectorCoefficient;
+import coefficient.VectorCoefficientOptions;
 import sketchobj.core.Type;
 import sketchobj.core.TypeArray;
 import sketchobj.core.TypePrimitive;
@@ -21,48 +24,12 @@ public abstract class ArithmeticExprBinary extends NumericExprBinary {
 
 	@Override
 	public void insertCoeffs(List<Coefficient> coeffs) {
-		// TODO Auto-generated method stub
 
 		this.left.checkAtom();
 		this.right.checkAtom();
 
-		if (right.isAtom()) {
-			ScalarCoefficient changeCoeff
-				= new ScalarCoefficient(
-					coeffs.size(),
-					(TypePrimitive) this.getType(),
-					this.lineNumber,
-					false
-				);
-			coeffs.add(changeCoeff);
-
-			this.right = changeCoeff.modifyExpr(this.right);
-		} else {
-
-			right.setCtx(this.getCtx());
-			right.setType(this.getType());
-			right.insertCoeffs(coeffs);
-		}
-
-		if (left.isAtom()) {
-
-			ScalarCoefficient changeCoeff
-				= new ScalarCoefficient(
-					coeffs.size(),
-					(TypePrimitive) this.getType(),
-					this.lineNumber,
-					false
-				);
-			coeffs.add(changeCoeff);
-
-			this.left = changeCoeff.modifyExpr(this.left);
-
-		} else {
-
-			this.left.setCtx(this.getCtx());
-			this.left.setType(this.getType());
-			this.left.insertCoeffs(coeffs);
-		}
+		this.addScalarsToAtomChild(coeffs, this.right);
+		this.addScalarsToAtomChild(coeffs, this.left);
 
 		if (this.getType() instanceof TypeArray) {
 			return;
@@ -82,13 +49,7 @@ public abstract class ArithmeticExprBinary extends NumericExprBinary {
 
 				if (curVarType.getType() == ((TypePrimitive) this.getType()).getType()) {
 
-					ScalarCoefficient changeCoeff
-						= new ScalarCoefficient(
-							coeffs.size(),
-							(TypePrimitive) this.getType(),
-							this.lineNumber,
-							true
-						);
+					ScalarCoefficient changeCoeff = this.getChangeCoeff(coeffs);
 					coeffs.add(changeCoeff);
 
 					Expression addLiveVar
@@ -98,14 +59,56 @@ public abstract class ArithmeticExprBinary extends NumericExprBinary {
 				}
 			}
 
-			VectorCoefficient valCoeff
-				= new VectorCoefficient(
-					coeffs.size(),
-					(TypePrimitive) this.getType(),
-					this.lineNumber
-				);
+			VectorCoefficient valCoeff = this.getValCoeff(coeffs);
 			coeffs.add(valCoeff);
 			this.right = valCoeff.addToExpr(this.right, coeffs, (TypePrimitive) this.getType());
 		}
+	}
+
+	private void addScalarsToAtomChild(List<Coefficient> coeffs, Expression childToModify) {
+
+		if (childToModify.isAtom()) {
+			ScalarCoefficient changeCoeff = this.getChangeCoeff(coeffs);
+			coeffs.add(changeCoeff);
+
+			this.replaceChild(childToModify, changeCoeff.modifyExpr(childToModify));
+		} else {
+
+			childToModify.setCtx(this.getCtx());
+			childToModify.setType(this.getType());
+			childToModify.insertCoeffs(coeffs);
+		}
+	}
+
+	private ScalarCoefficient getChangeCoeff(List<Coefficient> coeffs) {
+		CoefficientOptions options
+			= new ScalarCoefficientOptions().setIsAdditive(false)
+				.setIdx(coeffs.size())
+				.setType((TypePrimitive) this.getType())
+				.setLineNumber(this.lineNumber);
+		return (ScalarCoefficient) this.coefficientFactory.getCoefficient(
+			ScalarCoefficient.class,
+			options
+		);
+	}
+
+	private void replaceChild(Expression originalChild, Expression newChild) {
+		if (originalChild == this.left) {
+			this.left = newChild;
+		} else if (originalChild == this.right) {
+			this.right = newChild;
+		}
+	}
+
+	private VectorCoefficient getValCoeff(List<Coefficient> coeffs) {
+
+		CoefficientOptions options
+			= new VectorCoefficientOptions().setIdx(coeffs.size())
+				.setType((TypePrimitive) this.getType())
+				.setLineNumber(this.lineNumber);
+		return (VectorCoefficient) this.coefficientFactory.getCoefficient(
+			VectorCoefficient.class,
+			options
+		);
 	}
 }

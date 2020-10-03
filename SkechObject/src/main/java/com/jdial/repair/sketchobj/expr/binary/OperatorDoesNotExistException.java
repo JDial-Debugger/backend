@@ -8,7 +8,7 @@ public class OperatorDoesNotExistException extends RuntimeException {
 
 	private static final long serialVersionUID = -5280673779159896429L;
 
-	public OperatorDoesNotExistException(String operator, Logger logger) {
+	public OperatorDoesNotExistException(Logger logger, String operator) {
 		super("Operator not recognized: " + operator);
 		ExceptionLogger.logErrorException(this, logger);
 	}
