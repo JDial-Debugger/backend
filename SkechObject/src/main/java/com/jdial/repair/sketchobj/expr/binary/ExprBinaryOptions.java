@@ -6,20 +6,14 @@ import sketchobj.expr.Expression;
 
 public class ExprBinaryOptions extends ConstructorOptions {
 
-	private Expression left, right;
-	private CoefficientFactory coefficientFactory;
-	private ExprBinaryFactory exprBinaryFactory;
-	private int lineNumber;
+	private static final String left = "left", right = "right", coefficientFactory
+		= "coefficientFactory", exprBinaryFactory = "exprBinaryFactory", lineNumber = "lineNumber";
 
 	public ExprBinaryOptions() {
-	}
-	
-	@Override
-	protected void setRequiredOptions() {
-		this.addRequiredOption("left", this.left);
-		this.addRequiredOption("right", this.right);
-		this.addRequiredOption("coefficientFactory", this.coefficientFactory);
-		this.addRequiredOption("exprBinaryFactory", this.exprBinaryFactory);
+		super(
+			new String[] { lineNumber }, 
+			new String[] { left, right, coefficientFactory, exprBinaryFactory }
+		);
 	}
 
 	@Override
@@ -28,38 +22,38 @@ public class ExprBinaryOptions extends ConstructorOptions {
 	}
 
 	public Expression getLeft() {
-		return this.left;
+		return (Expression) this.getOption(left);
 	}
 
-	public ExprBinaryOptions setLeft(Expression left) {
-		this.left = left;
+	public ExprBinaryOptions setLeft(Expression leftVal) {
+		this.setOption(left, leftVal);
 		return this;
 	}
 
 	public Expression getRight() {
-		return this.right;
+		return (Expression) this.getOption(right);
 	}
 
-	public ExprBinaryOptions setRight(Expression right) {
-		this.right = right;
+	public ExprBinaryOptions setRight(Expression rightVal) {
+		this.setOption(right, rightVal);
 		return this;
 	}
 
 	public CoefficientFactory getCoefficientFactory() {
-		return this.coefficientFactory;
+		return (CoefficientFactory) this.getOption(coefficientFactory);
 	}
 
-	public ExprBinaryOptions setCoefficientFactory(CoefficientFactory coefficientFactory) {
-		this.coefficientFactory = coefficientFactory;
+	public ExprBinaryOptions setCoefficientFactory(CoefficientFactory coefficientFactoryVal) {
+		this.setOption(coefficientFactory, coefficientFactoryVal);
 		return this;
 	}
 
 	public int getLineNumber() {
-		return this.lineNumber;
+		return (Integer) this.getOption(lineNumber);
 	}
 
-	public ExprBinaryOptions setLineNumber(int lineNumber) {
-		this.lineNumber = lineNumber;
+	public ExprBinaryOptions setLineNumber(Integer lineNumberVal) {
+		this.setOption(lineNumber, lineNumberVal);
 		return this;
 	}
 }

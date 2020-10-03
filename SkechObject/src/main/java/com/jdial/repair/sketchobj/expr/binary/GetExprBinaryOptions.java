@@ -6,12 +6,18 @@ import sketchobj.expr.Expression;
 
 public class GetExprBinaryOptions extends MethodOptions {
 
-	private Expression left, right;
-	private String operator;
-	private int lineNumber;
-	private CoefficientFactory coefficientFactory;
+	private static final String 
+		left = "left", 
+		right = "right", 
+		operator = "operator", 
+		lineNumber = "lineNumber", 
+		coefficientFactory = "coefficientFactory";
 
 	public GetExprBinaryOptions() {
+		super(
+			new String[] { left, right, operator, coefficientFactory },
+			new String[] { lineNumber }
+		);
 	}
 
 	@Override
@@ -19,56 +25,48 @@ public class GetExprBinaryOptions extends MethodOptions {
 		this.setDestinationMethodName(ExprBinaryFactory.class, "getExprBinary");
 	}
 
-	@Override
-	protected void setRequiredOptions() {
-		this.addRequiredOption("left", this.left);
-		this.addRequiredOption("right", this.right);
-		this.addRequiredOption("operator", this.operator);
-		this.addRequiredOption("coefficientFactory", coefficientFactory);
-	}
-
 	public Expression getLeft() {
-		return this.left;
+		return (Expression) this.getOption(left);
 	}
 
-	public GetExprBinaryOptions setLeft(Expression left) {
-		this.left = left;
+	public GetExprBinaryOptions setLeft(Expression leftVal) {
+		this.setOption(left, leftVal);
 		return this;
 	}
 
 	public Expression getRight() {
-		return this.right;
+		return (Expression) this.getOption(right);
 	}
 
-	public GetExprBinaryOptions setRight(Expression right) {
-		this.right = right;
+	public GetExprBinaryOptions setRight(Expression rightVal) {
+		this.setOption(right, rightVal);
 		return this;
 	}
 
 	public String getOperator() {
-		return this.operator;
+		return (String) this.getOption(operator);
 	}
 
-	public GetExprBinaryOptions setOperator(String operator) {
-		this.operator = operator;
-		return this;
-	}
-
-	public int getLineNumber() {
-		return this.lineNumber;
-	}
-
-	public GetExprBinaryOptions setLineNumber(int lineNumber) {
-		this.lineNumber = lineNumber;
+	public GetExprBinaryOptions setOperator(String operatorVal) {
+		this.setOption(operator, operatorVal);
 		return this;
 	}
 
 	public CoefficientFactory getCoefficientFactory() {
-		return this.coefficientFactory;
+		return (CoefficientFactory) this.getOption(coefficientFactory);
 	}
 
-	public GetExprBinaryOptions setCoefficientFactory(CoefficientFactory coefficientFactory) {
-		this.coefficientFactory = coefficientFactory;
+	public GetExprBinaryOptions setCoefficientFactory(CoefficientFactory coefficientFactoryVal) {
+		this.setOption(coefficientFactory, coefficientFactoryVal);
+		return this;
+	}
+
+	public int getLineNumber() {
+		return (Integer) this.getOption(lineNumber);
+	}
+
+	public GetExprBinaryOptions setLineNumber(Integer lineNumberVal) {
+		this.setOption(lineNumber, lineNumberVal);
 		return this;
 	}
 }
