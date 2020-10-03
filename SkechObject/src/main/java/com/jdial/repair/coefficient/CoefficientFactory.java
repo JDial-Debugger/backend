@@ -22,7 +22,7 @@ public class CoefficientFactory {
 		} else if (coeffClass == VectorCoefficient.class) {
 			return this.getVectorCoefficient(options);
 		} else {
-			throw new InvalidClassException(coeffClass, CoefficientFactory.class, logger);
+			throw new InvalidClassException(logger, coeffClass, CoefficientFactory.class);
 		}
 	}
 

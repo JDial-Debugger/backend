@@ -3,6 +3,7 @@ package construction;
 import org.slf4j.Logger;
 
 import exception.ExceptionLogger;
+import options.Options;
 
 public class InvalidOptionTypeException extends RuntimeException {
 

@@ -3,11 +3,7 @@ package sketchobj.expr.binary;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import coefficient.Coefficient;
 import constraintfactory.ConstData;
@@ -28,14 +24,13 @@ public abstract class ExprBinary extends Expression {
 	protected int lineNumber;
 	private boolean doesIgnoreLeft;
 	private boolean doesIgnoreRight;
-	private static final Logger logger = LoggerFactory.getLogger(ExprBinary.class);
 
 	public ExprBinary(ExprBinaryOptions options) {
 		this.left = options.left;
 		this.right = options.right;
 		this.lineNumber = options.lineNumber;
 	}
-	
+
 	public Operator getOperator() {
 		return this.operator;
 	}
@@ -207,7 +202,7 @@ public abstract class ExprBinary extends Expression {
 	public void setLeft(Expression expr) {
 		this.left = expr;
 	}
-	
+
 	public void setRight(Expression expr) {
 		this.right = expr;
 	}

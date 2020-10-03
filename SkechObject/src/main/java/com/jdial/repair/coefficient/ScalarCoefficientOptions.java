@@ -1,6 +1,6 @@
 package coefficient;
 
-import construction.Option;
+import options.Option;
 
 public class ScalarCoefficientOptions extends CoefficientOptions {
 

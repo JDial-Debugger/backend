@@ -1,12 +1,12 @@
 package coefficient;
 
-import construction.Option;
-import construction.Options;
+import options.ConstructorOptions;
+import options.Option;
 import sketchobj.core.TypePrimitive;
 import sketchobj.expr.binary.ExprBinaryFactory;
 import sketchobj.stmts.Statement;
 
-public class CoefficientOptions extends Options {
+public class CoefficientOptions extends ConstructorOptions {
 
 	private Integer idx;
 	private Integer lineNumber;

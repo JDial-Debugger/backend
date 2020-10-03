@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import exception.InvalidClassException;
+import construction.InvalidClassException;
 
 public class ExprBinaryFactory {
 
@@ -14,7 +14,10 @@ public class ExprBinaryFactory {
 	public ExprBinaryFactory() {
 	}
 
-	public ExprBinary getExprBinary(ExprBinaryFactoryOptions factoryOptions) {
+	/**
+	 * Strictly used by the parser/visitor to construct objects
+	 */
+	public ExprBinary getExprBinary(ExprBinaryParserOptions factoryOptions) {
 		
 		ExprBinaryOptions options = new ExprBinaryOptions(factoryOptions.left, factoryOptions.right, factoryOptions.lineNumber);
 		String operator = factoryOptions.operator;
@@ -59,6 +62,9 @@ public class ExprBinaryFactory {
 		throw new OperatorDoesNotExistException(operator, logger);
 	}
 	
+	/**
+	 * After the parser constructs the AST, this can be used to create additional expressions
+	 */
 	public ExprBinary getExprBinary(Class<? extends ExprBinary> exprBinaryClass, ExprBinaryOptions options) {
 		try {
 			return exprBinaryClass.getConstructor(ExprBinaryOptions.class).newInstance(options);
@@ -70,7 +76,7 @@ public class ExprBinaryFactory {
 			NoSuchMethodException |
 			SecurityException e
 		) {
-			throw new InvalidClassException(logger, exprBinaryClass.getName());
+			throw new InvalidClassException(logger, exprBinaryClass, this.getClass());
 		}
 	}
 }
