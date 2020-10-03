@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
+import coefficient.Coefficient;
 import constants.Errors;
 import constants.Json;
 import javaparser.simpleJavaLexer;
@@ -36,7 +37,6 @@ import json_input.ParserFactory;
 import json_input.Trace;
 import json_input.TracePoint;
 import json_input.TracePointRepairInput;
-import sketch.input.Coefficient;
 import sketch.input.SketchExecException;
 import sketch.input.SketchInvoker;
 import sketch.input.SketchScript;

@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import coefficient.Coefficient;
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
-import sketch.input.Coefficient;
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
 

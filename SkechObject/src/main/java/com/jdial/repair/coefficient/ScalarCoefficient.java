@@ -1,4 +1,4 @@
-package sketch.input;
+package coefficient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,8 +12,10 @@ import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprSketchHole;
 import sketchobj.expr.ExprVar;
 import sketchobj.expr.Expression;
+import sketchobj.expr.binary.Equals;
 import sketchobj.expr.binary.ExprBinary;
-import sketchobj.expr.binary.ExprBinaryFactory;
+import sketchobj.expr.binary.ExprBinaryOptions;
+import sketchobj.expr.binary.Multiply;
 import sketchobj.stmts.Statement;
 import sketchobj.stmts.StmtBlock;
 import sketchobj.stmts.StmtFuncDecl;
@@ -31,52 +33,19 @@ public class ScalarCoefficient extends Coefficient {
 	// false if this coefficient being 1 or -1 removes an expression from the code
 	private boolean isAdditive;
 
-	/**
-	 * Creates a scalar coefficient with the given unique index and type
-	 * 
-	 * @param idx  - an index to uniquely identify the coefficient
-	 * @param type - the type of the coefficient
-	 */
-	public ScalarCoefficient(
-		int idx,
-		TypePrimitive type,
-		boolean isAdditive,
-		ExprBinaryFactory binaryExprFactory
-	) {
-		super(idx, type, binaryExprFactory);
-		this.isAdditive = isAdditive;
-	}
-
-	public ScalarCoefficient(
-		int idx,
-		TypePrimitive type,
-		int lineNumber,
-		boolean isAdditive,
-		ExprBinaryFactory binaryExprFactory
-	) {
-		super(idx, type, lineNumber, binaryExprFactory);
-		this.isAdditive = isAdditive;
-	}
-
-	public ScalarCoefficient(
-		int idx,
-		TypePrimitive type,
-		int lineNumber,
-		boolean isAdditive,
-		Statement parent,
-		ExprBinaryFactory binaryExprFactory
-	) {
-		super(idx, type, lineNumber, parent, binaryExprFactory);
-		this.isAdditive = isAdditive;
+	public ScalarCoefficient(ScalarCoefficientOptions options) {
+		super(options);
+		this.isAdditive = options.getIsAdditive();
 	}
 
 	@Override
 	public List<Statement> getDeclFunc() {
 
+		ExprVar coeffExprVar = new ExprVar(super.name + Coefficient.CHANGE_SUFFIX);
 		Expression changeCond
-			= this.binaryExprFactory.getEqualsExpr(
-				new ExprVar(super.name + Coefficient.CHANGE_SUFFIX),
-				new ExprConstInt(0)
+			= this.binaryExprFactory.getExprBinary(
+				Equals.class,
+				new ExprBinaryOptions(coeffExprVar, new ExprConstInt(0))
 			);
 		StmtReturn changeReturn = null;
 		if (this.isAdditive) {
@@ -137,7 +106,11 @@ public class ScalarCoefficient extends Coefficient {
 	 * @return - the resulting expression after toModify is multiplied by this coefficient
 	 */
 	public ExprBinary modifyExpr(Expression toModify) {
-		this.parentExpr = this.binaryExprFactory.getMultiplyExpr(this.getFuncCall(), toModify);
+		this.parentExpr
+			= this.binaryExprFactory.getExprBinary(
+				Multiply.class,
+				new ExprBinaryOptions(this.getFuncCall(), toModify)
+			);
 		return this.parentExpr;
 	}
 

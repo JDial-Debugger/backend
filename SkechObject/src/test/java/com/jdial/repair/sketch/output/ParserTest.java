@@ -9,8 +9,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import coefficient.Coefficient;
 import constants.Errors;
-import sketch.input.Coefficient;
 
 import static org.junit.Assert.*;
 

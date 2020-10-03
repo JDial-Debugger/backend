@@ -2,10 +2,11 @@ package sketchobj.expr.binary;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import sketch.input.Coefficient;
-import sketch.input.ScalarCoefficient;
-import sketch.input.VectorCoefficient;
+import coefficient.Coefficient;
+import coefficient.ScalarCoefficient;
+import coefficient.VectorCoefficient;
 import sketchobj.core.Type;
 import sketchobj.core.TypeArray;
 import sketchobj.core.TypePrimitive;
@@ -14,12 +15,8 @@ import sketchobj.expr.Expression;
 
 public abstract class ArithmeticExprBinary extends NumericExprBinary {
 
-	ArithmeticExprBinary(Expression left, Operator operator, Expression right) {
-		super(left, operator, right);
-	}
-
-	public ArithmeticExprBinary(Expression left, Operator operator, Expression right, int lineNumber) {
-		super(left, operator, right, lineNumber);
+	public ArithmeticExprBinary(ExprBinaryOptions options) {
+		super(options);
 	}
 
 	@Override

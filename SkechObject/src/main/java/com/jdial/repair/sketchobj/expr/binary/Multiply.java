@@ -5,8 +5,9 @@ import sketchobj.expr.Expression;
 
 public class Multiply extends ArithmeticExprBinary {
 
-	public Multiply(Expression left, Expression right) {
-		super(left, Operator.MULTIPLY, right);
+	public Multiply(ExprBinaryOptions options) {
+		super(options);
+		this.operator = Operator.MULTIPLY;
 	}
 
 	@Override

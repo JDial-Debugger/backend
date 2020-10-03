@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import coefficient.Coefficient;
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
-import sketch.input.Coefficient;
 import sketchobj.core.Context;
 import sketchobj.core.SketchNode;
 import sketchobj.core.SketchObject;

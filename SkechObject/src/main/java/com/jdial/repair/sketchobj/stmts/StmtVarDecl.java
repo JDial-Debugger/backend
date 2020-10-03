@@ -9,12 +9,12 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import coefficient.Coefficient;
+import coefficient.ScalarCoefficient;
+import coefficient.VectorCoefficient;
 import constraintfactory.ConstData;
 import constraintfactory.ConstraintFactory;
 import constraintfactory.ExternalFunction;
-import sketch.input.Coefficient;
-import sketch.input.ScalarCoefficient;
-import sketch.input.VectorCoefficient;
 import sketchobj.core.Context;
 import sketchobj.core.SketchObject;
 import sketchobj.core.Type;
@@ -114,15 +114,6 @@ public class StmtVarDecl extends Statement {
 				Collections.singletonList(name), null, 0);
 	}
 
-	@Override
-	public StmtVarDecl clone() {
-		List<Expression> exprs = new ArrayList<>();
-		for (Expression e : this.inits) {
-			exprs.add(e.clone());
-		}
-		return new StmtVarDecl(this.types, this.names, exprs, this.getLineNumber());
-	}
-	
 	/*
 	 * public StmtVarDecl(Vector<VarDeclEntry> next) { this.types = new
 	 * Vector<Type>(next.size()); this.names = new Vector<String>(next.size());
@@ -463,7 +454,7 @@ public class StmtVarDecl extends Statement {
 			if (curInit.isAtom()) {
 				
 				ScalarCoefficient coeff = new ScalarCoefficient(
-						coeffs.size(), initType, curInit.getLineNumber(), false);
+						coeffs.size(), initType, curInit.getLineNumber(), false, this.exprBinaryFactory);
 				coeffs.add(coeff);
 				inits.set(i, coeff.modifyExpr(curInit));
 				
@@ -516,7 +507,7 @@ public class StmtVarDecl extends Statement {
 			else*/
 			
 			VectorCoefficient coeff = new VectorCoefficient(
-					coeffs.size(), initType, curInit.getLineNumber());
+					coeffs.size(), initType, curInit.getLineNumber(), this.exprBinaryFactory);
 			coeffs.add(coeff);
 			inits.set(i, coeff.addToExpr(curInit, coeffs, initType));
 		}

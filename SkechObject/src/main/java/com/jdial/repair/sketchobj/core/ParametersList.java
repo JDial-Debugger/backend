@@ -3,7 +3,7 @@ package sketchobj.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import sketch.input.Coefficient;
+import coefficient.Coefficient;
 
 public class ParametersList extends SketchObject{
 	List<Parameter> list;

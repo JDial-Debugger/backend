@@ -2,15 +2,15 @@ package sketchobj.expr.binary;
 
 import java.util.List;
 
-import sketch.input.Coefficient;
-import sketch.input.VectorCoefficient;
+import coefficient.Coefficient;
+import coefficient.VectorCoefficient;
 import sketchobj.core.TypePrimitive;
 import sketchobj.expr.Expression;
 
 public class ComparativeExprBinary extends NumericExprBinary {
 
-	protected ComparativeExprBinary(Expression left, Operator operator, Expression right) {
-		super(left, operator, right);
+	protected ComparativeExprBinary(ExprBinaryOptions options) {
+		super(options);
 	}
 	
 	@Override

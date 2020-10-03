@@ -5,8 +5,9 @@ import sketchobj.expr.Expression;
 
 public class Divide extends ArithmeticExprBinary {
 
-	public Divide(Expression left, Expression right) {
-		super(left, Operator.DIVIDE, right);
+	public Divide(ExprBinaryOptions options) {
+		super(options);
+		this.operator = Operator.DIVIDE;
 	}
 
 	@Override

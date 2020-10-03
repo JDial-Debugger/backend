@@ -1,10 +1,9 @@
 package sketchobj.expr.binary;
 
-import sketchobj.expr.Expression;
-
 public class GreaterEquals extends EqualitiveExprBinary {
 
-	protected GreaterEquals(Expression left, Expression right) {
-		super(left, Operator.GREATER_EQUALS, right);
+	protected GreaterEquals(ExprBinaryOptions options) {
+		super(options);
+		this.operator = Operator.GREATER_EQUALS;
 	}
 }

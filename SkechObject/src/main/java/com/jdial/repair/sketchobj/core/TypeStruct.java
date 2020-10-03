@@ -2,7 +2,7 @@ package sketchobj.core;
 
 import java.util.List;
 
-import sketch.input.Coefficient;
+import coefficient.Coefficient;
 
 public class TypeStruct extends Type {
 	private String name;

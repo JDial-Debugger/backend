@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import coefficient.Coefficient;
 import json_input.TracePoint;
 import repair.CorrectionExample;
 import sketchobj.core.Context;

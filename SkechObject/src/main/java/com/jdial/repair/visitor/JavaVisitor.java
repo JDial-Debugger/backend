@@ -8,33 +8,39 @@ import sketchobj.core.*;
 import sketchobj.expr.*;
 import sketchobj.expr.ExprArrayRange.RangeLen;
 import sketchobj.expr.binary.ExprBinary2;
+import sketchobj.expr.binary.ExprBinaryFactory;
 import sketchobj.stmts.*;
 
 public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 
+	private ExprBinaryFactory binaryExprFactory;
 	private String functionToParse;
 
-	//added 11/18
+	// added 11/18
 	public static Queue<String> methodNames = new LinkedList<>();
-	//added 11/18
-	
-	public JavaVisitor() {}
-	
-	public JavaVisitor(String functionToParse) {
+	// added 11/18
+
+	public JavaVisitor(ExprBinaryFactory binaryExprFactory) {
+		this.binaryExprFactory = binaryExprFactory;
+	}
+
+	public JavaVisitor(String functionToParse, ExprBinaryFactory binaryExprFactory) {
+		this(binaryExprFactory);
 		this.functionToParse = functionToParse;
 	}
-	
+
 	public void setFunctionToParse(String functionToParse) {
 		this.functionToParse = functionToParse;
 	}
-	
+
 	/**
-	 * compilationUnit : packageDeclaration? importDeclaration* typeDeclaration*
-	 * EOF
+	 * compilationUnit : packageDeclaration? importDeclaration* typeDeclaration* EOF
 	 **/
 	@Override
 	public SketchObject visitCompilationUnit(simpleJavaParser.CompilationUnitContext ctx) {
-		return visit(ctx.typeDeclaration(0).classDeclaration().normalClassDeclaration().classBody());
+		return visit(
+			ctx.typeDeclaration(0).classDeclaration().normalClassDeclaration().classBody()
+		);
 	}
 
 	/**
@@ -43,10 +49,22 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	@Override
 	public SketchObject visitClassBody(simpleJavaParser.ClassBodyContext ctx) {
 		for (int i = 0; i < ctx.classBodyDeclaration().size(); i++) {
-			if (functionToParse == null || functionToParse.equals(ctx.classBodyDeclaration()
-					.get(i).classMemberDeclaration().methodDeclaration().methodHeader()
-					.getChild(1).getChild(0).getText())) {
-				return visit(ctx.classBodyDeclaration().get(i).classMemberDeclaration().methodDeclaration());
+			if (
+				functionToParse == null
+					|| functionToParse.equals(
+						ctx.classBodyDeclaration()
+							.get(i)
+							.classMemberDeclaration()
+							.methodDeclaration()
+							.methodHeader()
+							.getChild(1)
+							.getChild(0)
+							.getText()
+					)
+			) {
+				return visit(
+					ctx.classBodyDeclaration().get(i).classMemberDeclaration().methodDeclaration()
+				);
 			}
 		}
 		return null;
@@ -74,7 +92,11 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	@Override
 	public SketchObject visitMethodDeclarator(simpleJavaParser.MethodDeclaratorContext ctx) {
 		if (ctx.formalParameterList() != null)
-			return new FcnHeader(ctx.Identifier().getText(), null, (ParametersList) visit(ctx.formalParameterList()));
+			return new FcnHeader(
+				ctx.Identifier().getText(),
+				null,
+				(ParametersList) visit(ctx.formalParameterList())
+			);
 		else
 			return new FcnHeader(ctx.Identifier().getText(), null, new ArrayList<Parameter>());
 	}
@@ -105,7 +127,9 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	}
 
 	@Override
-	public SketchObject visitNumericIntegeralType(simpleJavaParser.NumericIntegeralTypeContext ctx) {
+	public SketchObject visitNumericIntegeralType(
+		simpleJavaParser.NumericIntegeralTypeContext ctx
+	) {
 		return visit(ctx.integralType());
 	}
 
@@ -129,7 +153,9 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	}
 
 	@Override
-	public SketchObject visitNumericFloatingPointType(simpleJavaParser.NumericFloatingPointTypeContext ctx) {
+	public SketchObject visitNumericFloatingPointType(
+		simpleJavaParser.NumericFloatingPointTypeContext ctx
+	) {
 		return visit(ctx.floatingPointType());
 	}
 
@@ -205,8 +231,12 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	@Override
 	public SketchObject visitFormalParameter(simpleJavaParser.FormalParameterContext ctx) {
 		// TODO dims?
-		return new Parameter((Type) visit(ctx.unannType()), ctx.variableDeclaratorId().Identifier().getText(), 0,
-				false);
+		return new Parameter(
+			(Type) visit(ctx.unannType()),
+			ctx.variableDeclaratorId().Identifier().getText(),
+			0,
+			false
+		);
 	}
 
 	// ----------body----------
@@ -226,19 +256,19 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 		}
 		return new StmtBlock(list);
 	}
-	
+
 	/**
-	 * Returns a special node for asserting function returns that should not be included
-	 * with source code. Requires that exactly one side of the conditional in the assert
-	 * statement is a function call
+	 * Returns a special node for asserting function returns that should not be included with source
+	 * code. Requires that exactly one side of the conditional in the assert statement is a function
+	 * call
 	 */
 	@Override
 	public StmtFuncAssert visitAssertStatement(simpleJavaParser.AssertStatementContext ctx) {
 		ExprBinary2 assertExpr = (ExprBinary2) visit(ctx.expression(0));
 		Expression lhs = assertExpr.getLeft();
 		Expression rhs = assertExpr.getRight();
-		//check if function call in exactly one of lhs or rhs
-		if ( lhs instanceof ExprFuncCall && !(rhs instanceof ExprFuncCall)) {
+		// check if function call in exactly one of lhs or rhs
+		if (lhs instanceof ExprFuncCall && !(rhs instanceof ExprFuncCall)) {
 			return new StmtFuncAssert((ExprFuncCall) lhs, rhs);
 		} else if (rhs instanceof ExprFuncCall && !(lhs instanceof ExprFuncCall)) {
 			return new StmtFuncAssert((ExprFuncCall) rhs, lhs);
@@ -250,51 +280,100 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	/** localVariableDeclarationStatement **/
 	@Override
 	public Statement visitLocalVarDecl(simpleJavaParser.LocalVarDeclContext ctx) {
-		Type t = (Type) visit(ctx.localVariableDeclarationStatement().localVariableDeclaration().unannType());
+		Type t
+			= (Type) visit(
+				ctx.localVariableDeclarationStatement().localVariableDeclaration().unannType()
+			);
 		ArrayList<Type> types = new java.util.ArrayList<Type>();
 		ArrayList<String> names = new java.util.ArrayList<String>();
 		ArrayList<Expression> inits = new java.util.ArrayList<Expression>();
 		if (!(t instanceof TypeArray)) {
-			for (int i = 0; i < ctx.localVariableDeclarationStatement().localVariableDeclaration()
-					.variableDeclaratorList().variableDeclarator().size(); i++) {
+			for (
+				int i = 0;
+				i
+					< ctx.localVariableDeclarationStatement()
+						.localVariableDeclaration()
+						.variableDeclaratorList()
+						.variableDeclarator()
+						.size();
+				i++
+			) {
 				types.add(t);
 				// TODO dims
-				names.add(ctx.localVariableDeclarationStatement().localVariableDeclaration().variableDeclaratorList()
-						.variableDeclarator().get(i).variableDeclaratorId().Identifier().getText());
+				names.add(
+					ctx.localVariableDeclarationStatement()
+						.localVariableDeclaration()
+						.variableDeclaratorList()
+						.variableDeclarator()
+						.get(i)
+						.variableDeclaratorId()
+						.Identifier()
+						.getText()
+				);
 				// TODO check what if variableInitializer dosen't exist
-				inits.add((Expression) visit(ctx.localVariableDeclarationStatement().localVariableDeclaration()
-						.variableDeclaratorList().variableDeclarator().get(i).variableInitializer()));
+				inits.add(
+					(Expression) visit(
+						ctx.localVariableDeclarationStatement()
+							.localVariableDeclaration()
+							.variableDeclaratorList()
+							.variableDeclarator()
+							.get(i)
+							.variableInitializer()
+					)
+				);
 			}
-		} else{
-			names.add(ctx.localVariableDeclarationStatement().localVariableDeclaration().variableDeclaratorList()
-					.variableDeclarator().get(0).variableDeclaratorId().Identifier().getText());
-			//in Java you can declare int[] arr;
-			//but in sketch, it must be int[3] arr; where the constant > 0
-			//for now, just initialize it to size 1 if no length given
+		} else {
+			names.add(
+				ctx.localVariableDeclarationStatement()
+					.localVariableDeclaration()
+					.variableDeclaratorList()
+					.variableDeclarator()
+					.get(0)
+					.variableDeclaratorId()
+					.Identifier()
+					.getText()
+			);
+			// in Java you can declare int[] arr;
+			// but in sketch, it must be int[3] arr; where the constant > 0
+			// for now, just initialize it to size 1 if no length given
 			ExprConstInt arrSizeExpr = ExprConstInt.createConstant(1);
-			((TypeArray) t).setLenghth( arrSizeExpr);
-			if(ctx.localVariableDeclarationStatement().localVariableDeclaration().variableDeclaratorList()
-					.variableDeclarator().get(0).children.size()==1){
+			((TypeArray) t).setLenghth(arrSizeExpr);
+			if (
+				ctx.localVariableDeclarationStatement()
+					.localVariableDeclaration()
+					.variableDeclaratorList()
+					.variableDeclarator()
+					.get(0).children.size()
+					== 1
+			) {
 				types.add(t);
 				inits.add(null);
 				StmtVarDecl ret = new StmtVarDecl(types, names, inits, ctx.start.getLine());
 				return ret;
 			}
-			ExprArrayInit ei = (ExprArrayInit)visit(ctx.localVariableDeclarationStatement().localVariableDeclaration().variableDeclaratorList()
-					.variableDeclarator().get(0).variableInitializer());
-			//In java array inits are: int[] arr = {4, 32, 1};
-			//while in sketch they are: int[3] arr = {4, 32, 1};
-			//following lines change that TODO: make this work for multi dimensional arrays, or just fix the root of the problem when a type object gets created
+			ExprArrayInit ei
+				= (ExprArrayInit) visit(
+					ctx.localVariableDeclarationStatement()
+						.localVariableDeclaration()
+						.variableDeclaratorList()
+						.variableDeclarator()
+						.get(0)
+						.variableInitializer()
+				);
+			// In java array inits are: int[] arr = {4, 32, 1};
+			// while in sketch they are: int[3] arr = {4, 32, 1};
+			// following lines change that TODO: make this work for multi dimensional arrays, or
+			// just fix the root of the problem when a type object gets created
 			int arrSize = ((ExprArrayInit) ei).getElements().size();
 			arrSizeExpr = ExprConstInt.createConstant(arrSize);
-			((TypeArray) t).setLenghth( arrSizeExpr);
-			if(ei.length == null){
+			((TypeArray) t).setLenghth(arrSizeExpr);
+			if (ei.length == null) {
 				types.add(t);
 				inits.add(ei);
 				StmtVarDecl ret = new StmtVarDecl(types, names, inits, ctx.start.getLine());
 				return ret;
-			}else{
-				((TypeArray)t).setLenghth(ei.length);
+			} else {
+				((TypeArray) t).setLenghth(ei.length);
 				inits.add(null);
 				types.add(t);
 				StmtVarDecl ret = new StmtVarDecl(types, names, inits, ctx.start.getLine());
@@ -304,17 +383,20 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 
 		StmtVarDecl ret = new StmtVarDecl(types, names, inits, ctx.start.getLine());
 		return ret;
-		
+
 	}
 
 	@Override
 	public Statement visitLocalVariableDeclarationStatement(
-			simpleJavaParser.LocalVariableDeclarationStatementContext ctx) {
+		simpleJavaParser.LocalVariableDeclarationStatementContext ctx
+	) {
 		return (Statement) visit(ctx.localVariableDeclaration());
 	}
 
 	@Override
-	public Statement visitLocalVariableDeclaration(simpleJavaParser.LocalVariableDeclarationContext ctx) {
+	public Statement visitLocalVariableDeclaration(
+		simpleJavaParser.LocalVariableDeclarationContext ctx
+	) {
 		Type t = (Type) visit(ctx.unannType());
 		ArrayList<Type> types = new java.util.ArrayList<Type>();
 		ArrayList<String> names = new java.util.ArrayList<String>();
@@ -322,11 +404,20 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 		for (int i = 0; i < ctx.variableDeclaratorList().variableDeclarator().size(); i++) {
 			types.add(t);
 			// TODO dims
-			names.add(ctx.variableDeclaratorList().variableDeclarator().get(i).variableDeclaratorId().Identifier()
-					.getText());
+			names.add(
+				ctx.variableDeclaratorList()
+					.variableDeclarator()
+					.get(i)
+					.variableDeclaratorId()
+					.Identifier()
+					.getText()
+			);
 			// TODO check what if variableInitializer dosen't exist
 			inits.add(
-					(Expression) visit(ctx.variableDeclaratorList().variableDeclarator().get(i).variableInitializer()));
+				(Expression) visit(
+					ctx.variableDeclaratorList().variableDeclarator().get(i).variableInitializer()
+				)
+			);
 		}
 
 		return new StmtVarDecl(types, names, inits, ctx.start.getLine());
@@ -337,8 +428,14 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	public Expression visitVarInitArray(simpleJavaParser.VarInitArrayContext ctx) {
 		@SuppressWarnings("rawtypes")
 		List list = new ArrayList<Expression>();
-		for (int i = 0; i < ctx.arrayInitializer().variableInitializerList().variableInitializer().size(); i++) {
-			list.add(visit(ctx.arrayInitializer().variableInitializerList().variableInitializer(i)));
+		for (
+			int i = 0;
+			i < ctx.arrayInitializer().variableInitializerList().variableInitializer().size();
+			i++
+		) {
+			list.add(
+				visit(ctx.arrayInitializer().variableInitializerList().variableInitializer(i))
+			);
 		}
 		return new ExprArrayInit(list);
 	}
@@ -355,15 +452,19 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 
 	@Override
 	public SketchObject visitStatementWithoutTrailingSubstatement(
-			simpleJavaParser.StatementWithoutTrailingSubstatementContext ctx) {
+		simpleJavaParser.StatementWithoutTrailingSubstatementContext ctx
+	) {
 		return visit(ctx.getChild(0));
 	}
 
 	/** 'do' statement 'while' '(' expression ')' ';' **/
 	@Override
 	public SketchObject visitDoStatement(simpleJavaParser.DoStatementContext ctx) {
-		return new StmtDoWhile((Statement) visit(ctx.statement()), (Expression) visit(ctx.expression()),
-				ctx.start.getLine());
+		return new StmtDoWhile(
+			(Statement) visit(ctx.statement()),
+			(Expression) visit(ctx.expression()),
+			ctx.start.getLine()
+		);
 	}
 
 	/** 'return' expression? ';' **/
@@ -374,10 +475,14 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 
 	/** statementExpression (',' statementExpression)* **/
 	@Override
-	public Statement visitStatementExpressionList(simpleJavaParser.StatementExpressionListContext ctx) {
+	public Statement visitStatementExpressionList(
+		simpleJavaParser.StatementExpressionListContext ctx
+	) {
 		List<Statement> list = new ArrayList<Statement>();
 		for (int i = 0; i < ctx.statementExpression().size(); i++) {
-			list.add(new StmtExpr((Expression) visit(ctx.statementExpression(i)), ctx.start.getLine()));
+			list.add(
+				new StmtExpr((Expression) visit(ctx.statementExpression(i)), ctx.start.getLine())
+			);
 		}
 		return new StmtBlock(list);
 	}
@@ -387,7 +492,7 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 		// TODO convert expression and statement
 		ParseTree tree = ctx.statementExpression();
 		String tmp = ctx.getText();
-		SketchObject sk =  visit(tree);
+		SketchObject sk = visit(tree);
 
 		if (sk == null)
 			return new StmtExpr((Expression) visit(ctx.statementExpression()), ctx.start.getLine());
@@ -410,26 +515,50 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 
 	/** '++' unaryExpression **/
 	@Override
-	public Expression visitPreIncrementExpression(simpleJavaParser.PreIncrementExpressionContext ctx) {
-		return new ExprUnary(4, (Expression) visit(ctx.unaryExpression()), ctx.getStart().getLine());
+	public Expression visitPreIncrementExpression(
+		simpleJavaParser.PreIncrementExpressionContext ctx
+	) {
+		return new ExprUnary(
+			4,
+			(Expression) visit(ctx.unaryExpression()),
+			ctx.getStart().getLine()
+		);
 	}
 
 	/** '--' unaryExpression **/
 	@Override
-	public Expression visitPreDecrementExpression(simpleJavaParser.PreDecrementExpressionContext ctx) {
-		return new ExprUnary(6, (Expression) visit(ctx.unaryExpression()), ctx.getStart().getLine());
+	public Expression visitPreDecrementExpression(
+		simpleJavaParser.PreDecrementExpressionContext ctx
+	) {
+		return new ExprUnary(
+			6,
+			(Expression) visit(ctx.unaryExpression()),
+			ctx.getStart().getLine()
+		);
 	}
 
 	/** unaryExpression '++' **/
 	@Override
-	public Expression visitPostIncrementExpression(simpleJavaParser.PostIncrementExpressionContext ctx) {
-		return new ExprUnary(5, (Expression) visit(ctx.postfixExpression()), ctx.getStart().getLine());
+	public Expression visitPostIncrementExpression(
+		simpleJavaParser.PostIncrementExpressionContext ctx
+	) {
+		return new ExprUnary(
+			5,
+			(Expression) visit(ctx.postfixExpression()),
+			ctx.getStart().getLine()
+		);
 	}
 
 	/** unaryExpression '--' **/
 	@Override
-	public Expression visitPostDecrementExpression(simpleJavaParser.PostDecrementExpressionContext ctx) {
-		return new ExprUnary(7, (Expression) visit(ctx.postfixExpression()), ctx.getStart().getLine());
+	public Expression visitPostDecrementExpression(
+		simpleJavaParser.PostDecrementExpressionContext ctx
+	) {
+		return new ExprUnary(
+			7,
+			(Expression) visit(ctx.postfixExpression()),
+			ctx.getStart().getLine()
+		);
 	}
 
 	@Override
@@ -448,18 +577,29 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	}
 
 	@Override
-	public SketchObject visitExpandNotPlusMinusBNot(simpleJavaParser.ExpandNotPlusMinusBNotContext ctx) {
-		return new ExprUnary(2, (Expression) visit(ctx.unaryExpression()), ctx.getStart().getLine());
+	public SketchObject visitExpandNotPlusMinusBNot(
+		simpleJavaParser.ExpandNotPlusMinusBNotContext ctx
+	) {
+		return new ExprUnary(
+			2,
+			(Expression) visit(ctx.unaryExpression()),
+			ctx.getStart().getLine()
+		);
 	}
 
 	@Override
-	public SketchObject visitExpandNotPlusMinusNot(simpleJavaParser.ExpandNotPlusMinusNotContext ctx) {
-		return new ExprUnary(1, (Expression) visit(ctx.unaryExpression()), ctx.getStart().getLine());
+	public SketchObject visitExpandNotPlusMinusNot(
+		simpleJavaParser.ExpandNotPlusMinusNotContext ctx
+	) {
+		return new ExprUnary(
+			1,
+			(Expression) visit(ctx.unaryExpression()),
+			ctx.getStart().getLine()
+		);
 	}
 
 	/**
-	 * ( primary | expressionName ) (
-	 * postIncrementExpression_lf_postfixExpression |
+	 * ( primary | expressionName ) ( postIncrementExpression_lf_postfixExpression |
 	 * postDecrementExpression_lf_postfixExpression )*
 	 **/
 	@Override
@@ -480,7 +620,10 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	@Override
 	public SketchObject visitExpressionName(simpleJavaParser.ExpressionNameContext ctx) {
 		if (ctx.getChild(0).getClass().equals(simpleJavaParser.AmbiguousNameContext.class)) {
-			return new ExprField((Expression) visit(ctx.ambiguousName()), ctx.Identifier().getText());
+			return new ExprField(
+				(Expression) visit(ctx.ambiguousName()),
+				ctx.Identifier().getText()
+			);
 		}
 		return new ExprVar(ctx.Identifier().getText());
 	}
@@ -488,7 +631,10 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	@Override
 	public SketchObject visitAmbiguousName(simpleJavaParser.AmbiguousNameContext ctx) {
 		if (ctx.getChild(0).getClass().equals(simpleJavaParser.AmbiguousNameContext.class)) {
-			return new ExprField((Expression) visit(ctx.ambiguousName()), ctx.Identifier().getText());
+			return new ExprField(
+				(Expression) visit(ctx.ambiguousName()),
+				ctx.Identifier().getText()
+			);
 		}
 		return new ExprVar(ctx.Identifier().getText());
 	}
@@ -506,8 +652,12 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 			op = ExprBinary2.BINOP_ADD;
 		if (aop.equals("-="))
 			op = ExprBinary2.BINOP_SUB;
-		return new StmtAssign((Expression) visit(ctx.leftHandSide()), (Expression) visit(ctx.expression()), op,
-				ctx.start.getLine());
+		return new StmtAssign(
+			(Expression) visit(ctx.leftHandSide()),
+			(Expression) visit(ctx.expression()),
+			op,
+			ctx.start.getLine()
+		);
 	}
 
 	@Override
@@ -516,15 +666,18 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	}
 
 	/**
-	 * ( expressionName '[' expression ']' | primaryNoNewArray_lfno_arrayAccess
-	 * '[' expression ']' ) ( primaryNoNewArray_lf_arrayAccess '[' expression
-	 * ']' )*
+	 * ( expressionName '[' expression ']' | primaryNoNewArray_lfno_arrayAccess '[' expression ']' )
+	 * ( primaryNoNewArray_lf_arrayAccess '[' expression ']' )*
 	 **/
 	@Override
 	public SketchObject visitArrayAccess(simpleJavaParser.ArrayAccessContext ctx) {
 		// TODO bad style NOW
 		RangeLen r = new RangeLen((Expression) visit(ctx.expression(0)));
-		return new ExprArrayRange((Expression) visit(ctx.expressionName()), r, ctx.getStart().getLine());
+		return new ExprArrayRange(
+			(Expression) visit(ctx.expressionName()),
+			r,
+			ctx.getStart().getLine()
+		);
 	}
 
 	@Override
@@ -550,16 +703,23 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 
 	@Override
 	public SketchObject visitPrimaryNoNewArray_lfno_primary(
-			simpleJavaParser.PrimaryNoNewArray_lfno_primaryContext ctx) {
-		if(ctx.getChild(0).getText().equals("("))
+		simpleJavaParser.PrimaryNoNewArray_lfno_primaryContext ctx
+	) {
+		if (ctx.getChild(0).getText().equals("("))
 			return visit(ctx.getChild(1));
 		return visit(ctx.getChild(0));
 	}
 
 	@Override
-	public SketchObject visitArrayAccess_lfno_primary(simpleJavaParser.ArrayAccess_lfno_primaryContext ctx) {
+	public SketchObject visitArrayAccess_lfno_primary(
+		simpleJavaParser.ArrayAccess_lfno_primaryContext ctx
+	) {
 		RangeLen r = new RangeLen((Expression) visit(ctx.expression(0)));
-		return new ExprArrayRange((Expression) visit(ctx.expressionName()), r, ctx.getStart().getLine());
+		return new ExprArrayRange(
+			(Expression) visit(ctx.expressionName()),
+			r,
+			ctx.getStart().getLine()
+		);
 	}
 
 	@Override
@@ -573,8 +733,14 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	@Override
 	public Statement visitForStatement(simpleJavaParser.ForStatementContext ctx) {
 		simpleJavaParser.BasicForStatementContext c = ctx.basicForStatement();
-		return new StmtFor((Statement) visit(c.forInit()), (Expression) visit(c.expression()),
-				(Statement) visit(c.forUpdate()), (Statement) visit(c.statement()), false, ctx.start.getLine());
+		return new StmtFor(
+			(Statement) visit(c.forInit()),
+			(Expression) visit(c.expression()),
+			(Statement) visit(c.forUpdate()),
+			(Statement) visit(c.statement()),
+			false,
+			ctx.start.getLine()
+		);
 	}
 
 	@Override
@@ -585,22 +751,33 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	/** 'while' '(' expression ')' statement **/
 	@Override
 	public Statement visitWhileStatement(simpleJavaParser.WhileStatementContext ctx) {
-		return new StmtWhile((Expression) visit(ctx.expression()), (Statement) visit(ctx.statement()),
-				ctx.start.getLine());
+		return new StmtWhile(
+			(Expression) visit(ctx.expression()),
+			(Statement) visit(ctx.statement()),
+			ctx.start.getLine()
+		);
 	}
 
 	/** 'if' '(' expression ')' statementNoShortIf 'else' statement **/
 	@Override
 	public Statement visitIfThenElseStatement(simpleJavaParser.IfThenElseStatementContext ctx) {
-		return new StmtIfThen((Expression) visit(ctx.expression()), (Statement) visit(ctx.statementNoShortIf()),
-				(Statement) visit(ctx.statement()), ctx.start.getLine());
+		return new StmtIfThen(
+			(Expression) visit(ctx.expression()),
+			(Statement) visit(ctx.statementNoShortIf()),
+			(Statement) visit(ctx.statement()),
+			ctx.start.getLine()
+		);
 	}
 
 	/** 'if' '(' expression ')' statement **/
 	@Override
 	public Statement visitIfThenStatement(simpleJavaParser.IfThenStatementContext ctx) {
-		return new StmtIfThen((Expression) visit(ctx.expression()), (Statement) visit(ctx.statement()), null,
-				ctx.start.getLine());
+		return new StmtIfThen(
+			(Expression) visit(ctx.expression()),
+			(Statement) visit(ctx.statement()),
+			null,
+			ctx.start.getLine()
+		);
 	}
 
 	@Override
@@ -617,80 +794,120 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	/** conditionalOrExpression '||' conditionalAndExpression **/
 	@Override
 	public Expression visitExpandConditionalOrExpr(simpleJavaParser.ExpandConditionalOrExprContext ctx) {
-		return new ExprBinary2(ExprBinary2.BINOP_OR, (Expression) visit(ctx.conditionalOrExpression()),
-				(Expression) visit(ctx.conditionalAndExpression()), ctx.start.getLine());
+		Expression left = (Expression) this.visit(ctx.conditionalOrExpression());
+		Expression right = (Expression) this.visit(ctx.conditionalAndExpression());
+		return this.binaryExprFactory.getOrExpr(left, right, ctx.start.getLine());
 	}
 
 	/** conditionalAndExpression '&&' inclusiveOrExpression **/
 	@Override
-	public Expression visitExpandConditionalAndExpr(simpleJavaParser.ExpandConditionalAndExprContext ctx) {
-		return new ExprBinary2(ExprBinary2.BINOP_AND, (Expression) visit(ctx.conditionalAndExpression()),
-				(Expression) visit(ctx.inclusiveOrExpression()), ctx.start.getLine());
+	public Expression visitExpandConditionalAndExpr(
+		simpleJavaParser.ExpandConditionalAndExprContext ctx
+	) {
+		Expression left = (Expression) visit(ctx.conditionalAndExpression());
+		Expression right = (Expression) visit(ctx.inclusiveOrExpression());
+		return this.binaryExprFactory.getAndExpr(left, right, ctx.start.getLine());
 	}
 
 	/** inclusiveOrExpression '|' exclusiveOrExpression **/
 	@Override
-	public Expression visitExpandInclusiveOrExpr(simpleJavaParser.ExpandInclusiveOrExprContext ctx) {
-		return new ExprBinary2(ExprBinary2.BINOP_BOR, (Expression) visit(ctx.inclusiveOrExpression()),
-				(Expression) visit(ctx.exclusiveOrExpression()), ctx.start.getLine());
+	public Expression visitExpandInclusiveOrExpr(
+		simpleJavaParser.ExpandInclusiveOrExprContext ctx
+	) {
+		Expression left = (Expression) visit(ctx.inclusiveOrExpression());
+		Expression right = (Expression) visit(ctx.exclusiveOrExpression());
+		return this.binaryExprFactory.getBitwiseOrExpr(left, right, ctx.start.getLine());
 	}
 
 	/** exclusiveOrExpression '^' andExpression **/
 	@Override
-	public Expression visitExpandExclusiveOrExpr(simpleJavaParser.ExpandExclusiveOrExprContext ctx) {
-		return new ExprBinary2(ExprBinary2.BINOP_BXOR, (Expression) visit(ctx.exclusiveOrExpression()),
-				(Expression) visit(ctx.andExpression()), ctx.start.getLine());
+	public Expression visitExpandExclusiveOrExpr(
+		simpleJavaParser.ExpandExclusiveOrExprContext ctx
+	) {
+		Expression left = (Expression) visit(ctx.exclusiveOrExpression());
+		Expression right = (Expression) visit(ctx.andExpression());
+		return this.binaryExprFactory.getXorExpr(left, right, ctx.start.getLine());
 	}
 
 	/** andExpression '&' equalityExpression **/
 	@Override
 	public Expression visitExpandAndExpr(simpleJavaParser.ExpandAndExprContext ctx) {
-		return new ExprBinary2(ExprBinary2.BINOP_BAND, (Expression) visit(ctx.andExpression()),
-				(Expression) visit(ctx.equalityExpression()), ctx.start.getLine());
+		
+		Expression left = (Expression) visit(ctx.andExpression());
+		Expression right = (Expression) visit(ctx.equalityExpression());
+		return this.binaryExprFactory.getBitwiseAndExpr(left, right, ctx.start.getLine());
 	}
 
 	/** relationalExpression '<' shiftExpression **/
 	@Override
 	public Expression visitExpandRelationalExpr(simpleJavaParser.ExpandRelationalExprContext ctx) {
-		return new ExprBinary2((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
-				(Expression) visit(ctx.getChild(2)), ctx.getStart().getLine());
+		int childLeftIdx = 0;
+		int childOpIdx = 1;
+		int childRightIdx = 2;
+		Expression left = (Expression) visit(ctx.getChild(childLeftIdx));
+		Expression right = (Expression) visit(ctx.getChild(childRightIdx));
+		return this.binaryExprFactory.getExprBinary(left, ctx.getChild(childOpIdx).getText(), right, ctx.getStart().getLine());
 	}
-	
-	/** equalityExpression '==' relationalExpression					# expandEqExpr
-	|	equalityExpression '!=' relationalExpression					# expandEqExpr **/
+
+	/**
+	 * equalityExpression '==' relationalExpression # expandEqExpr | equalityExpression '!='
+	 * relationalExpression # expandEqExpr
+	 **/
 	@Override
 	public Expression visitExpandEqExpr(simpleJavaParser.ExpandEqExprContext ctx) {
 		// for Matt
-		return new ExprBinary2((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
-				(Expression) visit(ctx.getChild(2)), ctx.getStart().getLine());
+		return new ExprBinary2(
+			(Expression) visit(ctx.getChild(0)),
+			ctx.getChild(1).getText(),
+			(Expression) visit(ctx.getChild(2)),
+			ctx.getStart().getLine()
+		);
 	}
 
 	@Override
 	public Expression visitExpandShiftLeft(simpleJavaParser.ExpandShiftLeftContext ctx) {
-		return new ExprBinary2(ExprBinary2.BINOP_LSHIFT, (Expression) visit(ctx.shiftExpression()),
-				(Expression) visit(ctx.additiveExpression()), ctx.start.getLine());
+		return new ExprBinary2(
+			ExprBinary2.BINOP_LSHIFT,
+			(Expression) visit(ctx.shiftExpression()),
+			(Expression) visit(ctx.additiveExpression()),
+			ctx.start.getLine()
+		);
 	}
 
 	@Override
 	public Expression visitExpandShiftRight(simpleJavaParser.ExpandShiftRightContext ctx) {
-		return new ExprBinary2(ExprBinary2.BINOP_RSHIFT, (Expression) visit(ctx.shiftExpression()),
-				(Expression) visit(ctx.additiveExpression()), ctx.start.getLine());
+		return new ExprBinary2(
+			ExprBinary2.BINOP_RSHIFT,
+			(Expression) visit(ctx.shiftExpression()),
+			(Expression) visit(ctx.additiveExpression()),
+			ctx.start.getLine()
+		);
 	}
 
 	@Override
 	public Expression visitExpandAdditiveExpr(simpleJavaParser.ExpandAdditiveExprContext ctx) {
-		return new ExprBinary2((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
-				(Expression) visit(ctx.getChild(2)), ctx.getStart().getLine());
+		return new ExprBinary2(
+			(Expression) visit(ctx.getChild(0)),
+			ctx.getChild(1).getText(),
+			(Expression) visit(ctx.getChild(2)),
+			ctx.getStart().getLine()
+		);
 	}
 
 	@Override
-public Expression visitExpandMulExpr(simpleJavaParser.ExpandMulExprContext ctx) {
-	return new ExprBinary2((Expression) visit(ctx.getChild(0)), ctx.getChild(1).getText(),
-			(Expression) visit(ctx.getChild(2)), ctx.getStart().getLine());
+	public Expression visitExpandMulExpr(simpleJavaParser.ExpandMulExprContext ctx) {
+		return new ExprBinary2(
+			(Expression) visit(ctx.getChild(0)),
+			ctx.getChild(1).getText(),
+			(Expression) visit(ctx.getChild(2)),
+			ctx.getStart().getLine()
+		);
 	}
 
 	@Override
-	public Expression visitMethodInvocation_lfno_primary(simpleJavaParser.MethodInvocation_lfno_primaryContext ctx) {
+	public Expression visitMethodInvocation_lfno_primary(
+		simpleJavaParser.MethodInvocation_lfno_primaryContext ctx
+	) {
 		String methodName = "";
 		String methodNameJ = "";
 		for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -704,22 +921,19 @@ public Expression visitExpandMulExpr(simpleJavaParser.ExpandMulExprContext ctx) 
 		}
 		ParseTree tree = ctx.argumentList();
 		ExpressionList temp;
-		
-		//added 11/18
+
+		// added 11/18
 		methodNames.add(methodName);
-		//added 11/18
-		
-		if(tree != null)
-		{
-			temp = (ExpressionList)visit(tree);
-		}
-		else
-		{
-			//temp = new ExpressionList(new ArrayList<>());
+		// added 11/18
+
+		if (tree != null) {
+			temp = (ExpressionList) visit(tree);
+		} else {
+			// temp = new ExpressionList(new ArrayList<>());
 			return new ExprFuncCall("External_" + methodName);
 		}
 
-		return new ExprFuncCall("External_" + methodName, temp , methodNameJ);
+		return new ExprFuncCall("External_" + methodName, temp, methodNameJ);
 	}
 
 	@Override
@@ -732,27 +946,33 @@ public Expression visitExpandMulExpr(simpleJavaParser.ExpandMulExprContext ctx) 
 	}
 
 	/*
-	 * arrayCreationExpression : 'new' primitiveType dimExprs dims? | 
-	 * 'new' classOrInterfaceType dimExprs dims? | 'new' primitiveType dims
-	 * arrayInitializer | 'new' classOrInterfaceType dims arrayInitializer ;
+	 * arrayCreationExpression : 'new' primitiveType dimExprs dims? | 'new' classOrInterfaceType
+	 * dimExprs dims? | 'new' primitiveType dims arrayInitializer | 'new' classOrInterfaceType dims
+	 * arrayInitializer ;
 	 */
 	@Override
-	public SketchObject visitArrayCreationExpression(simpleJavaParser.ArrayCreationExpressionContext ctx){
-		if(ctx.getText().substring(ctx.getText().length()-1).equals("}")){
+	public SketchObject visitArrayCreationExpression(
+		simpleJavaParser.ArrayCreationExpressionContext ctx
+	) {
+		if (ctx.getText().substring(ctx.getText().length() - 1).equals("}")) {
 			List<Expression> el = new ArrayList<Expression>();
-			for(simpleJavaParser.VariableInitializerContext cc:ctx.arrayInitializer().variableInitializerList().variableInitializer()){
+			for (
+				simpleJavaParser.VariableInitializerContext cc : ctx.arrayInitializer()
+					.variableInitializerList()
+					.variableInitializer()
+			) {
 				el.add((Expression) visit(cc));
 			}
 			return new ExprArrayInit(el);
 		}
-		if(ctx.getText().substring(ctx.getText().length()-1).equals("]")){
-			return new ExprArrayInit((Expression) visit(ctx.dimExprs()),0);
+		if (ctx.getText().substring(ctx.getText().length() - 1).equals("]")) {
+			return new ExprArrayInit((Expression) visit(ctx.dimExprs()), 0);
 		}
 		return null;
 	}
-	
+
 	@Override
-	public Expression visitDimExpr(simpleJavaParser.DimExprContext ctx){
+	public Expression visitDimExpr(simpleJavaParser.DimExprContext ctx) {
 		return (Expression) visit(ctx.expression());
 	}
 

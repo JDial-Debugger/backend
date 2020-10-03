@@ -2,11 +2,25 @@ package sketchobj.core;
 
 import java.util.List;
 
+import coefficient.Coefficient;
 import constraintfactory.ConstData;
-import sketch.input.Coefficient;
 
 public abstract class SketchObject {
 	
+	/**
+	 * To avoid constructing factory instances for every node in the ast, this service instance
+	 * automatically creates them. Downside is that every node will have all factory instances
+	 * regardless if they need them. Other option is creating static factory fields but I want to
+	 * avoid that for now. 
+	 * Open to ideas for a better design idea here.
+	 *
+	 */
+	protected class Service {
+
+		public Service() {
+
+		}
+	}
 	protected int indentation;	// for toString
 	private int line;
 	

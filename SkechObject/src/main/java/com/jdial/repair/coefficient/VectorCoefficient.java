@@ -1,4 +1,4 @@
-package sketch.input;
+package coefficient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,27 +37,11 @@ return coeff6change;
  */
 public class VectorCoefficient extends Coefficient {
 
-	public VectorCoefficient(int idx, TypePrimitive type, ExprBinaryFactory binaryExprFactory) {
-		super(idx, type, binaryExprFactory);
-	}
+	private CoefficientFactory coefficientFactory;
 
-	public VectorCoefficient(
-		int idx,
-		TypePrimitive type,
-		int lineNumber,
-		ExprBinaryFactory binaryExprFactory
-	) {
-		super(idx, type, lineNumber, binaryExprFactory);
-	}
-
-	public VectorCoefficient(
-		int idx,
-		TypePrimitive type,
-		int lineNumber,
-		Statement parent,
-		ExprBinaryFactory binaryExprFactory
-	) {
-		super(idx, type, lineNumber, parent, binaryExprFactory);
+	public VectorCoefficient(VectorCoefficientOptions options) {
+		super(options);
+		this.coefficientFactory = options.getCoefficientFactory();
 	}
 
 	@Override
@@ -106,14 +90,19 @@ public class VectorCoefficient extends Coefficient {
 	 */
 	public ExprBinary addToExpr(Expression toModify, List<Coefficient> coeffs, TypePrimitive type) {
 
+		CoefficientOptions options
+			= new ScalarCoefficientOptions().setIsAdditive(true)
+			.setIdx(coeffs.size())
+			.setType(type)
+			.setLineNumber(this.lineNumber)
+			.setBinaryExprFactory(this.binaryExprFactory);
+		
 		ScalarCoefficient changeCoeff
-			= new ScalarCoefficient(
-				coeffs.size(),
-				type,
-				this.lineNumber,
-				true,
-				this.binaryExprFactory
+			= (ScalarCoefficient) this.coefficientFactory.getCoefficient(
+				ScalarCoefficient.class,
+				options
 			);
+
 		coeffs.add(changeCoeff);
 
 		ExprBinary coeffBinaryExpr = changeCoeff.modifyExpr(this.getFuncCall());

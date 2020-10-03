@@ -2,7 +2,6 @@ package sketchobj.expr.binary;
 
 import sketchobj.expr.ExprConstInt;
 import sketchobj.expr.ExprVar;
-import sketchobj.expr.Expression;
 
 import static org.mockito.Mockito.*;
 
@@ -26,8 +25,8 @@ public class CondenseInputGenerator<T extends ExprBinary> {
 
 		ExprConstInt leftMock = this.getConstIntMock(leftVal);
 		ExprConstInt rightMock = this.getConstIntMock(rightVal);
-		return this.classToTest.getConstructor(Expression.class, Expression.class)
-			.newInstance(leftMock, rightMock);
+		return this.classToTest.getConstructor(ExprBinaryOptions.class)
+			.newInstance(new ExprBinaryOptions(leftMock, rightMock));
 	}
 	
 	private ExprConstInt getConstIntMock(int constValue) {
@@ -46,8 +45,8 @@ public class CondenseInputGenerator<T extends ExprBinary> {
 
 		ExprConstInt leftMock = this.getConstIntMock(leftVal);
 		ExprVar rightMock = mock(ExprVar.class);
-		return this.classToTest.getConstructor(Expression.class, Expression.class)
-			.newInstance(leftMock, rightMock);
+		return this.classToTest.getConstructor(ExprBinaryOptions.class)
+			.newInstance(new ExprBinaryOptions(leftMock, rightMock));
 	}
 
 	public T getNoSidesAreExprConstInt()
@@ -60,8 +59,8 @@ public class CondenseInputGenerator<T extends ExprBinary> {
 
 		ExprVar leftMock = mock(ExprVar.class);
 		ExprVar rightMock = mock(ExprVar.class);
-		return this.classToTest.getConstructor(Expression.class, Expression.class)
-			.newInstance(leftMock, rightMock);
+		return this.classToTest.getConstructor(ExprBinaryOptions.class)
+			.newInstance(new ExprBinaryOptions(leftMock, rightMock));
 	}
 
 	public T getOneSideCondensible(int leftVal, int rightVal)
@@ -74,8 +73,8 @@ public class CondenseInputGenerator<T extends ExprBinary> {
 
 		ExprBinary leftCondensibleMock = this.getCondensibleMock(leftVal);
 		ExprConstInt rightMock = this.getConstIntMock(rightVal);
-		return this.classToTest.getConstructor(Expression.class, Expression.class)
-			.newInstance(leftCondensibleMock, rightMock);
+		return this.classToTest.getConstructor(ExprBinaryOptions.class)
+			.newInstance(new ExprBinaryOptions(leftCondensibleMock, rightMock));
 	}
 	
 	private ExprBinary getCondensibleMock(int condensedVal) {
@@ -83,7 +82,6 @@ public class CondenseInputGenerator<T extends ExprBinary> {
 		ExprBinary condensibleMock = mock(ExprBinary.class);
 		when(condensibleMock.condense()).thenReturn(new CondensibleExpression(condensedMock));
 		return condensibleMock;
-		
 	}
 
 }

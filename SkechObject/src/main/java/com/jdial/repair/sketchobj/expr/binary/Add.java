@@ -5,12 +5,9 @@ import sketchobj.expr.Expression;
 
 public class Add extends ArithmeticExprBinary {
 
-	public Add(Expression left, Expression right) {
-		super(left, Operator.ADD, right);
-	}
-
-	public Add(Expression left, Expression right, int lineNumber) {
-		super(left, Operator.ADD, right, lineNumber);
+	public Add(ExprBinaryOptions options) {
+		super(options);
+		this.operator = Operator.ADD;
 	}
 
 	@Override

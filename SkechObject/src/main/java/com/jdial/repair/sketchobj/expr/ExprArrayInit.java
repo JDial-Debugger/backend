@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import coefficient.Coefficient;
 import constraintfactory.ConstData;
 import constraintfactory.ExternalFunction;
-import sketch.input.Coefficient;
 
 /**
  * An array initializer. This is an expression like the right hand side of

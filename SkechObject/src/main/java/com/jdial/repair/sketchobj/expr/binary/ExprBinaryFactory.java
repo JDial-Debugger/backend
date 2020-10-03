@@ -1,9 +1,11 @@
 package sketchobj.expr.binary;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sketchobj.expr.Expression;
+import exception.InvalidClassException;
 
 public class ExprBinaryFactory {
 
@@ -12,61 +14,63 @@ public class ExprBinaryFactory {
 	public ExprBinaryFactory() {
 	}
 
-	public ExprBinary getExprBinary(Expression left, String operator, Expression right) {
-
+	public ExprBinary getExprBinary(ExprBinaryFactoryOptions factoryOptions) {
+		
+		ExprBinaryOptions options = new ExprBinaryOptions(factoryOptions.left, factoryOptions.right, factoryOptions.lineNumber);
+		String operator = factoryOptions.operator;
+		
 		if (operator.equals(Operator.ADD.toString())) {
-			return new Add(left, right);
+			return new Add(options);
 		} else if (operator.equals(Operator.AND.toString())) {
-			return new And(left, right);
+			return new And(options);
 		} else if (operator.equals(Operator.BITWISE_AND.toString())) {
-			return new BitwiseAnd(left, right);
+			return new BitwiseAnd(options);
 		} else if (operator.equals(Operator.BITWISE_OR.toString())) {
-			return new BitwiseOr(left, right);
+			return new BitwiseOr(options);
 		} else if (operator.equals(Operator.DIVIDE.toString())) {
-			return new Divide(left, right);
+			return new Divide(options);
 		} else if (operator.equals(Operator.EQUALS.toString())) {
-			return new Equals(left, right);
+			return new Equals(options);
 		} else if (operator.equals(Operator.GREATER.toString())) {
-			return new Greater(left, right);
+			return new Greater(options);
 		} else if (operator.equals(Operator.GREATER_EQUALS.toString())) {
-			return new GreaterEquals(left, right);
+			return new GreaterEquals(options);
 		} else if (operator.equals(Operator.LESS.toString())) {
-			return new Less(left, right);
+			return new Less(options);
 		} else if (operator.equals(Operator.LESS_EQUALS.toString())) {
-			return new LessEquals(left, right);
+			return new LessEquals(options);
 		} else if (operator.equals(Operator.LEFT_SHIFT.toString())) {
-			return new LeftShift(left, right);
+			return new LeftShift(options);
 		} else if (operator.equals(Operator.MULTIPLY.toString())) {
-			return new Multiply(left, right);
+			return new Multiply(options);
 		} else if (operator.equals(Operator.MODULO.toString())) {
-			return new Modulo(left, right);
+			return new Modulo(options);
 		} else if (operator.equals(Operator.NOT_EQUALS.toString())) {
-			return new NotEquals(left, right);
+			return new NotEquals(options);
 		} else if (operator.equals(Operator.OR.toString())) {
-			return new Or(left, right);
+			return new Or(options);
 		} else if (operator.equals(Operator.SUBTRACT.toString())) {
-			return new Subtract(left, right);
+			return new Subtract(options);
 		} else if (operator.equals(Operator.SIGNED_RIGHT_SHIFT.toString())) {
-			return new RightShift(left, right);
+			return new RightShift(options);
 		} else if (operator.equals(Operator.XOR.toString())) {
-			return new Xor(left, right);
+			return new Xor(options);
 		}
 		throw new OperatorDoesNotExistException(operator, logger);
 	}
 	
-	public Add getAddExpr(Expression left, Expression right) {
-		return new Add(left, right);
-	}
-	
-	public Add getAddExpr(Expression left, Expression right, int lineNumber) {
-		return new Add(left, right, lineNumber);
-	}
-	
-	public Equals getEqualsExpr(Expression left, Expression right) {
-		return new Equals(left, right);
-	}
-	
-	public Multiply getMultiplyExpr(Expression left, Expression right) {
-		return new Multiply(left, right);
+	public ExprBinary getExprBinary(Class<? extends ExprBinary> exprBinaryClass, ExprBinaryOptions options) {
+		try {
+			return exprBinaryClass.getConstructor(ExprBinaryOptions.class).newInstance(options);
+		} catch (
+			InstantiationException |
+			IllegalAccessException |
+			IllegalArgumentException |
+			InvocationTargetException |
+			NoSuchMethodException |
+			SecurityException e
+		) {
+			throw new InvalidClassException(logger, exprBinaryClass.getName());
+		}
 	}
 }

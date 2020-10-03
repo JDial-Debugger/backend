@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sketch.input.Coefficient;
+import coefficient.Coefficient;
 
 /**
  * Parses output of sketch using regex's to find repaired values of coefficients
