@@ -24,6 +24,7 @@ public abstract class ExprBinary extends Expression {
 	protected Operator operator;
 	protected int lineNumber;
 	protected CoefficientFactory coefficientFactory;
+	protected ExprBinaryFactory exprBinaryFactory;
 	private boolean doesIgnoreLeft;
 	private boolean doesIgnoreRight;
 
@@ -33,6 +34,7 @@ public abstract class ExprBinary extends Expression {
 		this.right = options.getRight();
 		this.lineNumber = options.getLineNumber();
 		this.coefficientFactory = options.getCoefficientFactory();
+		this.exprBinaryFactory = options.getExprBinaryFactory();
 	}
 
 	public Operator getOperator() {

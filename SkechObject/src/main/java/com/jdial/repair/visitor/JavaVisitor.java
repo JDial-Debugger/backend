@@ -7,8 +7,17 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import sketchobj.core.*;
 import sketchobj.expr.*;
 import sketchobj.expr.ExprArrayRange.RangeLen;
-import sketchobj.expr.binary.ExprBinary2;
+import sketchobj.expr.binary.And;
+import sketchobj.expr.binary.BitwiseAnd;
+import sketchobj.expr.binary.BitwiseOr;
+import sketchobj.expr.binary.ExprBinary;
 import sketchobj.expr.binary.ExprBinaryFactory;
+import sketchobj.expr.binary.ExprBinaryOptions;
+import sketchobj.expr.binary.GetExprBinaryOptions;
+import sketchobj.expr.binary.LeftShift;
+import sketchobj.expr.binary.Or;
+import sketchobj.expr.binary.RightShift;
+import sketchobj.expr.binary.Xor;
 import sketchobj.stmts.*;
 
 public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
@@ -264,7 +273,7 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	 */
 	@Override
 	public StmtFuncAssert visitAssertStatement(simpleJavaParser.AssertStatementContext ctx) {
-		ExprBinary2 assertExpr = (ExprBinary2) visit(ctx.expression(0));
+		ExprBinary assertExpr = (ExprBinary) visit(ctx.expression(0));
 		Expression lhs = assertExpr.getLeft();
 		Expression rhs = assertExpr.getRight();
 		// check if function call in exactly one of lhs or rhs
@@ -491,7 +500,6 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	public Statement visitExpressionStatement(simpleJavaParser.ExpressionStatementContext ctx) {
 		// TODO convert expression and statement
 		ParseTree tree = ctx.statementExpression();
-		String tmp = ctx.getText();
 		SketchObject sk = visit(tree);
 
 		if (sk == null)
@@ -793,10 +801,16 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 
 	/** conditionalOrExpression '||' conditionalAndExpression **/
 	@Override
-	public Expression visitExpandConditionalOrExpr(simpleJavaParser.ExpandConditionalOrExprContext ctx) {
+	public Expression visitExpandConditionalOrExpr(
+		simpleJavaParser.ExpandConditionalOrExprContext ctx
+	) {
 		Expression left = (Expression) this.visit(ctx.conditionalOrExpression());
 		Expression right = (Expression) this.visit(ctx.conditionalAndExpression());
-		return this.binaryExprFactory.getOrExpr(left, right, ctx.start.getLine());
+		ExprBinaryOptions options
+			= new ExprBinaryOptions().setLeft(left)
+				.setRight(right)
+				.setLineNumber(ctx.start.getLine());
+		return this.binaryExprFactory.getExprBinary(Or.class, options);
 	}
 
 	/** conditionalAndExpression '&&' inclusiveOrExpression **/
@@ -806,7 +820,11 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	) {
 		Expression left = (Expression) visit(ctx.conditionalAndExpression());
 		Expression right = (Expression) visit(ctx.inclusiveOrExpression());
-		return this.binaryExprFactory.getAndExpr(left, right, ctx.start.getLine());
+		ExprBinaryOptions options
+			= new ExprBinaryOptions().setLeft(left)
+				.setRight(right)
+				.setLineNumber(ctx.start.getLine());
+		return this.binaryExprFactory.getExprBinary(And.class, options);
 	}
 
 	/** inclusiveOrExpression '|' exclusiveOrExpression **/
@@ -816,7 +834,11 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	) {
 		Expression left = (Expression) visit(ctx.inclusiveOrExpression());
 		Expression right = (Expression) visit(ctx.exclusiveOrExpression());
-		return this.binaryExprFactory.getBitwiseOrExpr(left, right, ctx.start.getLine());
+		ExprBinaryOptions options
+			= new ExprBinaryOptions().setLeft(left)
+				.setRight(right)
+				.setLineNumber(ctx.start.getLine());
+		return this.binaryExprFactory.getExprBinary(BitwiseOr.class, options);
 	}
 
 	/** exclusiveOrExpression '^' andExpression **/
@@ -826,16 +848,24 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	) {
 		Expression left = (Expression) visit(ctx.exclusiveOrExpression());
 		Expression right = (Expression) visit(ctx.andExpression());
-		return this.binaryExprFactory.getXorExpr(left, right, ctx.start.getLine());
+		ExprBinaryOptions options
+			= new ExprBinaryOptions().setLeft(left)
+				.setRight(right)
+				.setLineNumber(ctx.start.getLine());
+		return this.binaryExprFactory.getExprBinary(Xor.class, options);
 	}
 
 	/** andExpression '&' equalityExpression **/
 	@Override
 	public Expression visitExpandAndExpr(simpleJavaParser.ExpandAndExprContext ctx) {
-		
+
 		Expression left = (Expression) visit(ctx.andExpression());
 		Expression right = (Expression) visit(ctx.equalityExpression());
-		return this.binaryExprFactory.getBitwiseAndExpr(left, right, ctx.start.getLine());
+		ExprBinaryOptions options
+			= new ExprBinaryOptions().setLeft(left)
+				.setRight(right)
+				.setLineNumber(ctx.start.getLine());
+		return this.binaryExprFactory.getExprBinary(BitwiseAnd.class, options);
 	}
 
 	/** relationalExpression '<' shiftExpression **/
@@ -846,7 +876,12 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 		int childRightIdx = 2;
 		Expression left = (Expression) visit(ctx.getChild(childLeftIdx));
 		Expression right = (Expression) visit(ctx.getChild(childRightIdx));
-		return this.binaryExprFactory.getExprBinary(left, ctx.getChild(childOpIdx).getText(), right, ctx.getStart().getLine());
+		GetExprBinaryOptions options
+			= new GetExprBinaryOptions().setLeft(left)
+				.setOperator(ctx.getChild(childOpIdx).getText())
+				.setRight(right)
+				.setLineNumber(ctx.start.getLine());
+		return this.binaryExprFactory.getExprBinary(options);
 	}
 
 	/**
@@ -855,53 +890,64 @@ public class JavaVisitor extends simpleJavaBaseVisitor<SketchObject> {
 	 **/
 	@Override
 	public Expression visitExpandEqExpr(simpleJavaParser.ExpandEqExprContext ctx) {
-		// for Matt
-		return new ExprBinary2(
-			(Expression) visit(ctx.getChild(0)),
-			ctx.getChild(1).getText(),
-			(Expression) visit(ctx.getChild(2)),
-			ctx.getStart().getLine()
-		);
+
+		Expression left = (Expression) visit(ctx.getChild(0));
+		Expression right = (Expression) visit(ctx.getChild(2));
+		GetExprBinaryOptions options
+			= new GetExprBinaryOptions().setLeft(left)
+				.setOperator(ctx.getChild(1).getText())
+				.setRight(right)
+				.setLineNumber(ctx.getStart().getLine());
+		return this.binaryExprFactory.getExprBinary(options);
 	}
 
 	@Override
 	public Expression visitExpandShiftLeft(simpleJavaParser.ExpandShiftLeftContext ctx) {
-		return new ExprBinary2(
-			ExprBinary2.BINOP_LSHIFT,
-			(Expression) visit(ctx.shiftExpression()),
-			(Expression) visit(ctx.additiveExpression()),
-			ctx.start.getLine()
-		);
+
+		Expression left = (Expression) visit(ctx.shiftExpression());
+		Expression right = (Expression) visit(ctx.additiveExpression());
+
+		ExprBinaryOptions options
+			= new ExprBinaryOptions().setLeft(left)
+				.setRight(right)
+				.setLineNumber(ctx.start.getLine());
+		return this.binaryExprFactory.getExprBinary(LeftShift.class, options);
 	}
 
 	@Override
 	public Expression visitExpandShiftRight(simpleJavaParser.ExpandShiftRightContext ctx) {
-		return new ExprBinary2(
-			ExprBinary2.BINOP_RSHIFT,
-			(Expression) visit(ctx.shiftExpression()),
-			(Expression) visit(ctx.additiveExpression()),
-			ctx.start.getLine()
-		);
+		Expression left = (Expression) visit(ctx.shiftExpression());
+		Expression right = (Expression) visit(ctx.additiveExpression());
+
+		ExprBinaryOptions options
+			= new ExprBinaryOptions().setLeft(left)
+				.setRight(right)
+				.setLineNumber(ctx.start.getLine());
+		return this.binaryExprFactory.getExprBinary(RightShift.class, options);
 	}
 
 	@Override
 	public Expression visitExpandAdditiveExpr(simpleJavaParser.ExpandAdditiveExprContext ctx) {
-		return new ExprBinary2(
-			(Expression) visit(ctx.getChild(0)),
-			ctx.getChild(1).getText(),
-			(Expression) visit(ctx.getChild(2)),
-			ctx.getStart().getLine()
-		);
+		Expression left = (Expression) visit(ctx.getChild(0));
+		Expression right = (Expression) visit(ctx.getChild(2));
+		GetExprBinaryOptions options
+			= new GetExprBinaryOptions().setLeft(left)
+				.setOperator(ctx.getChild(1).getText())
+				.setRight(right)
+				.setLineNumber(ctx.getStart().getLine());
+		return this.binaryExprFactory.getExprBinary(options);
 	}
 
 	@Override
 	public Expression visitExpandMulExpr(simpleJavaParser.ExpandMulExprContext ctx) {
-		return new ExprBinary2(
-			(Expression) visit(ctx.getChild(0)),
-			ctx.getChild(1).getText(),
-			(Expression) visit(ctx.getChild(2)),
-			ctx.getStart().getLine()
-		);
+		Expression left = (Expression) visit(ctx.getChild(0));
+		Expression right = (Expression) visit(ctx.getChild(2));
+		GetExprBinaryOptions options
+			= new GetExprBinaryOptions().setLeft(left)
+				.setOperator(ctx.getChild(1).getText())
+				.setRight(right)
+				.setLineNumber(ctx.getStart().getLine());
+		return this.binaryExprFactory.getExprBinary(options);
 	}
 
 	@Override

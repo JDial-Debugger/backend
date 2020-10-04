@@ -2,7 +2,6 @@ package sketchobj.expr.binary;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import coefficient.Coefficient;
 import coefficient.CoefficientOptions;
@@ -55,7 +54,12 @@ public abstract class ArithmeticExprBinary extends NumericExprBinary {
 					Expression addLiveVar
 						= changeCoeff.modifyExpr(new ExprVar(liveVar.getKey(), this.getType()));
 
-					this.right = new Add(right, addLiveVar, this.lineNumber);
+					ExprBinaryOptions options
+						= new ExprBinaryOptions().setLeft(right)
+							.setRight(addLiveVar)
+							.setLineNumber(this.lineNumber)
+							.setCoefficientFactory(this.coefficientFactory);
+					this.right = this.exprBinaryFactory.getExprBinary(Add.class, options);
 				}
 			}
 

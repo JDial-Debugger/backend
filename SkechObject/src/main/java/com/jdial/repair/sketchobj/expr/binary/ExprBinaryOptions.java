@@ -56,4 +56,13 @@ public class ExprBinaryOptions extends ConstructorOptions {
 		this.setOption(lineNumber, lineNumberVal);
 		return this;
 	}
+	
+	public ExprBinaryFactory getExprBinaryFactory() {
+		return (ExprBinaryFactory) this.getOption(exprBinaryFactory);
+	}
+
+	public ExprBinaryOptions setExprBinaryFactory(ExprBinaryFactory exprBinaryFactoryVal) {
+		this.setOption(exprBinaryFactory, exprBinaryFactoryVal);
+		return this;
+	}
 }
